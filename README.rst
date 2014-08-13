@@ -13,7 +13,7 @@ Requirements
 License
 -------
 
-aiozmq is offered under the BSD license.
+aioes is offered under the BSD license.
 
 .. _python: https://www.python.org/downloads/
 .. _asyncio: https://pypi.python.org/pypi/asyncio
