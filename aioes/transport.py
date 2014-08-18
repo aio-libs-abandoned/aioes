@@ -1,11 +1,14 @@
 import asyncio
 import itertools
 import json
+import random
 import re
 import time
 
 
-from .exceptions import ConnectionError, TransportError
+from .connection import Connection
+from .exceptionsimport ConnectionError, TransportError
+from .pool import ConnectionPool
 
 
 class Transport:
@@ -21,28 +24,45 @@ class Transport:
     # get ip/port from "inet[wind/127.0.0.1:9200]"
     ADDRESS_RE = re.compile(r'/(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
 
-    def __init__(self, hosts, *, sniff_timeout=0.1):
+    def __init__(self, hosts, *, sniff_timeout=0.1, max_retries=3,
+                 loop):
+        self._loop = loop
         self._hosts = hosts
-        self._connection_pool
-        self._seed_connections = list(self._connection_pool.connections)
+        self._pool = ConnectionPool([], loop=loop)
+        self._reinitialize_hosts()
+        self._seed_connections = list(self._pool.connections)
         self._sniff_timeout = sniff_timeout
         self._last_sniff = time.monotonic()
+        self._max_retries = max_retries
+
+    @property
+    def max_retries(self):
+        return self._max_retries
 
     @property
     def last_sniff(self):
         return self._last_sniff
 
-    def add_host(self, host):
-        pass
-
     @property
     def hosts(self):
-        return self._hosts
+        return list(self._hosts)
 
     @hosts.setter
     def hosts(self, hosts):
         self._hosts = hosts
-        # TODO: reinitialize connection pool
+        self._reinitialize_hosts()
+
+    def _reinitialize_hosts(self):
+        old_connections = {c.host: c for c in self._pool.connections}
+        connections = []
+        for host in self._hosts:
+            if host in old_connections:
+                connections.append(old_connections[host])
+            else:
+                connections.append(Connection(host))
+        self._pool.close()
+        random.shuffle(connections)
+        self._pool = ConnectionPool(connections, loop=self._loop)
 
     @asyncio.coroutine
     def get_connection(self):
@@ -53,7 +73,8 @@ class Transport:
         if self.sniffer_timeout:
             if time.monotonic() >= self.last_sniff + self.sniffer_timeout:
                 yield from self.sniff_hosts()
-        return self._connection_pool.get_connection()
+        ret = yield from self._pool.get_connection()
+        return ret
 
     @asyncio.coroutine
     def sniff_hosts(self):
@@ -70,7 +91,7 @@ class Transport:
             self._last_sniff = time.monotonic()
             # go through all current connections as well as the
             # seed_connections for good measure
-            for c in itertools.chain(self._connection_pool.connections,
+            for c in itertools.chain(self._pool.connections,
                                      self._seed_connections):
                 try:
                     # use small timeout for the sniffing request,
@@ -90,7 +111,7 @@ class Transport:
             raise
 
         hosts = []
-        address = Connection.transport_schema + '_address'
+        address = 'http_address'
         for n in node_info['nodes'].values():
             match = self.ADDRESS_RE.search(n.get(address, ''))
             if not match:
@@ -123,12 +144,13 @@ class Transport:
         # mark as dead even when sniffing to avoid hitting this host
         # during the sniff process
 
-        self._connection_pool.mark_dead(connection)
+        yield from self._pool.mark_dead(connection)
         if self._sniff_on_connection_fail:
             yield from self.sniff_hosts()
 
     @asyncio.coroutine
-    def perform_request(self, method, url, params=None, body=None):
+    def perform_request(self, method, url, params=None, body=None,
+                        *, request_timeout=None, ignore=()):
         """
         Perform the actual request. Retrieve a connection from the connection
         pool, pass all the information to it's perform_request method and
@@ -143,55 +165,39 @@ class Transport:
         :arg method: HTTP method to use
         :arg url: absolute url (without host) to target
         :arg params: dictionary of query parameters, will be handed over to the
-            underlying :class:`~elasticsearch.Connection` class for serialization
+          underlying :class:`~elasticsearch.Connection` class for serialization
         :arg body: body of the request, will be serializes using serializer and
             passed to the connection
         """
         if body is not None:
-            body = self.serializer.dumps(body)
+            body = json.dumps(body)
+            body = body.encode('utf-8')
 
-            # some clients or environments don't support sending GET with body
-            if method == 'GET' and self.send_get_body_as != 'GET':
-                # send it as post instead
-                if self.send_get_body_as == 'POST':
-                    method = 'POST'
-
-                # or as source parameter
-                elif self.send_get_body_as == 'source':
-                    if params is None:
-                        params = {}
-                    params['source'] = body
-                    body = None
-
-        if body is not None:
-            try:
-                body = body.encode('utf-8')
-            except UnicodeDecodeError:
-                # Python 2 and str, no need to re-encode
-                pass
-
-        ignore = ()
-        timeout = None
-        if params:
-            timeout = params.pop('request_timeout', None)
-            ignore = params.pop('ignore', ())
-            if isinstance(ignore, int):
-                ignore = (ignore, )
+        if isinstance(ignore, int):
+            ignore = (ignore, )
 
         for attempt in range(self.max_retries + 1):
-            connection = self.get_connection()
+            connection = yield from self.get_connection()
 
             try:
-                status, headers, data = connection.perform_request(method, url, params, body, ignore=ignore, timeout=timeout)
+                status, headers, data = yield from asyncio.wait_for(
+                    connection.perform_request(
+                        method,
+                        url,
+                        params,
+                        body,
+                        ignore=ignore),
+                    request_timeout,
+                    loop=self._loop)
             except ConnectionError:
-                self.mark_dead(connection)
+                yield from self.mark_dead(connection)
 
                 # raise exception on last retry
                 if attempt == self.max_retries:
                     raise
             else:
                 # connection didn't fail, confirm it's live status
-                self.connection_pool.mark_live(connection)
+                yield from self._pool.mark_live(connection)
                 if data:
-                    data = self.deserializer.loads(data, headers.get('content-type'))
+                    data = json.loads(data)
                 return status, data
