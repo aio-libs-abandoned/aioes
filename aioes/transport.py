@@ -7,7 +7,7 @@ import time
 
 
 from .connection import Connection
-from .exceptionsimport ConnectionError, TransportError
+from .exception import ConnectionError, TransportError
 from .pool import ConnectionPool
 
 
