@@ -1,25 +1,14 @@
 __all__ = [
-    'ImproperlyConfigured', 'ElasticsearchException', 'SerializationError',
+    'ElasticsearchException', 'SerializationError',
     'TransportError', 'NotFoundError', 'ConflictError',
     'RequestError', 'ConnectionError'
 ]
 
 
-class ImproperlyConfigured(Exception):
-    """Improperly configured error.
-
-    Exception raised when the config passed to the client is
-    inconsistent or invalid.
-
-    """
-
-
 class ElasticsearchException(Exception):
     """Base elastic search exception.
 
-    Base class for all exceptions raised by this package's operations
-    (doesn't apply to :class:`~elasticsearch.ImproperlyConfigured`).
-
+    Base class for all exceptions raised by this package's operations.
     """
 
 
@@ -29,7 +18,6 @@ class TransportError(ElasticsearchException):
     Exception raised when ES returns a non-OK (>=400) HTTP status
     code. Or when an actual connection error happens; in that case the
     ``status_code`` will be set to ``'N/A'``.
-
     """
     @property
     def status_code(self):
@@ -41,12 +29,12 @@ class TransportError(ElasticsearchException):
 
     @property
     def error(self):
-        """ A string error message. """
+        """A string error message."""
         return self.args[1]
 
     @property
     def info(self):
-        """ Dict of returned error info from ES, where available. """
+        """Dict of returned error info from ES, where available."""
         return self.args[2]
 
     def __str__(self):
@@ -59,7 +47,6 @@ class ConnectionError(TransportError):
     Error raised when there was an exception while talking to
     ES. Original exception from the underlying Connection
     implementation is available as .info.
-
     """
     def __str__(self):
         return 'ConnectionError(%s) caused by: %s(%s)' % (

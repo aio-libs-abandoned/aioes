@@ -24,12 +24,12 @@ class Transport:
     # get ip/port from "inet[wind/127.0.0.1:9200]"
     ADDRESS_RE = re.compile(r'/(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
 
-    def __init__(self, hosts, *, sniff_timeout=0.1, max_retries=3,
+    def __init__(self, endpoints, *, sniff_timeout=0.1, max_retries=3,
                  loop):
         self._loop = loop
-        self._hosts = hosts
+        self._endpoints = endpoints
         self._pool = ConnectionPool([], loop=loop)
-        self._reinitialize_hosts()
+        self._reinitialize_endpoints()
         self._seed_connections = list(self._pool.connections)
         self._sniff_timeout = sniff_timeout
         self._last_sniff = time.monotonic()
@@ -44,22 +44,22 @@ class Transport:
         return self._last_sniff
 
     @property
-    def hosts(self):
-        return list(self._hosts)
+    def endpoints(self):
+        return list(self._endpoints)
 
-    @hosts.setter
-    def hosts(self, hosts):
-        self._hosts = hosts
-        self._reinitialize_hosts()
+    @endpoints.setter
+    def endpoints(self, endpoints):
+        self._endpoints = endpoints
+        self._reinitialize_endpoints()
 
-    def _reinitialize_hosts(self):
-        old_connections = {c.host: c for c in self._pool.connections}
+    def _reinitialize_endpoints(self):
+        old_connections = {c.endpoint: c for c in self._pool.connections}
         connections = []
-        for host in self._hosts:
-            if host in old_connections:
-                connections.append(old_connections[host])
+        for endpoint in self._endpoints:
+            if endpoint in old_connections:
+                connections.append(old_connections[endpoint])
             else:
-                connections.append(Connection(host))
+                connections.append(Connection(endpoint, loop=self._loop))
         self._pool.close()
         random.shuffle(connections)
         self._pool = ConnectionPool(connections, loop=self._loop)
@@ -72,17 +72,17 @@ class Transport:
         """
         if self.sniffer_timeout:
             if time.monotonic() >= self.last_sniff + self.sniffer_timeout:
-                yield from self.sniff_hosts()
+                yield from self.sniff_endpoints()
         ret = yield from self._pool.get_connection()
         return ret
 
     @asyncio.coroutine
-    def sniff_hosts(self):
+    def sniff_endpoints(self):
         """Obtain a list of nodes from the cluster and create a new connection
         pool using the information retrieved.
 
         To extract the node connection parameters use the
-        `nodes_to_host_callback`.
+        `nodes_to_endpoint_callback`.
 
         """
         previous_sniff = self._last_sniff
@@ -104,34 +104,38 @@ class Transport:
                 except (ConnectionError, TypeError, ValueError):
                     pass
             else:
-                raise TransportError("N/A", "Unable to sniff hosts.")
+                raise TransportError("N/A", "Unable to sniff endpoints.")
         except:
             # keep the previous value on error
             self._last_sniff = previous_sniff
             raise
 
-        hosts = []
+        endpoints = []
         address = 'http_address'
         for n in node_info['nodes'].values():
             match = self.ADDRESS_RE.search(n.get(address, ''))
             if not match:
                 continue
 
-            host = match.groupdict()
-            if 'port' in host:
-                host['port'] = int(host['port'])
-            host = self.host_info_callback(n, host)
-            if host is not None:
-                hosts.append(host)
+            dct = match.groupdict()
+            if 'port' in dct:
+                dct['port'] = int(dct['port'])
+            else:
+                dct['port'] = 9200
+            attrs = n.get('attributes', {})
+            if not (attrs.get('data', 'true') == 'false' and
+                    attrs.get('client', 'false') == 'false' and
+                    attrs.get('master', 'true') == 'true'):
+                endpoints.append((dct['host'], dct['port']))
 
         # we weren't able to get any nodes, maybe using an incompatible
         # transport_schema or host_info_callback blocked all - raise error.
-        if not hosts:
+        if not endpoints:
             raise TransportError(
                 "N/A",
-                "Unable to sniff hosts - no viable hosts found.")
+                "Unable to sniff endpoints - no viable endpoints found.")
 
-        self.hosts = hosts
+        self.endpoints = endpoints
 
     @asyncio.coroutine
     def mark_dead(self, connection):
@@ -141,16 +145,16 @@ class Transport:
 
         :arg connection: instance of :class:`~aioes.Connection` that failed
         """
-        # mark as dead even when sniffing to avoid hitting this host
+        # mark as dead even when sniffing to avoid hitting this endpoint
         # during the sniff process
 
         yield from self._pool.mark_dead(connection)
         if self._sniff_on_connection_fail:
-            yield from self.sniff_hosts()
+            yield from self.sniff_endpoints()
 
     @asyncio.coroutine
     def perform_request(self, method, url, params=None, body=None,
-                        *, request_timeout=None, ignore=()):
+                        *, request_timeout=None):
         """
         Perform the actual request. Retrieve a connection from the connection
         pool, pass all the information to it's perform_request method and
@@ -163,7 +167,7 @@ class Transport:
         marked as dead, mark it as live, resetting it's failure count.
 
         :arg method: HTTP method to use
-        :arg url: absolute url (without host) to target
+        :arg url: absolute url (without endpoint) to target
         :arg params: dictionary of query parameters, will be handed over to the
           underlying :class:`~elasticsearch.Connection` class for serialization
         :arg body: body of the request, will be serializes using serializer and
@@ -172,9 +176,6 @@ class Transport:
         if body is not None:
             body = json.dumps(body)
             body = body.encode('utf-8')
-
-        if isinstance(ignore, int):
-            ignore = (ignore, )
 
         for attempt in range(self.max_retries + 1):
             connection = yield from self.get_connection()
@@ -185,8 +186,7 @@ class Transport:
                         method,
                         url,
                         params,
-                        body,
-                        ignore=ignore),
+                        body),
                     request_timeout,
                     loop=self._loop)
             except ConnectionError:
