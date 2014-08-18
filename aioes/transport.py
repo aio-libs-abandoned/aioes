@@ -126,7 +126,7 @@ class Transport:
             if not (attrs.get('data', 'true') == 'false' and
                     attrs.get('client', 'false') == 'false' and
                     attrs.get('master', 'true') == 'true'):
-                endpoints.append((dct['host'], dct['port']))
+                endpoints.append(dct)
 
         # we weren't able to get any nodes, maybe using an incompatible
         # transport_schema or host_info_callback blocked all - raise error.

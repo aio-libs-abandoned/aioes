@@ -20,7 +20,7 @@ class Connection:
         self._loop = loop
         self._endpoint = endpoint
         self._connector = aiohttp.TCPConnector(resolve=True)
-        self._base_url = 'http://{0[0]}:{0[1]}/'.format(endpoint)
+        self._base_url = 'http://{0[host]}:{0[port]}/'.format(endpoint)
 
     @property
     def endpoint(self):
