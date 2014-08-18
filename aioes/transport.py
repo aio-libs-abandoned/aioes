@@ -1,4 +1,5 @@
 import asyncio
+import collections
 import itertools
 import json
 import random
@@ -9,6 +10,9 @@ import time
 from .connection import Connection
 from .exception import ConnectionError, TransportError
 from .pool import ConnectionPool
+
+
+Endpoint = collections.namedtuple('TCPEndpoint', 'host port')
 
 
 class Transport:
@@ -24,13 +28,15 @@ class Transport:
     # get ip/port from "inet[wind/127.0.0.1:9200]"
     ADDRESS_RE = re.compile(r'/(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
 
-    def __init__(self, endpoints, *, sniff_timeout=0.1, max_retries=3,
+    def __init__(self, endpoints, *,
+                 sniffer_timeout=None, sniff_timeout=0.1, max_retries=3,
                  loop):
         self._loop = loop
-        self._endpoints = endpoints
+        self._endpoints = self._convert_endpoints(endpoints)
         self._pool = ConnectionPool([], loop=loop)
         self._reinitialize_endpoints()
         self._seed_connections = list(self._pool.connections)
+        self._sniffer_timeout = sniff_timeout
         self._sniff_timeout = sniff_timeout
         self._last_sniff = time.monotonic()
         self._max_retries = max_retries
@@ -44,6 +50,10 @@ class Transport:
         return self._last_sniff
 
     @property
+    def sniff_timeout(self):
+        return self._sniffer_timeout
+
+    @property
     def endpoints(self):
         return list(self._endpoints)
 
@@ -52,12 +62,30 @@ class Transport:
         self._endpoints = endpoints
         self._reinitialize_endpoints()
 
+    def close(self):
+        self._pool.close()
+
+    def _convert_endpoints(self, endpoints):
+        ret = []
+        for e in endpoints:
+            if isinstance(e, Endpoint):
+                ret.append(e)
+            elif isinstance(e, dict):
+                host = e['host']
+                port = e.get('port', 9200)
+                ret.append(Endpoint(host, port))
+            else:
+                raise RuntimeError("Bad endpoint {}".format(e))
+        return ret
+
     def _reinitialize_endpoints(self):
         old_connections = {c.endpoint: c for c in self._pool.connections}
         connections = []
         for endpoint in self._endpoints:
             if endpoint in old_connections:
-                connections.append(old_connections[endpoint])
+                connection = old_connections[endpoint]
+                connections.append(connection)
+                self._pool.detach(connection)
             else:
                 connections.append(Connection(endpoint, loop=self._loop))
         self._pool.close()
@@ -70,8 +98,8 @@ class Transport:
         Retreive a :class:`~aioes.Connection` instance from the
         :class:`~aioes.ConnectionPool` instance.
         """
-        if self.sniffer_timeout:
-            if time.monotonic() >= self.last_sniff + self.sniffer_timeout:
+        if self._sniffer_timeout:
+            if time.monotonic() >= self._last_sniff + self._sniffer_timeout:
                 yield from self.sniff_endpoints()
         ret = yield from self._pool.get_connection()
         return ret
@@ -118,15 +146,16 @@ class Transport:
                 continue
 
             dct = match.groupdict()
+            host = dct['host']
             if 'port' in dct:
-                dct['port'] = int(dct['port'])
+                port = int(dct['port'])
             else:
-                dct['port'] = 9200
+                port = 9200
             attrs = n.get('attributes', {})
             if not (attrs.get('data', 'true') == 'false' and
                     attrs.get('client', 'false') == 'false' and
                     attrs.get('master', 'true') == 'true'):
-                endpoints.append(dct)
+                endpoints.append(Endpoint(host, port))
 
         # we weren't able to get any nodes, maybe using an incompatible
         # transport_schema or host_info_callback blocked all - raise error.
