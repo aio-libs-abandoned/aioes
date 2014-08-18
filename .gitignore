@@ -1,0 +1,12 @@
+*~
+coverage
+.coverage
+*.egg-info
+*.pyc
+*.pyo
+*.bak
+*.egg
+build
+htmlcov
+docs/_build
+dist
