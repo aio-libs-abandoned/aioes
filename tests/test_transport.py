@@ -23,8 +23,8 @@ class TestTransport(unittest.TestCase):
         tr = self.make_transport()
         self.assertEqual(3, tr.max_retries)
         self.assertGreaterEqual(time.monotonic(), tr.last_sniff)
-        self.assertIsNone(tr.sniffer_timeout)
-        self.assertAlmostEqual(0.1, tr.sniff_timeout)
+        self.assertIsNone(tr.sniffer_interval)
+        self.assertAlmostEqual(0.1, tr.sniffer_timeout)
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
 
     def test_simple(self):

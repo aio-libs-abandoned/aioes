@@ -29,15 +29,15 @@ class Transport:
     ADDRESS_RE = re.compile(r'/(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
 
     def __init__(self, endpoints, *,
-                 sniffer_timeout=None, sniff_timeout=0.1, max_retries=3,
+                 sniffer_interval=None, sniffer_timeout=0.1, max_retries=3,
                  loop):
         self._loop = loop
         self._endpoints = self._convert_endpoints(endpoints)
         self._pool = ConnectionPool([], loop=loop)
         self._reinitialize_endpoints()
         self._seed_connections = list(self._pool.connections)
+        self._sniffer_interval = sniffer_interval
         self._sniffer_timeout = sniffer_timeout
-        self._sniff_timeout = sniff_timeout
         self._last_sniff = time.monotonic()
         self._max_retries = max_retries
 
@@ -50,12 +50,12 @@ class Transport:
         return self._last_sniff
 
     @property
-    def sniffer_timeout(self):
-        return self._sniffer_timeout
+    def sniffer_interval(self):
+        return self._sniffer_interval
 
     @property
-    def sniff_timeout(self):
-        return self._sniff_timeout
+    def sniffer_timeout(self):
+        return self._sniffer_timeout
 
     @property
     def endpoints(self):
@@ -102,8 +102,8 @@ class Transport:
         Retreive a :class:`~aioes.Connection` instance from the
         :class:`~aioes.ConnectionPool` instance.
         """
-        if self._sniffer_timeout:
-            if time.monotonic() >= self._last_sniff + self._sniffer_timeout:
+        if self._sniffer_interval:
+            if time.monotonic() >= self._last_sniff + self._sniffer_interval:
                 yield from self.sniff_endpoints()
         ret = yield from self._pool.get_connection()
         return ret
@@ -130,7 +130,7 @@ class Transport:
                     # should be a fast api call
                     _, headers, node_info = yield from c.perform_request(
                         'GET', '/_nodes/_all/clear',
-                        timeout=self._sniff_timeout)
+                        timeout=self._sniffer_timeout)
                     node_info = json.loads(node_info)
                     break
                 except (ConnectionError, TypeError, ValueError):
