@@ -21,6 +21,7 @@ class Connection:
         self._endpoint = endpoint
         self._connector = aiohttp.TCPConnector(resolve=True, loop=loop)
         self._base_url = 'http://{0.host}:{0.port}/'.format(endpoint)
+        self._request = aiohttp.request
 
     @property
     def endpoint(self):
@@ -32,9 +33,9 @@ class Connection:
     @asyncio.coroutine
     def perform_request(self, method, url, params, body):
         url = self._base_url + url
-        resp = yield from aiohttp.request(method, url,
-                                          params=params, data=body,
-                                          loop=self._loop)
+        resp = yield from self._request(method, url,
+                                        params=params, data=body,
+                                        loop=self._loop)
         resp_body = yield from resp.text()
         if not (200 <= resp.status <= 300):
             extra = None

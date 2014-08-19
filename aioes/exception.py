@@ -1,5 +1,5 @@
 __all__ = [
-    'ElasticsearchException', 'SerializationError',
+    'ElasticsearchException',
     'TransportError', 'NotFoundError', 'ConflictError',
     'RequestError', 'ConnectionError'
 ]

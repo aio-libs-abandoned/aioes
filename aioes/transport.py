@@ -63,7 +63,7 @@ class Transport:
 
     @endpoints.setter
     def endpoints(self, endpoints):
-        self._endpoints = endpoints
+        self._endpoints = self._convert_endpoints(endpoints)
         self._reinitialize_endpoints()
 
     def close(self):
@@ -128,13 +128,21 @@ class Transport:
                 try:
                     # use small timeout for the sniffing request,
                     # should be a fast api call
-                    _, headers, node_info = yield from c.perform_request(
-                        'GET', '/_nodes/_all/clear',
-                        timeout=self._sniffer_timeout)
+                    _, headers, node_info = yield from asyncio.wait_for(
+                        c.perform_request(
+                            'GET',
+                            '/_nodes/_all/clear',
+                            None,
+                            None),
+                        timeout=self._sniffer_timeout,
+                        loop=self._loop)
+                except ConnectionError:
+                    continue
+                try:
                     node_info = json.loads(node_info)
-                    break
-                except (ConnectionError, TypeError, ValueError):
-                    pass
+                except (TypeError, ValueError):
+                    continue
+                break
             else:
                 raise TransportError("N/A", "Unable to sniff endpoints.")
         except:

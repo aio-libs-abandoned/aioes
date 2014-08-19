@@ -1,13 +1,15 @@
 import weakref
 
+from .indices import IndicesClient
+
 
 class Elasticsearch:
     def __init__(self):
         self._indices = weakref.ref(IndicesClient(self))
-        self._cluster = weakref.ref(ClusterClient(self))
-        self._cat = weakref.ref(CatClient(self))
-        self._nodes = weakref.ref(NodesClient(self))
-        self._snapshot = weakref.ref(SnapshotClient(self))
+        # self._cluster = weakref.ref(ClusterClient(self))
+        # self._cat = weakref.ref(CatClient(self))
+        # self._nodes = weakref.ref(NodesClient(self))
+        # self._snapshot = weakref.ref(SnapshotClient(self))
 
     @property
     def indices(self):

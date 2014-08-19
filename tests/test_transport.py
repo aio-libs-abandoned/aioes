@@ -14,8 +14,10 @@ class TestTransport(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
-    def make_transport(self):
-        tr = Transport([{'host': 'localhost'}], loop=self.loop)
+    def make_transport(self, endpoints=[{'host': 'localhost'}],
+                       sniffer_interval=None):
+        tr = Transport(endpoints, loop=self.loop,
+                       sniffer_interval=sniffer_interval)
         self.addCleanup(tr.close)
         return tr
 
@@ -26,6 +28,7 @@ class TestTransport(unittest.TestCase):
         self.assertIsNone(tr.sniffer_interval)
         self.assertAlmostEqual(0.1, tr.sniffer_timeout)
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
 
     def test_simple(self):
         tr = self.make_transport()
@@ -48,4 +51,44 @@ class TestTransport(unittest.TestCase):
             #        'http_address': 'inet[/192.168.0.183:9200]',
             #        'host': 'andrew-levelup'}},
             #      'cluster_name': 'elasticsearch'}, data)
+        self.loop.run_until_complete(go())
+
+    def test_set_endpoints(self):
+        tr = self.make_transport([])
+        self.assertEqual([], tr.endpoints)
+        tr.endpoints = [{'host': 'localhost'}]
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_endpoints_Endpoint(self):
+        tr = self.make_transport([])
+        self.assertEqual([], tr.endpoints)
+        tr.endpoints = [Endpoint('localhost', 9200)]
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_dont_recreate_existing_connections(self):
+        tr = self.make_transport()
+        connections = tr._pool.connections
+        tr.endpoints = [{'host': 'localhost'}]
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(connections, tr._pool.connections)
+
+    def test_set_malformed_endpoints(self):
+        tr = self.make_transport()
+        with self.assertRaises(RuntimeError):
+            tr.endpoints = ['host']
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_sniff(self):
+        tr = self.make_transport(sniffer_interval=0.001)
+
+        @asyncio.coroutine
+        def go():
+            t0 = time.monotonic()
+            yield from asyncio.sleep(0.001, loop=self.loop)
+            yield from tr.get_connection()
+            self.assertGreater(tr.last_sniff, t0)
+
         self.loop.run_until_complete(go())

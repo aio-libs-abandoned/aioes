@@ -10,3 +10,4 @@ build
 htmlcov
 docs/_build
 dist
+cover
