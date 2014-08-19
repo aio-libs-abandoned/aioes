@@ -11,7 +11,7 @@ class AbstractSelector(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def select(self, connections):
-        pass
+        pass  # pragma: no cover
 
 
 class RandomSelector(AbstractSelector):
