@@ -36,7 +36,7 @@ class Transport:
         self._pool = ConnectionPool([], loop=loop)
         self._reinitialize_endpoints()
         self._seed_connections = list(self._pool.connections)
-        self._sniffer_timeout = sniff_timeout
+        self._sniffer_timeout = sniffer_timeout
         self._sniff_timeout = sniff_timeout
         self._last_sniff = time.monotonic()
         self._max_retries = max_retries
@@ -50,8 +50,12 @@ class Transport:
         return self._last_sniff
 
     @property
-    def sniff_timeout(self):
+    def sniffer_timeout(self):
         return self._sniffer_timeout
+
+    @property
+    def sniff_timeout(self):
+        return self._sniff_timeout
 
     @property
     def endpoints(self):

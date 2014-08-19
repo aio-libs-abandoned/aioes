@@ -23,15 +23,29 @@ class TestTransport(unittest.TestCase):
         tr = self.make_transport()
         self.assertEqual(3, tr.max_retries)
         self.assertGreaterEqual(time.monotonic(), tr.last_sniff)
+        self.assertIsNone(tr.sniffer_timeout)
+        self.assertAlmostEqual(0.1, tr.sniff_timeout)
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
 
     def test_simple(self):
         tr = self.make_transport()
+
         @asyncio.coroutine
         def go():
-            body, headers, node_info = yield from tr.perform_request(
+            status, data = yield from tr.perform_request(
                 'GET', '/_nodes/_all/clear')
-            print(body)
-            print(headers)
-            print(node_info)
+            self.assertEqual(200, status)
+            self.assertIn('nodes', data)
+            # self.assertEqual(
+            #     {'nodes':
+            #      {'kagIbHGHS3a0dcyPmp0Jkw':
+            #       {'version': '1.3.1',
+            #        'ip': '127.0.1.1',
+            #        'build': '2de6dc5',
+            #        'name': 'Mandrill',
+            #        'transport_address':
+            #        'inet[/192.168.0.183:9300]',
+            #        'http_address': 'inet[/192.168.0.183:9200]',
+            #        'host': 'andrew-levelup'}},
+            #      'cluster_name': 'elasticsearch'}, data)
         self.loop.run_until_complete(go())
