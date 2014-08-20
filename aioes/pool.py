@@ -62,15 +62,14 @@ class ConnectionPool:
         return self._timeout_cutoff
 
     @asyncio.coroutine
-    def mark_dead(self, connection, now=None):
+    def mark_dead(self, connection):
         """
         Mark the connection as dead (failed). Remove it from the live pool and
         put it on a timeout.
 
         :arg connection: the failed instance
         """
-        # allow inject for testing purposes
-        now = now if now else time.monotonic()
+        now = time.monotonic()
         try:
             self._connections.remove(connection)
         except ValueError:
@@ -119,7 +118,7 @@ class ConnectionPool:
 
         try:
             # retrieve a connection to check
-            timeout, connection = yield from self.dead.get()
+            timeout, connection = yield from self._dead.get()
         except asyncio.QueueEmpty:
             # other thread has been faster and the queue is now empty
             return
