@@ -126,8 +126,8 @@ class ConnectionPool:
 
         # either we were forced or the connection is elligible to be retried
         self._connections.append(connection)
-        logger.info('Resurrecting connection %r (force=%s).',
-                    connection, force)
+        logger.debug('Resurrecting connection %r (force=%s).',
+                     connection, force)
 
     @asyncio.coroutine
     def get_connection(self):
