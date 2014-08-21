@@ -190,3 +190,21 @@ class TestConnectionPool(unittest.TestCase):
             self.assertNotIn(conn, pool._dead_count)
 
         self.loop.run_until_complete(go())
+
+    def test_resurrect(self):
+
+        @asyncio.coroutine
+        def go():
+            c1 = Connection(Endpoint('h1', 1), loop=self.loop)
+            c2 = Connection(Endpoint('h2', 2), loop=self.loop)
+            pool = self.make_pool(connections=[c1, c2])
+
+            yield from pool.mark_dead(c1)
+            yield from pool.mark_dead(c2)
+            yield from pool.resurrect()
+            self.assertEqual(2, pool._dead.qsize())
+            yield from pool.resurrect(True)
+            self.assertEqual(1, pool._dead.qsize())
+            self.assertEqual([c1], pool.connections)
+
+        self.loop.run_until_complete(go())
