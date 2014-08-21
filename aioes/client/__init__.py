@@ -63,25 +63,6 @@ class Elasticsearch:
         """
         Adds or updates a typed JSON document in a specific index, making it
         searchable.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg body: The document
-        :arg id: Document ID
-        :arg consistency: Explicit write consistency setting for the operation
-        :arg op_type: Explicit operation type (default: index)
-        :arg parent: ID of the parent document
-        :arg refresh: Refresh the index after performing the operation
-        :arg replication: Specific replication type (default: sync)
-        :arg routing: Specific routing value
-        :arg timeout: Explicit operation timeout
-        :arg timestamp: Explicit timestamp for the document
-        :arg ttl: Expiration time for the document
-        :arg version: Explicit version number for concurrency control
-        :arg version_type: Specific version type
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if consistency is not default:
@@ -126,22 +107,6 @@ class Elasticsearch:
         """
         Returns a boolean indicating whether or not given document exists
         in Elasticsearch.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
-
-        :arg index: The name of the index
-        :arg id: The document ID
-        :arg doc_type: The type of the document (uses `_all` by default to
-            fetch the first document matching the ID across all types)
-        :arg parent: The ID of the parent document
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg realtime: Specify whether to perform the operation in realtime or
-            search mode
-        :arg refresh: Refresh the shard containing the document before
-            performing the operation
-        :arg routing: Specific routing value
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if parent is not default:
