@@ -3,19 +3,13 @@ import unittest
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
-import pprint
-import ipdb
-
-pp = pprint.pprint
-
 
 class TestClient(unittest.TestCase):
     def setUp(self):
         self._index = 'test_elasticsearch'
         self._body = {"user": "kimchy",
-                     "post_date": "2009-11-15T14:12:12",
-                     "message": "trying out Elasticsearch"
-        }
+                      "post_date": "2009-11-15T14:12:12",
+                      "message": "trying out Elasticsearch"}
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(None)
         self.cl = Elasticsearch([{'host': 'localhost'}], loop=self.loop)
