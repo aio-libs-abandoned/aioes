@@ -89,3 +89,45 @@ class TestConnectionPool(unittest.TestCase):
             self.assertEqual([conn], pool.connections)
 
         self.loop.run_until_complete(go())
+
+    def test_mark_dead_twice(self):
+
+        @asyncio.coroutine
+        def go():
+            pool = self.make_pool()
+            conn = pool.connections[0]
+
+            pool._dead_count[conn] = 1
+
+            t0 = time.monotonic() + pool.dead_timeout * 2
+            yield from pool.mark_dead(conn)
+            t1 = time.monotonic() + pool.dead_timeout * 2
+            self.assertEqual([], pool.connections)
+            self.assertFalse(pool._dead.empty())
+            self.assertEqual(2, pool._dead_count[conn])
+            timeout, conn2 = yield from pool._dead.get()
+            self.assertIs(conn, conn2)
+            self.assertTrue(t0 <= timeout <= t1, (t0, timeout, t1))
+
+        self.loop.run_until_complete(go())
+
+    def test_mark_dead_after_cutoff(self):
+
+        @asyncio.coroutine
+        def go():
+            pool = self.make_pool()
+            conn = pool.connections[0]
+
+            pool._dead_count[conn] = 7
+
+            t0 = time.monotonic() + pool.dead_timeout * 2 ** 5
+            yield from pool.mark_dead(conn)
+            t1 = time.monotonic() + pool.dead_timeout * 2 ** 5
+            self.assertEqual([], pool.connections)
+            self.assertFalse(pool._dead.empty())
+            self.assertEqual(8, pool._dead_count[conn])
+            timeout, conn2 = yield from pool._dead.get()
+            self.assertIs(conn, conn2)
+            self.assertTrue(t0 <= timeout <= t1, (t0, timeout, t1))
+
+        self.loop.run_until_complete(go())
