@@ -36,6 +36,9 @@ class TestRoundRobinSelector(unittest.TestCase):
         self.assertEqual(2, r)
 
 
+default = object()
+
+
 class TestConnectionPool(unittest.TestCase):
 
     def setUp(self):
@@ -45,9 +48,11 @@ class TestConnectionPool(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
-    def make_pool(self):
-        conn = Connection(Endpoint('localhost', 9200), loop=self.loop)
-        pool = ConnectionPool([conn], loop=self.loop)
+    def make_pool(self, connections=default):
+        if connections is default:
+            connections = [Connection(Endpoint('localhost', 9200),
+                                      loop=self.loop)]
+        pool = ConnectionPool(connections, loop=self.loop)
         self.addCleanup(pool.close)
         return pool
 
@@ -129,5 +134,30 @@ class TestConnectionPool(unittest.TestCase):
             timeout, conn2 = yield from pool._dead.get()
             self.assertIs(conn, conn2)
             self.assertTrue(t0 <= timeout <= t1, (t0, timeout, t1))
+
+        self.loop.run_until_complete(go())
+
+    def test_mark_live(self):
+
+        @asyncio.coroutine
+        def go():
+            pool = self.make_pool(connections=[])
+            conn = Connection(Endpoint('localhost', 9200), loop=self.loop)
+
+            yield from pool.mark_live(conn)
+            self.assertNotIn(conn, pool._dead_count)
+
+        self.loop.run_until_complete(go())
+
+    def test_mark_live_dead(self):
+
+        @asyncio.coroutine
+        def go():
+            pool = self.make_pool(connections=[])
+            conn = Connection(Endpoint('localhost', 9200), loop=self.loop)
+            pool._dead_count[conn] = 1
+
+            yield from pool.mark_live(conn)
+            self.assertNotIn(conn, pool._dead_count)
 
         self.loop.run_until_complete(go())

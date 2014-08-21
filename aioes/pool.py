@@ -95,11 +95,7 @@ class ConnectionPool:
 
         :arg connection: the connection to redeem
         """
-        try:
-            del self._dead_count[connection]
-        except KeyError:
-            # race condition, safe to ignore
-            pass
+        del self._dead_count[connection]
 
     @asyncio.coroutine
     def resurrect(self, force=False):
