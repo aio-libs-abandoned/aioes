@@ -208,3 +208,20 @@ class TestConnectionPool(unittest.TestCase):
             self.assertEqual([c1], pool.connections)
 
         self.loop.run_until_complete(go())
+
+    def test_get_connection(self):
+
+        @asyncio.coroutine
+        def go():
+            c1 = Connection(Endpoint('h1', 1), loop=self.loop)
+            c2 = Connection(Endpoint('h2', 2), loop=self.loop)
+            pool = self.make_pool(connections=[c1, c2])
+
+            yield from pool.mark_dead(c1)
+            yield from pool.mark_dead(c2)
+
+            conn = yield from pool.get_connection()
+            self.assertEqual(1, pool._dead.qsize())
+            self.assertIs(c1, conn)
+
+        self.loop.run_until_complete(go())
