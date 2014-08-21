@@ -62,9 +62,6 @@ class Elasticsearch:
     def ping(self, *, pretty=default, format=default):
         """
         Returns True if the cluster is up, False otherwise.
-
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if pretty is not default:
@@ -83,9 +80,6 @@ class Elasticsearch:
     def info(self, *, pretty=default, format=default):
         """
         Get the basic info from the current cluster.
-
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if pretty is not default:
@@ -107,26 +101,6 @@ class Elasticsearch:
         """
         Adds a typed JSON document in a specific index, making it searchable.
         Behind the scenes this method calls index(..., op_type='create')
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg id: Document ID
-        :arg body: The document
-        :arg consistency: Explicit write consistency setting for the operation
-        :arg id: Specific document ID (when the POST method is used)
-        :arg parent: ID of the parent document
-        :arg percolate: Percolator queries to execute while indexing the document
-        :arg refresh: Refresh the index after performing the operation
-        :arg replication: Specific replication type (default: sync)
-        :arg routing: Specific routing value
-        :arg timeout: Explicit operation timeout
-        :arg timestamp: Explicit timestamp for the document
-        :arg ttl: Expiration time for the document
-        :arg version: Explicit version number for concurrency control
-        :arg version_type: Specific version type
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if consistency is not default:
@@ -248,31 +222,6 @@ class Elasticsearch:
             version_type=default, pretty=default, format=default):
         """
         Get a typed JSON document from the index based on its id.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
-
-        :arg index: The name of the index
-        :arg id: The document ID
-        :arg doc_type: The type of the document (uses `_all` by default to
-            fetch the first document matching the ID across all types)
-        :arg _source: True or false to return the _source field or not, or a
-            list of fields to return
-        :arg _source_exclude: A list of fields to exclude from the returned
-            _source field
-        :arg _source_include: A list of fields to extract and return from the
-            _source field
-        :arg fields: A comma-separated list of fields to return in the response
-        :arg parent: The ID of the parent document
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg realtime: Specify whether to perform the operation in realtime or
-            search mode
-        :arg refresh: Refresh the shard containing the document before
-            performing the operation
-        :arg routing: Specific routing value
-        :arg version: Explicit version number for concurrency control
-        :arg version_type: Explicit version number for concurrency control
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if _source is not default:
@@ -318,29 +267,6 @@ class Elasticsearch:
                    version_type=default, pretty=default, format=default):
         """
         Get the source of a document by it's index, type and id.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document (uses `_all` by default to
-            fetch the first document matching the ID across all types)
-        :arg id: The document ID
-        :arg _source: True or false to return the _source field or not, or a
-            list of fields to return
-        :arg _source_exclude: A list of fields to exclude from the returned
-            _source field
-        :arg _source_include: A list of fields to extract and return from the
-            _source field
-        :arg parent: The ID of the parent document
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg realtime: Specify whether to perform the operation in realtime or search mode
-        :arg refresh: Refresh the shard containing the document before
-            performing the operation
-        :arg routing: Specific routing value
-        :arg version: Explicit version number for concurrency control
-        :arg version_type: Explicit version number for concurrency control
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if _source is not default:
@@ -383,28 +309,6 @@ class Elasticsearch:
              routing=default, pretty=default, format=default):
         """
         Get multiple documents based on an index, type (optional) and ids.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-get.html>`_
-
-        :arg body: Document identifiers; can be either `docs` (containing full
-            document information) or `ids` (when index and type is provided in the URL.
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg _source: True or false to return the _source field or not, or a
-            list of fields to return
-        :arg _source_exclude: A list of fields to exclude from the returned
-            _source field
-        :arg _source_include: A list of fields to extract and return from the
-            _source field
-        :arg fields: A comma-separated list of fields to return in the response
-        :arg parent: The ID of the parent document
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg realtime: Specify whether to perform the operation in realtime or search mode
-        :arg refresh: Refresh the shard containing the document before
-            performing the operation
-        :arg routing: Specific routing value
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if _source is not default:
