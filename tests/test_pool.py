@@ -63,6 +63,35 @@ class TestConnectionPool(unittest.TestCase):
         self.assertEqual(0, len(pool._dead_count))
         self.assertTrue(pool._dead.empty())
 
+    def test_full_cycle(self):
+
+        @asyncio.coroutine
+        def go():
+            pool = self.make_pool()
+            conn = pool.connections[0]
+
+            yield from pool.mark_dead(conn)
+            self.assertEqual([], pool.connections)
+            self.assertEqual(1, pool._dead_count[conn])
+
+            yield from pool.resurrect(True)
+            self.assertEqual([conn], pool.connections)
+            self.assertEqual(1, pool._dead_count[conn])
+
+            yield from pool.mark_dead(conn)
+            self.assertEqual([], pool.connections)
+            self.assertEqual(2, pool._dead_count[conn])
+
+            yield from pool.resurrect(True)
+            self.assertEqual([conn], pool.connections)
+            self.assertEqual(2, pool._dead_count[conn])
+
+            yield from pool.mark_live(conn)
+            self.assertEqual([conn], pool.connections)
+            self.assertEqual(0, pool._dead_count[conn])
+
+        self.loop.run_until_complete(go())
+
     def test_mark_dead(self):
 
         @asyncio.coroutine
