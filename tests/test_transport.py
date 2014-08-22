@@ -81,10 +81,16 @@ class TestTransport(unittest.TestCase):
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
-    def test_set_host_only(self):
+    def test_set_host_only_string(self):
         tr = self.make_transport()
         tr.endpoints = ['host']
         self.assertEqual([Endpoint('host', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_port_string(self):
+        tr = self.make_transport()
+        tr.endpoints = ['host:123']
+        self.assertEqual([Endpoint('host', 123)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_sniff(self):
