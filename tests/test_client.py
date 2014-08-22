@@ -1,89 +1,160 @@
 import asyncio
 import unittest
+# import yaml
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
+
+import pprint
+pp = pprint.pprint
+
+MESSAGES = [
+    {
+        "user": "Johny Mnemonic",
+        "birthDate": "2109-11-15T14:12:12",
+        "message": "trying out Elasticsearch",
+        "skills": ["Python", "PHP", "HTML", "C++", ".NET", "JavaScript"],
+        "counter": 0
+    },
+    {
+        "user": "Sidor Spiridonovich",
+        "birthDate": "2009-01-11T11:02:11",
+        "message": "trying in Elasticsearch",
+        "skills": ["Java", "1C", "C++", ".NET", "JavaScript"],
+        "counter": 0
+    },
+    {
+        "user": "Fedor Poligrafovich",
+        "birthDate": "1969-12-15T14:12:12",
+        "message": "trying out everything",
+        "skills": ["MODULA", "ADA", "PLM", "BASIC", "Python"],
+        "counter": 0
+    },
+]
 
 
 class TestClient(unittest.TestCase):
     def setUp(self):
         self._index = 'test_elasticsearch'
-        self._body = {"user": "kimchy",
-                      "post_date": "2009-11-15T14:12:12",
-                      "message": "trying out Elasticsearch"}
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(None)
         self.cl = Elasticsearch([{'host': 'localhost'}], loop=self.loop)
         self.addCleanup(self.cl.close)
         try:
-            self.delete(self._index, '', '')
+            self.loop.run_until_complete(self.cl.delete(self._index, '', ''))
         except NotFoundError:
-            return False
+            pass
 
     def tearDown(self):
         self.loop.close()
 
-    def delete(self, index, doctype, id):
+    def test_ping(self):
+        """ ping """
         @asyncio.coroutine
         def go():
-            data = yield from self.cl.delete(index, doctype, id)
-            return data
-        return self.loop.run_until_complete(go())
+            data = yield from self.cl.ping()
+            self.assertTrue(data)
+        self.loop.run_until_complete(go())
 
-    def make_rec(self, doctype, id, _body=None):
+    def test_info(self):
+        """ ping """
         @asyncio.coroutine
         def go():
-            body = self._body
-            if _body is not None:
-                body = _body
-            data = yield from self.cl.index(self._index, doctype, body, id)
-            return data
-        return self.loop.run_until_complete(go())
+            data = yield from self.cl.info()
+            self.assertEqual(data['status'], 200)
+            # data = yield from self.cl.info(pretty='', format='yaml')
+            # import ipdb; ipdb.set_trace()
+            self.assertEqual(data['status'], 200)
+
+        self.loop.run_until_complete(go())
 
     def test_index(self):
         """ index """
-        data = self.make_rec('tweet', '1')
-        self.assertEqual(data['_index'], self._index)
-        self.assertEqual(data['_type'], 'tweet')
-        self.assertEqual(data['_id'], '1')
-        self.assertEqual(data['_version'], 1)
-        self.assertEqual(data['created'], True)
-        # test bulk version
-        data = self.make_rec('tweet', '1')
-        self.assertEqual(data['_index'], self._index)
-        self.assertEqual(data['_type'], 'tweet')
-        self.assertEqual(data['_id'], '1')
-        self.assertEqual(data['_version'], 2)
-        self.assertEqual(data['created'], False)
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.index(self._index, 'tweet', {}, '1')
+            self.assertEqual(data['_index'], self._index)
+            self.assertEqual(data['_type'], 'tweet')
+            self.assertEqual(data['_id'], '1')
+            self.assertEqual(data['_version'], 1)
+            self.assertTrue(data['created'], data)
+            # test bulk version
+            data = yield from self.cl.index(self._index, 'tweet', {}, '1')
+            self.assertEqual(data['_index'], self._index)
+            self.assertEqual(data['_type'], 'tweet')
+            self.assertEqual(data['_id'], '1')
+            self.assertEqual(data['_version'], 2)
+            self.assertFalse(data['created'], data)
+        self.loop.run_until_complete(go())
 
     def test_exist(self):
         """ exists """
         @asyncio.coroutine
-        def go(id):
+        def go():
+            id = '100'
+            # test non-exist
             data = yield from self.cl.exists(self._index, id)
-            return data
-
-        id = '100'
-        # test non-exist
-        data = self.loop.run_until_complete(go(id))
-        self.assertFalse(data)
-        # test exist
-        self.make_rec('exist', id)
-        data = self.loop.run_until_complete(go(id))
-        self.assertTrue(data)
+            self.assertFalse(data)
+            # test exist
+            yield from self.cl.index(self._index, 'exist', {}, id)
+            data = yield from self.cl.exists(self._index, id)
+            self.assertTrue(data)
+        self.loop.run_until_complete(go())
 
     def test_get(self):
         """ get """
         @asyncio.coroutine
-        def go(id):
+        def go():
+            id = '200'
+            yield from self.cl.index(self._index, 'test_get', MESSAGES[1], id)
             data = yield from self.cl.get(self._index, id)
-            return data
+            self.assertEqual(data['_id'], id)
+            self.assertEqual(data['_index'], self._index)
+            self.assertEqual(data['_type'], 'test_get')
+            self.assertEqual(data['_version'], 1)
+            self.assertTrue(data['found'], data)
+            self.assertEqual(data['_source'], MESSAGES[1])
+        self.loop.run_until_complete(go())
 
-        id = '200'
-        self.make_rec('test_get', id)
-        data = self.loop.run_until_complete(go(id))
-        self.assertEqual(data['_id'], id)
-        self.assertEqual(data['_index'], self._index)
-        self.assertEqual(data['_type'], 'test_get')
-        self.assertEqual(data['_version'], 1)
-        self.assertEqual(data['found'], True)
-        self.assertEqual(data['_source'], self._body)
+    def test_update(self):
+        """ update """
+        @asyncio.coroutine
+        def go():
+            script = {
+                "doc": {
+                    "counter": 123
+                }
+            }
+            yield from self.cl.index(self._index, 'testdoc', MESSAGES[2], '1')
+            yield from self.cl.update(self._index, 'testdoc', '1', script)
+            data = yield from self.cl.get(self._index, '1')
+            self.assertEqual(data['_source']['counter'], 123)
+            self.assertEqual(data['_version'], 2)
+        self.loop.run_until_complete(go())
+
+    def test_get_source(self):
+        """ get_source """
+        @asyncio.coroutine
+        def go():
+            id = '200'
+            yield from self.cl.index(
+                self._index, 'test_get_source', MESSAGES[2], id)
+            data = yield from self.cl.get_source(self._index, id)
+            self.assertEqual(data, MESSAGES[2])
+        self.loop.run_until_complete(go())
+
+#    def test_mget(self):
+#        """ mget """
+#        @asyncio.coroutine
+#        def go():
+#            body = {"ids": ['200', '2']}
+#            yield from self.cl.index(
+#                             self._index, 'test_mget', MESSAGES[0], '200')
+#            data = yield from self.cl.mget(body, index=self._index)
+#            import ipdb; ipdb.set_trace()
+#        self.loop.run_until_complete(go())
+
+    # def test_(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         pass
+    #     self.loop.run_until_complete(go())

@@ -12,6 +12,13 @@ class ElasticsearchException(Exception):
     """
 
 
+class SerializationError(ElasticsearchException):
+    """
+    Data passed in failed to serialize properly in the ``Serializer`` being
+    used.
+    """
+
+
 class TransportError(ElasticsearchException):
     """Transport error.
 

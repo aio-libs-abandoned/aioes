@@ -19,6 +19,7 @@ else:
 def read(f):
     return open(os.path.join(os.path.dirname(__file__), f)).read().strip()
 
+
 def read_version():
     regexp = re.compile(r"^__version__\W*=\W*'([\d.abrc]+)'")
     init_py = os.path.join(os.path.dirname(__file__), 'aioes', '__init__.py')
