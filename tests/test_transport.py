@@ -129,3 +129,17 @@ class TestTransport(unittest.TestCase):
             self.assertEqual(t0, tr.last_sniff)
 
         self.loop.run_until_complete(go())
+
+    def test__mark_dead(self):
+        tr = self.make_transport()
+
+        @asyncio.coroutine
+        def go():
+            conn = yield from tr.get_connection()
+            last_sniff = tr.last_sniff
+            # import ipdb;ipdb.set_trace()
+            yield from tr._mark_dead(conn)
+            self.assertGreater(tr.last_sniff, last_sniff)
+            self.assertEqual(1, tr._pool._dead_count[conn])
+
+        self.loop.run_until_complete(go())

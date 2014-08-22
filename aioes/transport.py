@@ -192,7 +192,7 @@ class Transport:
         self.endpoints = endpoints
 
     @asyncio.coroutine
-    def mark_dead(self, connection):
+    def _mark_dead(self, connection):
         """
         Mark a connection as dead (failed) in the connection pool. If sniffing
         on failure is enabled this will initiate the sniffing process.
@@ -203,8 +203,7 @@ class Transport:
         # during the sniff process
 
         yield from self._pool.mark_dead(connection)
-        if self._sniff_on_connection_fail:
-            yield from self.sniff_endpoints()
+        yield from self.sniff_endpoints()
 
     @asyncio.coroutine
     def perform_request(self, method, url, params=None, body=None,
@@ -244,7 +243,7 @@ class Transport:
                     request_timeout,
                     loop=self._loop)
             except ConnectionError:
-                yield from self.mark_dead(connection)
+                yield from self._mark_dead(connection)
 
                 # raise exception on last retry
                 if attempt == self.max_retries:
