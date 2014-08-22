@@ -75,8 +75,21 @@ class Transport:
             if isinstance(e, Endpoint):
                 ret.append(e)
             elif isinstance(e, dict):
-                host = e['host']
+                try:
+                    host = e['host']
+                except KeyError:
+                    raise RuntimeError("Bad endpoint {}".format(e))
                 port = e.get('port', 9200)
+                ret.append(Endpoint(host, port))
+            elif isinstance(e, str):
+                host, sep, port = e.partition(':')
+                if port:
+                    try:
+                        port = int(port)
+                    except ValueError:
+                        raise RuntimeError("Bad endpoint {}".format(e))
+                else:
+                    port = 9200
                 ret.append(Endpoint(host, port))
             else:
                 raise RuntimeError("Bad endpoint {}".format(e))

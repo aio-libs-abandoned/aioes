@@ -77,8 +77,14 @@ class TestTransport(unittest.TestCase):
     def test_set_malformed_endpoints(self):
         tr = self.make_transport()
         with self.assertRaises(RuntimeError):
-            tr.endpoints = ['host']
+            tr.endpoints = [123]
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_only(self):
+        tr = self.make_transport()
+        tr.endpoints = ['host']
+        self.assertEqual([Endpoint('host', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_sniff(self):
