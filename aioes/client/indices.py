@@ -12,8 +12,7 @@ class IndicesClient(NamespacedClient):
     def analyze(self, index=None, body=None, *,
                 analyzer=default, char_filters=default, field=default,
                 filters=default, prefer_local=default, text=default,
-                tokenizer=default, token_filters=default, pretty=default,
-                format=default):
+                tokenizer=default, token_filters=default):
         """
         Perform the analysis process on a text and return the tokens breakdown
         of the text.
@@ -35,10 +34,6 @@ class IndicesClient(NamespacedClient):
             params['tokenizer'] = tokenizer
         if token_filters is not default:
             params['token_filters'] = token_filters
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -54,7 +49,7 @@ class IndicesClient(NamespacedClient):
 
     @asyncio.coroutine
     def create(self, index, body=None, *, timeout=default,
-               master_timeout=default, pretty=default, format=default):
+               master_timeout=default):
         """
         Create an index in Elasticsearch.
         """
@@ -63,10 +58,6 @@ class IndicesClient(NamespacedClient):
             params['timeout'] = timeout
         if master_timeout is not default:
             params['master_timeout'] = master_timeout
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self.transport.perform_request(
             'PUT',
@@ -78,7 +69,7 @@ class IndicesClient(NamespacedClient):
     @asyncio.coroutine
     def open(self, index, *, timeout=default, master_timeout=default,
              allow_no_indices=default, expand_wildcards=default,
-             ignore_unavailable=default, pretty=default, format=default):
+             ignore_unavailable=default):
         """
         Open a closed index to make it available for search.
         """
@@ -93,10 +84,6 @@ class IndicesClient(NamespacedClient):
             params['allow_no_indices'] = allow_no_indices
         if ignore_unavailable is not default:
             params['ignore_unavailable'] = ignore_unavailable
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self.transport.perform_request(
             'POST',
@@ -107,8 +94,7 @@ class IndicesClient(NamespacedClient):
     @asyncio.coroutine
     def close(self, index, *, allow_no_indices=default,
               expand_wildcards=default, ignore_unavailable=default,
-              master_timeout=default, timeout=default, pretty=default,
-              format=default):
+              master_timeout=default, timeout=default):
         """
         Close an index to remove it's overhead from the cluster. Closed index
         is blocked for read/write operations.
@@ -124,10 +110,6 @@ class IndicesClient(NamespacedClient):
             params['allow_no_indices'] = allow_no_indices
         if ignore_unavailable is not default:
             params['ignore_unavailable'] = ignore_unavailable
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self.transport.perform_request(
             'POST',

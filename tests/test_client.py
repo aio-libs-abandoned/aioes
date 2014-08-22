@@ -56,15 +56,11 @@ class TestClient(unittest.TestCase):
         self.loop.run_until_complete(go())
 
     def test_info(self):
-        """ ping """
+        """ test_info """
         @asyncio.coroutine
         def go():
             data = yield from self.cl.info()
             self.assertEqual(data['status'], 200)
-            # data = yield from self.cl.info(pretty='', format='yaml')
-            # import ipdb; ipdb.set_trace()
-            self.assertEqual(data['status'], 200)
-
         self.loop.run_until_complete(go())
 
     def test_index(self):

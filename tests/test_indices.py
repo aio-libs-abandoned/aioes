@@ -42,8 +42,7 @@ class TestIndices(unittest.TestCase):
                 text='this is a <b>test</b>',
                 tokenizer='keyword',
                 token_filters='lowercase',
-                char_filters='html_strip',
-                pretty='', format='detailed')
+                char_filters='html_strip')
             self.assertEqual(data['tokens'][0]['token'], 'this is a test')
 
         self.loop.run_until_complete(go())
@@ -52,8 +51,7 @@ class TestIndices(unittest.TestCase):
         @asyncio.coroutine
         def go():
             data = yield from self.cl.indices.create(
-                self._index, pretty='', format='detailed',
-                timeout=1000, master_timeout=1000)
+                self._index, timeout=1000, master_timeout=1000)
             self.assertTrue(data['acknowledged'])
         self.loop.run_until_complete(go())
 
@@ -62,8 +60,7 @@ class TestIndices(unittest.TestCase):
         def go():
             yield from self.cl.indices.create(self._index)
             data = yield from self.cl.indices.open(
-                self._index, pretty='', format='detailed',
-                timeout=1000, master_timeout=1000,
+                self._index, timeout=1000, master_timeout=1000,
                 ignore_unavailable=True, expand_wildcards=False,
                 allow_no_indices=False)
             self.assertTrue(data['acknowledged'], data)
@@ -76,7 +73,7 @@ class TestIndices(unittest.TestCase):
     #     def go():
     #         yield from self.cl.indices.create(self._index)
     #         data = yield from self.cl.indices.close(
-    #             self._index, pretty='', format='detailed')
+    #             self._index)
     #         self.assertTrue(data['acknowledged'], data)
     #     self.loop.run_until_complete(go())
 

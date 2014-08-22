@@ -73,18 +73,11 @@ class Elasticsearch:
         return True
 
     @asyncio.coroutine
-    def info(self, *, pretty=default, format=default):
+    def info(self):
         """
         Get the basic info from the current cluster.
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
-        _, data = yield from self._transport.perform_request(
-            'GET', '/', params=params)
+        _, data = yield from self._transport.perform_request('GET', '/')
         return data
 
     @asyncio.coroutine
@@ -92,8 +85,7 @@ class Elasticsearch:
                consistency=default, parent=default, percolate=default,
                refresh=default, replication=default, routing=default,
                timeout=default, timestamp=default, ttl=default,
-               version=default, version_type=default, pretty=default,
-               format=default):
+               version=default, version_type=default):
         """
         Adds a typed JSON document in a specific index, making it searchable.
         Behind the scenes this method calls index(..., op_type='create')
@@ -121,10 +113,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
         params['op_type'] = 'create'
 
         _, data = yield from self._transport.perform_request(
@@ -138,8 +126,7 @@ class Elasticsearch:
               consistency=default, op_type=default, parent=default,
               refresh=default, replication=default, routing=default,
               timeout=default, timestamp=default, ttl=default,
-              version=default, version_type=default, pretty=default,
-              format=default):
+              version=default, version_type=default):
         """
         Adds or updates a typed JSON document in a specific index, making it
         searchable.
@@ -167,10 +154,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'PUT' if id else 'POST',
@@ -215,7 +198,7 @@ class Elasticsearch:
             _source_include=default, fields=default,
             parent=default, preference=default, realtime=default,
             refresh=default, routing=default, version=default,
-            version_type=default, pretty=default, format=default):
+            version_type=default):
         """
         Get a typed JSON document from the index based on its id.
         """
@@ -242,10 +225,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -260,7 +239,7 @@ class Elasticsearch:
                    _source_include=default, parent=default,
                    preference=default, realtime=default, refresh=default,
                    routing=default, version=default,
-                   version_type=default, pretty=default, format=default):
+                   version_type=default):
         """
         Get the source of a document by it's index, type and id.
         """
@@ -285,10 +264,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -303,8 +278,7 @@ class Elasticsearch:
                parent=default, refresh=default, replication=default,
                retry_on_conflict=default, routing=default, script=default,
                timeout=default, timestamp=default, ttl=default,
-               version=default, version_type=default, pretty=default,
-               format=default):
+               version=default, version_type=default):
         """
         Update a document based on a script or partial data provided.
         """
@@ -337,10 +311,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'POST',
@@ -354,7 +324,7 @@ class Elasticsearch:
              _source=default, _source_exclude=default,
              _source_include=default, fields=default, parent=default,
              preference=default, realtime=default, refresh=default,
-             routing=default, pretty=default, format=default):
+             routing=default):
         """
         Get multiple documents based on an index, type (optional) and ids.
         """
@@ -377,10 +347,6 @@ class Elasticsearch:
             params['refresh'] = refresh
         if routing is not default:
             params['routing'] = routing
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -404,8 +370,7 @@ class Elasticsearch:
                sort=default, source=default, stats=default,
                suggest_field=default, suggest_mode=default,
                suggest_size=default, suggest_text=default,
-               timeout=default, version=default, pretty=default,
-               format=default):
+               timeout=default, version=default):
         """
         Execute a search query and get back search hits that match the query.
         """
@@ -473,10 +438,6 @@ class Elasticsearch:
             params['timeout'] = timeout
         if version is not default:
             params['version'] = version
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         if doc_type and not index:
             index = '_all'
@@ -493,8 +454,7 @@ class Elasticsearch:
     def search_shards(self, index=None, doc_type=None, *,
                       allow_no_indices=default, expand_wildcards=default,
                       ignore_unavailable=default, local=default,
-                      preference=default, routing=default, pretty=default,
-                      format=default):
+                      preference=default, routing=default):
         """
         The search shards api returns the indices and shards that a search
         request would be executed against. This can give useful feedback
@@ -514,10 +474,6 @@ class Elasticsearch:
             params['preference'] = preference
         if routing is not default:
             params['routing'] = routing
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -532,8 +488,7 @@ class Elasticsearch:
                         expand_wildcards=default,
                         ignore_unavailable=default, preference=default,
                         routing=default, scroll=default,
-                        search_type=default, pretty=default,
-                        format=default):
+                        search_type=default):
         """
         A query that accepts a query template and a map of key/value pairs to
         fill in template parameters.
@@ -553,10 +508,6 @@ class Elasticsearch:
             params['scroll'] = scroll
         if search_type is not default:
             params['search_type'] = search_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -573,7 +524,7 @@ class Elasticsearch:
                 df=default, fields=default, lenient=default,
                 lowercase_expanded_terms=default, parent=default,
                 preference=default, q=default, routing=default,
-                source=default, pretty=default, format=default):
+                source=default):
         """
         The explain api computes a score explanation for a query and a specific
         document. This can give useful feedback whether a document matches or
@@ -610,10 +561,6 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -623,18 +570,13 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def scroll(self, scroll_id, *, scroll=default, pretty=default,
-               format=default):
+    def scroll(self, scroll_id, *, scroll=default):
         """
         Scroll a search request created by specifying the scroll parameter.
         """
         params = {}
         if scroll is not default:
             params['scroll'] = scroll
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -644,22 +586,15 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def clear_scroll(self, scroll_id=None, body=None, *,
-                     pretty=default, format=default):
+    def clear_scroll(self, scroll_id=None, body=None):
         """
         Clear the scroll request created by specifying the scroll parameter to
         search.
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self.transport.perform_request(
             'DELETE',
             _make_path('_search', 'scroll', scroll_id),
-            body=body, params=params)
+            body=body)
 
         return data
 
@@ -667,8 +602,7 @@ class Elasticsearch:
     def delete(self, index, doc_type, id, *,
                consistency=default, parent=default, refresh=default,
                replication=default, routing=default, timeout=default,
-               version=default, version_type=default, pretty=default,
-               format=default):
+               version=default, version_type=default):
         """
         Delete a typed JSON document from a specific index based on its id.
         """
@@ -689,10 +623,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'DELETE',
@@ -706,7 +636,7 @@ class Elasticsearch:
               allow_no_indices=default, expand_wildcards=default,
               ignore_unavailable=default, min_score=default,
               preference=default, q=default, routing=default,
-              source=default, pretty=default, format=default):
+              source=default):
         """
         Execute a query and get the number of matches for that query.
         """
@@ -727,10 +657,6 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'POST',
@@ -742,8 +668,7 @@ class Elasticsearch:
     @asyncio.coroutine
     def bulk(self, body, index=None, doc_type=None, *,
              consistency=default, refresh=default, routing=default,
-             replication=default, timeout=default, pretty=default,
-             format=default):
+             replication=default, timeout=default):
         """
         Perform many index/delete operations in a single API call.
         """
@@ -758,10 +683,6 @@ class Elasticsearch:
             params['replication'] = replication
         if timeout is not default:
             params['timeout'] = timeout
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'POST',
@@ -773,17 +694,13 @@ class Elasticsearch:
 
     @asyncio.coroutine
     def msearch(self, body, index=None, doc_type=None, *,
-                search_type=default, pretty=default, format=default):
+                search_type=default):
         """
         Execute several search requests within the same API.
         """
         params = {}
         if search_type is not default:
             params['search_type'] = search_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -800,8 +717,7 @@ class Elasticsearch:
                         df=default, expand_wildcards=default,
                         ignore_unavailable=default, q=default,
                         replication=default, routing=default,
-                        source=default, timeout=default, pretty=default,
-                        format=default):
+                        source=default, timeout=default):
         """
         Delete documents from one or more indices and one or more types based
         on a query.
@@ -831,10 +747,6 @@ class Elasticsearch:
             params['source'] = source
         if timeout is not default:
             params['timeout'] = timeout
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'DELETE',
@@ -847,7 +759,7 @@ class Elasticsearch:
     def suggest(self, body, index=None, *,
                 allow_no_indices=default, expand_wildcards=default,
                 ignore_unavailable=default, preference=default,
-                routing=default, source, pretty=default, format=default):
+                routing=default, source):
         """
         The suggest feature suggests similar looking terms based on a provided
         text by using a suggester.
@@ -865,10 +777,6 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'POST',
@@ -883,7 +791,7 @@ class Elasticsearch:
                   ignore_unavailable=default, percolate_format=default,
                   percolate_index=default, percolate_type=default,
                   preference=default, routing=default, version=default,
-                  version_type=default, pretty=default, format=default):
+                  version_type=default):
         """
         The percolator allows to register queries against an index, and then
         send percolate requests which include a doc, and getting back the
@@ -910,10 +818,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -925,7 +829,7 @@ class Elasticsearch:
     @asyncio.coroutine
     def mpercolate(self, body, index=None, doc_type=None, *,
                    allow_no_indices=default, expand_wildcards=default,
-                   ignore_unavailable=default, pretty=default, format=default):
+                   ignore_unavailable=default):
         """
         The percolator allows to register queries against an index, and then
         send percolate requests which include a doc, and getting back the
@@ -938,10 +842,6 @@ class Elasticsearch:
             params['expand_wildcards'] = expand_wildcards
         if ignore_unavailable is not default:
             params['ignore_unavailable'] = ignore_unavailable
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -956,8 +856,8 @@ class Elasticsearch:
                         allow_no_indices=default, expand_wildcards=default,
                         ignore_unavailable=default, percolate_index=default,
                         percolate_type=default, preference=default,
-                        routing=default, version=default, version_type=default,
-                        pretty=default, format=default):
+                        routing=default, version=default,
+                        version_type=default):
         """
         The percolator allows to register queries against an index, and then
         send percolate requests which include a doc, and getting back the
@@ -982,10 +882,6 @@ class Elasticsearch:
             params['version'] = version
         if version_type is not default:
             params['version_type'] = version_type
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -1004,8 +900,7 @@ class Elasticsearch:
             search_from=default, search_indices=default,
             search_query_hint=default, search_scroll=default,
             search_size=default, search_source=default,
-            search_type=default, search_types=default, stop_words=default,
-            pretty=default, format=default):
+            search_type=default, search_types=default, stop_words=default):
         """
         Get documents that are "like" a specified document.
         """
@@ -1050,10 +945,6 @@ class Elasticsearch:
             params['search_types'] = search_types
         if stop_words is not default:
             params['stop_words'] = stop_words
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -1067,7 +958,7 @@ class Elasticsearch:
                    field_statistics=default, fields=default,
                    offsets=default, parent=default, payloads=default,
                    positions=default, preference=default, routing=default,
-                   term_statistics=default, pretty=default, format=default):
+                   term_statistics=default):
         """
         Returns information and statistics on terms in the fields of
         a particular document as stored in the index.
@@ -1091,10 +982,6 @@ class Elasticsearch:
             params['routing'] = routing
         if term_statistics is not default:
             params['term_statistics'] = term_statistics
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -1109,8 +996,7 @@ class Elasticsearch:
                      ids=default, offsets=default, parent=default,
                      payloads=default, positions=default,
                      preference=default, routing=default,
-                     term_statistics=default, pretty=default,
-                     format=default):
+                     term_statistics=default):
         """
         Multi termvectors API allows to get multiple termvectors based on an
         index, type and id.
@@ -1136,10 +1022,6 @@ class Elasticsearch:
             params['routing'] = routing
         if term_statistics is not default:
             params['term_statistics'] = term_statistics
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = yield from self._transport.perform_request(
             'GET',
@@ -1150,7 +1032,7 @@ class Elasticsearch:
 
     @asyncio.coroutine
     def benchmark(self, index=None, doc_type=None, body=None, *,
-                  verbose=default, pretty=default, format=default):
+                  verbose=default):
         """
         The benchmark API provides a standard mechanism for submitting queries
         and measuring their performance relative to one another.
@@ -1158,45 +1040,27 @@ class Elasticsearch:
         params = {}
         if verbose is not default:
             params['verbose'] = verbose
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         _, data = self._transport.perform_request(
             'PUT',
             _make_path(index, doc_type, '_bench'),
             params=params, body=body)
-
         return data
 
     @asyncio.coroutine
-    def abort_benchmark(self, name=None, *, pretty=default,
-                        format=default):
+    def abort_benchmark(self, name=None):
         """
         Aborts a running benchmark.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-benchmark.html>`_
 
         :arg name: A benchmark name
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'POST',
-            _make_path('_bench', 'abort', name),
-            params=params)
-
+            'POST', _make_path('_bench', 'abort', name))
         return data
 
     @asyncio.coroutine
-    def list_benchmarks(self, index=None, doc_type=None, *,
-                        pretty=default, format=default):
+    def list_benchmarks(self, index=None, doc_type=None):
         """
         View the progress of long-running benchmarks.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-benchmark.html>`_
@@ -1204,25 +1068,13 @@ class Elasticsearch:
         :arg index: A comma-separated list of index names; use `_all` or empty
             string to perform the operation on all indices
         :arg doc_type: The name of the document type
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'GET',
-            _make_path(index, doc_type, '_bench'),
-            params=params)
-
+            'GET', _make_path(index, doc_type, '_bench'))
         return data
 
     @asyncio.coroutine
-    def put_script(self, lang, id, body, *, pretty=default,
-                   format=default):
+    def put_script(self, lang, id, body):
         """
         Create a script in given language with specified ID.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
@@ -1230,137 +1082,71 @@ class Elasticsearch:
         :arg lang: Script language
         :arg id: Script ID
         :arg body: The document
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'PUT',
-            _make_path('_scripts', lang, id),
-            params=params, body=body)
-
+            'PUT', _make_path('_scripts', lang, id))
         return data
 
     @asyncio.coroutine
-    def get_script(self, lang, id, *, pretty=default, format=default):
+    def get_script(self, lang, id):
         """
         Retrieve a script from the API.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
 
         :arg lang: Script language
         :arg id: Script ID
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'GET',
-            _make_path('_scripts', lang, id),
-            params=params)
-
+            'GET', _make_path('_scripts', lang, id))
         return data
 
     @asyncio.coroutine
-    def delete_script(self, lang, id, *, pretty=default, format=default):
+    def delete_script(self, lang, id):
         """
         Remove a stored script from elasticsearch.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
 
         :arg lang: Script language
         :arg id: Script ID
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'DELETE',
-            _make_path('_scripts', lang, id),
-            params=params)
-
+            'DELETE', _make_path('_scripts', lang, id))
         return data
 
     @asyncio.coroutine
-    def put_template(self, id, body, *, pretty=default, format=default):
+    def put_template(self, id, body):
         """
         Create a search template.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
 
         :arg id: Template ID
         :arg body: The document
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'PUT',
-            _make_path('_search', 'template', id),
-            params=params, body=body)
-
+            'PUT', _make_path('_search', 'template', id))
         return data
 
     @asyncio.coroutine
-    def get_template(self, id, body=None, *, pretty=default, format=default):
+    def get_template(self, id, body=None):
         """
         Retrieve a search template.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
 
         :arg id: Template ID
         :arg body: The document
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self._transport.perform_request(
-            'GET',
-            _make_path('_search', 'template', id),
-            params=params, body=body)
-
+            'GET', _make_path('_search', 'template', id))
         return data
 
     @asyncio.coroutine
-    def delete_template(self, id=None, *, pretty=default, format=default):
+    def delete_template(self, id=None):
         """
         Delete a search template.
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
 
         :arg id: Template ID
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         _, data = yield from self.transport.perform_request(
-            'DELETE',
-            _make_path('_search', 'template', id),
-            params=params)
-
+            'DELETE', _make_path('_search', 'template', id))
         return data
