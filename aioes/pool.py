@@ -95,11 +95,7 @@ class ConnectionPool:
 
         :arg connection: the connection to redeem
         """
-        try:
-            del self._dead_count[connection]
-        except KeyError:
-            # race condition, safe to ignore
-            pass
+        del self._dead_count[connection]
 
     @asyncio.coroutine
     def resurrect(self, force=False):
@@ -110,18 +106,11 @@ class ConnectionPool:
 
         :arg force: resurrect a connection even if there is none eligible (used
             when we have no live connections)
-
         """
-        # no dead connections
         if self._dead.empty():
             return
 
-        try:
-            # retrieve a connection to check
-            timeout, connection = yield from self._dead.get()
-        except asyncio.QueueEmpty:
-            # other thread has been faster and the queue is now empty
-            return
+        timeout, connection = self._dead.get_nowait()
 
         if not force and timeout > time.monotonic():
             # return it back if not eligible and not forced

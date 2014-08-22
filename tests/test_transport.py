@@ -92,3 +92,14 @@ class TestTransport(unittest.TestCase):
             self.assertGreater(tr.last_sniff, t0)
 
         self.loop.run_until_complete(go())
+
+    def test_get_connection_without_sniffing(self):
+        tr = self.make_transport(sniffer_interval=1000)
+
+        @asyncio.coroutine
+        def go():
+            t0 = tr.last_sniff
+            yield from tr.get_connection()
+            self.assertEqual(t0, tr.last_sniff)
+
+        self.loop.run_until_complete(go())

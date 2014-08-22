@@ -11,11 +11,13 @@ class ElasticsearchException(Exception):
     Base class for all exceptions raised by this package's operations.
     """
 
+
 class SerializationError(ElasticsearchException):
     """
     Data passed in failed to serialize properly in the ``Serializer`` being
     used.
     """
+
 
 class TransportError(ElasticsearchException):
     """Transport error.

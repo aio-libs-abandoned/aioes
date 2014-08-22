@@ -67,8 +67,7 @@ class Elasticsearch:
         Returns True if the cluster is up, False otherwise.
         """
         try:
-            yield from self._transport.perform_request(
-                'HEAD', '/', params=params)
+            yield from self._transport.perform_request('HEAD', '/')
         except TransportError:
             return False
         return True
@@ -299,47 +298,6 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def mget(self, body, index=None, doc_type=None, *,
-             _source=default, _source_exclude=default,
-             _source_include=default, fields=default, parent=default,
-             preference=default, realtime=default, refresh=default,
-             routing=default, pretty=default, format=default):
-        """
-        Get multiple documents based on an index, type (optional) and ids.
-        """
-        params = {}
-        if _source is not default:
-            params['_source'] = _source
-        if _source_exclude is not default:
-            params['_source_exclude'] = _source_exclude
-        if _source_include is not default:
-            params['_source_include'] = _source_include
-        if fields is not default:
-            params['fields'] = fields
-        if parent is not default:
-            params['parent'] = parent
-        if preference is not default:
-            params['preference'] = preference
-        if realtime is not default:
-            params['realtime'] = realtime
-        if refresh is not default:
-            params['refresh'] = refresh
-        if routing is not default:
-            params['routing'] = routing
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
-        _, data = yield from self._transport.perform_request(
-            'GET',
-            _make_path(index, doc_type, '_mget'),
-            params=params,
-            body=body)
-
-        return data
-
-    @asyncio.coroutine
     def update(self, index, doc_type, id, body=None, *,
                consistency=default, fields=default, lang=default,
                parent=default, refresh=default, replication=default,
@@ -389,6 +347,47 @@ class Elasticsearch:
             _make_path(index, doc_type, id, '_update'),
             params=params,
             body=body)
+        return data
+
+    @asyncio.coroutine
+    def mget(self, body, index=None, doc_type=None, *,
+             _source=default, _source_exclude=default,
+             _source_include=default, fields=default, parent=default,
+             preference=default, realtime=default, refresh=default,
+             routing=default, pretty=default, format=default):
+        """
+        Get multiple documents based on an index, type (optional) and ids.
+        """
+        params = {}
+        if _source is not default:
+            params['_source'] = _source
+        if _source_exclude is not default:
+            params['_source_exclude'] = _source_exclude
+        if _source_include is not default:
+            params['_source_include'] = _source_include
+        if fields is not default:
+            params['fields'] = fields
+        if parent is not default:
+            params['parent'] = parent
+        if preference is not default:
+            params['preference'] = preference
+        if realtime is not default:
+            params['realtime'] = realtime
+        if refresh is not default:
+            params['refresh'] = refresh
+        if routing is not default:
+            params['routing'] = routing
+        if pretty is not default:
+            params['pretty'] = pretty
+        if format is not default:
+            params['format'] = format
+
+        _, data = yield from self._transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_mget'),
+            params=params,
+            body=body)
+
         return data
 
     @asyncio.coroutine
@@ -498,8 +497,9 @@ class Elasticsearch:
                       format=default):
         """
         The search shards api returns the indices and shards that a search
-        request would be executed against. This can give useful feedback for working
-        out issues or planning optimizations with routing and shard preferences.
+        request would be executed against. This can give useful feedback
+        for working out issues or planning optimizations with routing and
+        shard preferences.
        """
         params = {}
         if allow_no_indices is not default:
@@ -803,7 +803,8 @@ class Elasticsearch:
                         source=default, timeout=default, pretty=default,
                         format=default):
         """
-        Delete documents from one or more indices and one or more types based on a query.
+        Delete documents from one or more indices and one or more types based
+        on a query.
         """
         params = {}
         if allow_no_indices is not default:
@@ -1363,4 +1364,3 @@ class Elasticsearch:
             params=params)
 
         return data
-

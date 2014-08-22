@@ -1,5 +1,6 @@
 import asyncio
 import unittest
+# import yaml
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
@@ -30,6 +31,7 @@ MESSAGES = [
     },
 ]
 
+
 class TestClient(unittest.TestCase):
     def setUp(self):
         self._index = 'test_elasticsearch'
@@ -45,6 +47,26 @@ class TestClient(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
+    def test_ping(self):
+        """ ping """
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.ping()
+            self.assertTrue(data)
+        self.loop.run_until_complete(go())
+
+    def test_info(self):
+        """ ping """
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.info()
+            self.assertEqual(data['status'], 200)
+            # data = yield from self.cl.info(pretty='', format='yaml')
+            # import ipdb; ipdb.set_trace()
+            self.assertEqual(data['status'], 200)
+
+        self.loop.run_until_complete(go())
+
     def test_index(self):
         """ index """
         @asyncio.coroutine
@@ -54,14 +76,14 @@ class TestClient(unittest.TestCase):
             self.assertEqual(data['_type'], 'tweet')
             self.assertEqual(data['_id'], '1')
             self.assertEqual(data['_version'], 1)
-            self.assertEqual(data['created'], True)
-             # test bulk version
+            self.assertTrue(data['created'], data)
+            # test bulk version
             data = yield from self.cl.index(self._index, 'tweet', {}, '1')
             self.assertEqual(data['_index'], self._index)
             self.assertEqual(data['_type'], 'tweet')
             self.assertEqual(data['_id'], '1')
             self.assertEqual(data['_version'], 2)
-            self.assertEqual(data['created'], False)
+            self.assertFalse(data['created'], data)
         self.loop.run_until_complete(go())
 
     def test_exist(self):
@@ -89,7 +111,7 @@ class TestClient(unittest.TestCase):
             self.assertEqual(data['_index'], self._index)
             self.assertEqual(data['_type'], 'test_get')
             self.assertEqual(data['_version'], 1)
-            self.assertEqual(data['found'], True)
+            self.assertTrue(data['found'], data)
             self.assertEqual(data['_source'], MESSAGES[1])
         self.loop.run_until_complete(go())
 
@@ -103,7 +125,7 @@ class TestClient(unittest.TestCase):
                 }
             }
             yield from self.cl.index(self._index, 'testdoc', MESSAGES[2], '1')
-            data = yield from self.cl.update(self._index, 'testdoc', '1', script)
+            yield from self.cl.update(self._index, 'testdoc', '1', script)
             data = yield from self.cl.get(self._index, '1')
             self.assertEqual(data['_source']['counter'], 123)
             self.assertEqual(data['_version'], 2)
@@ -114,7 +136,8 @@ class TestClient(unittest.TestCase):
         @asyncio.coroutine
         def go():
             id = '200'
-            yield from self.cl.index(self._index, 'test_get_source', MESSAGES[2], id)
+            yield from self.cl.index(
+                self._index, 'test_get_source', MESSAGES[2], id)
             data = yield from self.cl.get_source(self._index, id)
             self.assertEqual(data, MESSAGES[2])
         self.loop.run_until_complete(go())
@@ -124,7 +147,8 @@ class TestClient(unittest.TestCase):
 #        @asyncio.coroutine
 #        def go():
 #            body = {"ids": ['200', '2']}
-#            yield from self.cl.index(self._index, 'test_mget', MESSAGES[0], '200')
+#            yield from self.cl.index(
+#                             self._index, 'test_mget', MESSAGES[0], '200')
 #            data = yield from self.cl.mget(body, index=self._index)
 #            import ipdb; ipdb.set_trace()
 #        self.loop.run_until_complete(go())

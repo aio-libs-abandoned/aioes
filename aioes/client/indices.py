@@ -12,9 +12,11 @@ class IndicesClient(NamespacedClient):
     def analyze(self, index=None, body=None, *,
                 analyzer=default, char_filters=default, field=default,
                 filters=default, prefer_local=default, text=default,
-                tokenizer=default, pretty=default, format=default):
+                tokenizer=default, token_filters=default, pretty=default,
+                format=default):
         """
-        Perform the analysis process on a text and return the tokens breakdown of the text.
+        Perform the analysis process on a text and return the tokens breakdown
+        of the text.
         """
         params = {}
         if analyzer is not default:
@@ -31,6 +33,8 @@ class IndicesClient(NamespacedClient):
             params['text'] = text
         if tokenizer is not default:
             params['tokenizer'] = tokenizer
+        if token_filters is not default:
+            params['token_filters'] = token_filters
         if pretty is not default:
             params['pretty'] = pretty
         if format is not default:
@@ -131,92 +135,122 @@ class IndicesClient(NamespacedClient):
             params=params)
         return data
 
+    @asyncio.coroutine
     def delete(self):
         pass
 
+    @asyncio.coroutine
     def exists(self):
         pass
 
+    @asyncio.coroutine
     def exists_type(self):
         pass
 
+    @asyncio.coroutine
     def put_mapping(self):
         pass
 
+    @asyncio.coroutine
     def get_mapping(self):
         pass
 
+    @asyncio.coroutine
     def get_field_mapping(self):
         pass
 
+    @asyncio.coroutine
     def delete_mapping(self):
         pass
 
+    @asyncio.coroutine
     def put_alias(self):
         pass
 
+    @asyncio.coroutine
     def exists_alias(self):
         pass
 
+    @asyncio.coroutine
     def get_alias(self):
         pass
 
+    @asyncio.coroutine
     def get_aliases(self):
         pass
 
+    @asyncio.coroutine
     def update_aliases(self):
         pass
 
+    @asyncio.coroutine
     def delete_alias(self):
         pass
 
+    @asyncio.coroutine
     def put_template(self):
         pass
 
+    @asyncio.coroutine
     def exists_template(self):
         pass
 
+    @asyncio.coroutine
     def get_template(self):
         pass
 
+    @asyncio.coroutine
     def delete_template(self):
         pass
 
+    @asyncio.coroutine
     def get_settings(self):
         pass
 
+    @asyncio.coroutine
     def put_settings(self):
         pass
 
+    @asyncio.coroutine
     def put_warmer(self):
         pass
 
+    @asyncio.coroutine
     def get_warmer(self):
         pass
 
+    @asyncio.coroutine
     def delete_warmer(self):
         pass
 
+    @asyncio.coroutine
     def status(self):
         pass
 
+    @asyncio.coroutine
     def stats(self):
         pass
 
+    @asyncio.coroutine
     def segments(self):
         pass
 
+    @asyncio.coroutine
     def optimize(self):
         pass
 
+    @asyncio.coroutine
     def validate_query(self):
         pass
 
+    @asyncio.coroutine
     def clear_cache(self):
         pass
 
+    @asyncio.coroutine
     def recovery(self):
         pass
 
+    @asyncio.coroutine
     def snapshot_index(self):
         pass
