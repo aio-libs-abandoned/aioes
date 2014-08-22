@@ -1,5 +1,4 @@
 import asyncio
-import weakref
 import json
 
 from .indices import IndicesClient
@@ -13,34 +12,38 @@ default = object()
 class Elasticsearch:
     def __init__(self, endpoints, *, loop=None, **kwargs):
         self._transport = Transport(endpoints, loop=loop, **kwargs)
-        self._indices = weakref.ref(IndicesClient(self))
-        # self._cluster = weakref.ref(ClusterClient(self))
-        # self._cat = weakref.ref(CatClient(self))
-        # self._nodes = weakref.ref(NodesClient(self))
-        # self._snapshot = weakref.ref(SnapshotClient(self))
+        self._indices = IndicesClient(self)
+        # self._cluster = ClusterClient(self)
+        # self._cat = CatClient(self)
+        # self._nodes = NodesClient(self)
+        # self._snapshot = SnapshotClient(self)
 
     @property
     def indices(self):
-        return self._indices()
+        return self._indices
 
     @property
     def cluster(self):
-        return self._cluster()
+        return self._cluster
 
     @property
     def cat(self):
-        return self._cat()
+        return self._cat
 
     @property
     def nodes(self):
-        return self._nodes()
+        return self._nodes
 
     @property
     def snapshot(self):
-        return self._snapshot()
+        return self._snapshot
+
+    @property
+    def transport(self):
+        return self._transport
 
     def __repr__(self):
-        pass
+        return "<Elasticsearch [{}]".format(self._transport.connections)
 
     def _bulk_body(self, body):
         # if not passed in a string, serialize items and join by newline
@@ -123,9 +126,13 @@ class Elasticsearch:
             params['pretty'] = pretty
         if format is not default:
             params['format'] = format
+        params['op_type'] = 'create'
 
-        return self.index(index, doc_type, body,
-                          id=id, params=params, op_type='create')
+        _, data = yield from self._transport.perform_request(
+            'PUT' if id else 'POST',
+            _make_path(index, doc_type, id),
+            params=params,
+            body=body)
 
     @asyncio.coroutine
     def index(self, index, doc_type, body, id=None, *,

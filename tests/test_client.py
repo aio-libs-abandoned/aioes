@@ -40,7 +40,7 @@ class TestClient(unittest.TestCase):
         try:
             self.loop.run_until_complete(self.cl.delete(self._index, '', ''))
         except NotFoundError:
-            return False
+            pass
 
     def tearDown(self):
         self.loop.close()
@@ -129,3 +129,9 @@ class TestClient(unittest.TestCase):
 #            import ipdb; ipdb.set_trace()
 #        self.loop.run_until_complete(go())
 
+
+    # def test_(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         pass
+    #     self.loop.run_until_complete(go())
