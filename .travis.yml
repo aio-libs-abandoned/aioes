@@ -23,5 +23,4 @@ script:
   - nosetests -v
   - python setup.py check -rms
 
-
 cache: apt
