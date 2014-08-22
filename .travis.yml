@@ -1,0 +1,27 @@
+language: python
+
+python:
+  - "3.3"
+  - "3.4"
+
+install:
+  - mkdir /tmp/elasticsearch
+  - wget -O - http://s3-us-west-2.amazonaws.com/build.elasticsearch.org/origin/master/nightly/JDK7/elasticsearch-latest-SNAPSHOT.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  
+  - python setup.py install
+  - pip install pyflakes
+  - pip install pep8
+  - pip install docutils
+  - pip install nose
+
+before_script:
+  - /tmp/elasticsearch/bin/elasticsearch -d -D es.path.data=/tmp -D es.gateway.type=none -D es.index.store.type=memory -D es.discovery.zen.ping.multicast.enabled=false -Des.node.bench=true
+
+script:
+  - pep8 aioes tests
+  - pyflakes .
+  - nosetests -v
+  - python setup.py check -rms
+
+
+cache: apt
