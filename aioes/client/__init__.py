@@ -59,16 +59,10 @@ class Elasticsearch:
         self._transport.close()
 
     @asyncio.coroutine
-    def ping(self, *, pretty=default, format=default):
+    def ping(self):
         """
         Returns True if the cluster is up, False otherwise.
         """
-        params = {}
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
-
         try:
             yield from self._transport.perform_request(
                 'HEAD', '/', params=params)
@@ -183,7 +177,7 @@ class Elasticsearch:
     @asyncio.coroutine
     def exists(self, index, id, doc_type='_all', *, parent=default,
                preference=default, realtime=default, refresh=default,
-               routing=default, pretty=default, format=default):
+               routing=default):
         """
         Returns a boolean indicating whether or not given document exists
         in Elasticsearch.
@@ -199,10 +193,6 @@ class Elasticsearch:
             params['refresh'] = refresh
         if routing is not default:
             params['routing'] = routing
-        if pretty is not default:
-            params['pretty'] = pretty
-        if format is not default:
-            params['format'] = format
 
         try:
             yield from self._transport.perform_request(
@@ -352,29 +342,6 @@ class Elasticsearch:
                format=default):
         """
         Update a document based on a script or partial data provided.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg id: Document ID
-        :arg body: The request definition using either `script` or partial `doc`
-        :arg consistency: Explicit write consistency setting for the operation
-        :arg fields: A comma-separated list of fields to return in the response
-        :arg lang: The script language (default: mvel)
-        :arg parent: ID of the parent document
-        :arg refresh: Refresh the index after performing the operation
-        :arg replication: Specific replication type (default: sync)
-        :arg retry_on_conflict: Specify how many times should the operation be
-            retried when a conflict occurs (default: 0)
-        :arg routing: Specific routing value
-        :arg script: The URL-encoded script definition (instead of using request body)
-        :arg timeout: Explicit operation timeout
-        :arg timestamp: Explicit timestamp for the document
-        :arg ttl: Expiration time for the document
-        :arg version: Explicit version number for concurrency control
-        :arg version_type: Explicit version number for concurrency control
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if consistency is not default:
@@ -435,61 +402,6 @@ class Elasticsearch:
                format=default):
         """
         Execute a search query and get back search hits that match the query.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>`_
-
-        :arg index: A comma-separated list of index names to search; use `_all`
-            or empty string to perform the operation on all indices
-        :arg doc_type: A comma-separated list of document types to search;
-            leave empty to perform the operation on all types
-        :arg body: The search definition using the Query DSL
-        :arg _source: True or false to return the _source field or not, or a
-            list of fields to return
-        :arg _source_exclude: A list of fields to exclude from the returned
-            _source field
-        :arg _source_include: A list of fields to extract and return from the
-            _source field
-        :arg analyze_wildcard: Specify whether wildcard and prefix queries
-            should be analyzed (default: false)
-        :arg analyzer: The analyzer to use for the query string
-        :arg default_operator: The default operator for query string query (AND
-            or OR) (default: OR)
-        :arg df: The field to use as default where no field prefix is given in
-            the query string
-        :arg explain: Specify whether to return detailed information about
-            score computation as part of a hit
-        :arg fields: A comma-separated list of fields to return as part of a hit
-        :arg indices_boost: Comma-separated list of index boosts
-        :arg lenient: Specify whether format-based query failures (such as
-            providing text to a numeric field) should be ignored
-        :arg allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes `_all`
-            string or when no indices have been specified)
-        :arg expand_wildcards: Whether to expand wildcard expression to concrete
-            indices that are open, closed or both., default 'open'
-        :arg ignore_unavailable: Whether specified concrete indices should be
-            ignored when unavailable (missing or closed)
-        :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
-        :arg from\_: Starting offset (default: 0)
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg q: Query in the Lucene query string syntax
-        :arg routing: A comma-separated list of specific routing values
-        :arg scroll: Specify how long a consistent view of the index should be
-            maintained for scrolled search
-        :arg search_type: Search operation type
-        :arg size: Number of hits to return (default: 10)
-        :arg sort: A comma-separated list of <field>:<direction> pairs
-        :arg source: The URL-encoded request definition using the Query DSL
-            (instead of using request body)
-        :arg stats: Specific 'tag' of the request for logging and statistical purposes
-        :arg suggest_field: Specify which field to use for suggestions
-        :arg suggest_mode: Specify suggest mode (default: missing)
-        :arg suggest_size: How many suggestions to return in response
-        :arg suggest_text: The source text for which the suggestions should be returned
-        :arg timeout: Explicit operation timeout
-        :arg version: Specify whether to return document version as part of a hit
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if _source is not default:
@@ -581,25 +493,7 @@ class Elasticsearch:
         The search shards api returns the indices and shards that a search
         request would be executed against. This can give useful feedback for working
         out issues or planning optimizations with routing and shard preferences.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-shards.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes `_all`
-            string or when no indices have been specified)
-        :arg expand_wildcards: Whether to expand wildcard expression to concrete
-            indices that are open, closed or both. (default: '"open"')
-        :arg ignore_unavailable: Whether specified concrete indices should be
-            ignored when unavailable (missing or closed)
-        :arg local: Return local information, do not retrieve the state from
-            master node (default: false)
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg routing: Specific routing value
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
-        """
+       """
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = allow_no_indices
@@ -636,28 +530,6 @@ class Elasticsearch:
         """
         A query that accepts a query template and a map of key/value pairs to
         fill in template parameters.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/query-dsl-template-query.html>`_
-
-        :arg index: A comma-separated list of index names to search; use `_all`
-            or empty string to perform the operation on all indices
-        :arg doc_type: A comma-separated list of document types to search; leave
-            empty to perform the operation on all types
-        :arg body: The search definition template and its params
-        :arg allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes `_all`
-            string or when no indices have been specified)
-        :arg expand_wildcards: Whether to expand wildcard expression to concrete
-            indices that are open, closed or both., default 'open'
-        :arg ignore_unavailable: Whether specified concrete indices should be
-            ignored when unavailable (missing or closed)
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg routing: A comma-separated list of specific routing values
-        :arg scroll: Specify how long a consistent view of the index should be
-            maintained for scrolled search
-        :arg search_type: Search operation type
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if allow_no_indices is not default:
@@ -699,37 +571,6 @@ class Elasticsearch:
         The explain api computes a score explanation for a query and a specific
         document. This can give useful feedback whether a document matches or
         didn't match a specific query.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-explain.html>`_
-
-        :arg index: The name of the index
-        :arg doc_type: The type of the document
-        :arg id: The document ID
-        :arg body: The query definition using the Query DSL
-        :arg _source: True or false to return the _source field or not, or a
-            list of fields to return
-        :arg _source_exclude: A list of fields to exclude from the returned
-            _source field
-        :arg _source_include: A list of fields to extract and return from the
-            _source field
-        :arg analyze_wildcard: Specify whether wildcards and prefix queries in
-            the query string query should be analyzed (default: false)
-        :arg analyzer: The analyzer for the query string query
-        :arg default_operator: The default operator for query string query (AND
-            or OR), (default: OR)
-        :arg df: The default field for query string query (default: _all)
-        :arg fields: A comma-separated list of fields to return in the response
-        :arg lenient: Specify whether format-based query failures (such as
-            providing text to a numeric field) should be ignored
-        :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
-        :arg parent: The ID of the parent document
-        :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
-        :arg q: Query in the Lucene query string syntax
-        :arg routing: Specific routing value
-        :arg source: The URL-encoded query definition (instead of using the
-            request body)
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if _source is not default:
@@ -779,13 +620,6 @@ class Elasticsearch:
                format=default):
         """
         Scroll a search request created by specifying the scroll parameter.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
-
-        :arg scroll_id: The scroll ID
-        :arg scroll: Specify how long a consistent view of the index should be
-            maintained for scrolled search
-        :arg pretty:
-        :arg format: Format of the output, default 'detailed'
         """
         params = {}
         if scroll is not default:
