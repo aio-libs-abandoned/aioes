@@ -15,23 +15,6 @@ class IndicesClient(NamespacedClient):
                 tokenizer=default, pretty=default, format=default):
         """
         Perform the analysis process on a text and return the tokens breakdown of the text.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html>`_
-
-        :arg index: The name of the index to scope the operation
-        :arg body: The text on which the analysis should be performed
-        :arg analyzer: The name of the analyzer to use
-        :arg char_filters: A comma-separated list of character filters to use
-            for the analysis
-        :arg field: Use the analyzer configured for this field (instead of
-            passing the analyzer name)
-        :arg filters: A comma-separated list of filters to use for the analysis
-        :arg format: Format of the output, default u'detailed'
-        :arg index: The name of the index to scope the operation
-        :arg prefer_local: With `true`, specify that a local shard should be
-            used if available, with `false`, use a random shard (default: true)
-        :arg text: The text on which the analysis should be performed (when
-            request body is not used)
-        :arg tokenizer: The name of the tokenizer to use for the analysis
         """
         params = {}
         if analyzer is not default:
@@ -70,12 +53,6 @@ class IndicesClient(NamespacedClient):
                master_timeout=default, pretty=default, format=default):
         """
         Create an index in Elasticsearch.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html>`_
-
-        :arg index: The name of the index
-        :arg body: The configuration for the index (`settings` and `mappings`)
-        :arg master_timeout: Specify timeout for connection to master
-        :arg timeout: Explicit operation timeout
         """
         params = {}
         if timeout is not default:
@@ -100,18 +77,6 @@ class IndicesClient(NamespacedClient):
              ignore_unavailable=default, pretty=default, format=default):
         """
         Open a closed index to make it available for search.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
-
-        :arg index: The name of the index
-        :arg master_timeout: Specify timeout for connection to master
-        :arg timeout: Explicit operation timeout
-        :arg allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes `_all` string or
-            when no indices have been specified)
-        :arg expand_wildcards: Whether to expand wildcard expression to concrete indices
-            that are open, closed or both.
-        :arg ignore_unavailable: Whether specified concrete indices should be ignored
-            when unavailable (missing or closed)
         """
         params = {}
         if timeout is not default:
@@ -143,19 +108,6 @@ class IndicesClient(NamespacedClient):
         """
         Close an index to remove it's overhead from the cluster. Closed index
         is blocked for read/write operations.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
-
-        :arg index: A comma-separated list of indices to close; use `_all` or
-            '*' to close all indices
-        :arg allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes `_all`
-            string or when no indices have been specified)
-        :arg expand_wildcards: Whether to expand wildcard expression to concrete
-            indices that are open, closed or both., default u'open'
-        :arg ignore_unavailable: Whether specified concrete indices should be
-            ignored when unavailable (missing or closed)
-        :arg master_timeout: Specify timeout for connection to master
-        :arg timeout: Explicit operation timeout
         """
         params = {}
         if timeout is not default:
