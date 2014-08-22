@@ -1018,4 +1018,3 @@ Elasticsearch
       .. Seealso::
 
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-benchmark.html>`_
-

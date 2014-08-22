@@ -129,7 +129,6 @@ class TestClient(unittest.TestCase):
 #            import ipdb; ipdb.set_trace()
 #        self.loop.run_until_complete(go())
 
-
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
