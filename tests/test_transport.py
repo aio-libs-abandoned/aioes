@@ -77,7 +77,33 @@ class TestTransport(unittest.TestCase):
     def test_set_malformed_endpoints(self):
         tr = self.make_transport()
         with self.assertRaises(RuntimeError):
-            tr.endpoints = ['host']
+            tr.endpoints = [123]
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_only_string(self):
+        tr = self.make_transport()
+        tr.endpoints = ['host']
+        self.assertEqual([Endpoint('host', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_port_string(self):
+        tr = self.make_transport()
+        tr.endpoints = ['host:123']
+        self.assertEqual([Endpoint('host', 123)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_port_string_invalid(self):
+        tr = self.make_transport()
+        with self.assertRaises(RuntimeError):
+            tr.endpoints = ['host:123:abc']
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_dict_invalid(self):
+        tr = self.make_transport()
+        with self.assertRaises(RuntimeError):
+            tr.endpoints = [{'a': 'b'}]
         self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
@@ -101,5 +127,19 @@ class TestTransport(unittest.TestCase):
             t0 = tr.last_sniff
             yield from tr.get_connection()
             self.assertEqual(t0, tr.last_sniff)
+
+        self.loop.run_until_complete(go())
+
+    def test__mark_dead(self):
+        tr = self.make_transport()
+
+        @asyncio.coroutine
+        def go():
+            conn = yield from tr.get_connection()
+            last_sniff = tr.last_sniff
+            # import ipdb;ipdb.set_trace()
+            yield from tr._mark_dead(conn)
+            self.assertGreater(tr.last_sniff, last_sniff)
+            self.assertEqual(1, tr._pool._dead_count[conn])
 
         self.loop.run_until_complete(go())
