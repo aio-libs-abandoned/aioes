@@ -93,6 +93,20 @@ class TestTransport(unittest.TestCase):
         self.assertEqual([Endpoint('host', 123)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
+    def test_set_host_port_string_invalid(self):
+        tr = self.make_transport()
+        with self.assertRaises(RuntimeError):
+            tr.endpoints = ['host:123:abc']
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
+    def test_set_host_dict_invalid(self):
+        tr = self.make_transport()
+        with self.assertRaises(RuntimeError):
+            tr.endpoints = [{'a': 'b'}]
+        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual(1, len(tr._pool.connections))
+
     def test_sniff(self):
         tr = self.make_transport(sniffer_interval=0.001)
 
