@@ -129,61 +129,61 @@ class IndicesClient(NamespacedClient):
     def exists_type(self):
         pass
 
-    @asyncio.coroutine
-    def put_mapping(self):
-        pass
-
-    @asyncio.coroutine
-    def get_mapping(self):
-        pass
-
-    @asyncio.coroutine
-    def get_field_mapping(self):
-        pass
-
-    @asyncio.coroutine
-    def delete_mapping(self):
-        pass
-
-    @asyncio.coroutine
-    def put_alias(self):
-        pass
-
-    @asyncio.coroutine
-    def exists_alias(self):
-        pass
-
-    @asyncio.coroutine
-    def get_alias(self):
-        pass
-
-    @asyncio.coroutine
-    def get_aliases(self):
-        pass
-
-    @asyncio.coroutine
-    def update_aliases(self):
-        pass
-
-    @asyncio.coroutine
-    def delete_alias(self):
-        pass
-
-    @asyncio.coroutine
-    def put_template(self):
-        pass
-
-    @asyncio.coroutine
-    def exists_template(self):
-        pass
-
-    @asyncio.coroutine
-    def get_template(self):
-        pass
-
-    @asyncio.coroutine
-    def delete_template(self):
-        pass
+    # @asyncio.coroutine
+    # def put_mapping(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_mapping(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_field_mapping(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def delete_mapping(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def put_alias(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def exists_alias(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_alias(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_aliases(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def update_aliases(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def delete_alias(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def put_template(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def exists_template(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_template(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def delete_template(self):
+    #     pass
 
     @asyncio.coroutine
     def get_settings(self):
@@ -193,18 +193,18 @@ class IndicesClient(NamespacedClient):
     def put_settings(self):
         pass
 
-    @asyncio.coroutine
-    def put_warmer(self):
-        pass
-
-    @asyncio.coroutine
-    def get_warmer(self):
-        pass
-
-    @asyncio.coroutine
-    def delete_warmer(self):
-        pass
-
+    # @asyncio.coroutine
+    # def put_warmer(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def get_warmer(self):
+    #     pass
+    #
+    # @asyncio.coroutine
+    # def delete_warmer(self):
+    #     pass
+    #
     @asyncio.coroutine
     def status(self):
         pass

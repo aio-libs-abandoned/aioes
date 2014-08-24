@@ -23,28 +23,28 @@ class Elasticsearch:
     def indices(self):
         return self._indices
 
-    @property
-    def cluster(self):
-        return self._cluster
+    # @property
+    # def cluster(self):
+    #     return self._cluster
 
-    @property
-    def cat(self):
-        return self._cat
+    # @property
+    # def cat(self):
+    #     return self._cat
 
-    @property
-    def nodes(self):
-        return self._nodes
+    # @property
+    # def nodes(self):
+    #     return self._nodes
 
-    @property
-    def snapshot(self):
-        return self._snapshot
+    # @property
+    # def snapshot(self):
+    #     return self._snapshot
 
     @property
     def transport(self):
         return self._transport
 
     def __repr__(self):
-        return "<Elasticsearch [{}]".format(self.transport.connections)
+        return "<Elasticsearch [{}]".format(self.transport)
 
     # def _bulk_body(self, body):
     #     # if not passed in a string, serialize items and join by newline
@@ -111,20 +111,38 @@ class Elasticsearch:
         searchable.
         """
         params = {}
-        if consistency in ('one', 'quorum', 'all'):
-            params['consistency'] = consistency
+        if consistency is not default:
+            if not isinstance(consistency, str):
+                raise TypeError("'consistency' parameter is not a string")
+            elif consistency.lower() in ('one', 'quorum', 'all'):
+                params['consistency'] = consistency
+            else:
+                raise ValueError("'consistency' parameter should be one of"
+                                 " 'one', 'quorum', 'all'")
+
         if op_type is not default:
-                # in ('create',):
-            params['op_type'] = op_type
+            if not isinstance(op_type, str):
+                raise TypeError("'op_type' parameter is not a string")
+            elif op_type.lower() in ('index', 'create'):
+                params['op_type'] = op_type
+            else:
+                raise ValueError(
+                    "'op_type' parameter should be one of 'index', 'create'")
+
         if parent is not default:
             params['parent'] = parent
         if percolate is not default:
             params['percolate'] = percolate
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if replication is not default:
-            # in ('async',):
-            params['replication'] = replication
+            if not isinstance(replication, str):
+                raise TypeError("'replication' parameter is not a string")
+            elif replication.lower() in ('async', 'sync'):
+                params['replication'] = replication
+            else:
+                raise ValueError(
+                    "'replication' parameter should be one of 'async', 'sync'")
         if routing is not default:
             params['routing'] = routing
         if timeout is not default:
@@ -135,9 +153,18 @@ class Elasticsearch:
             params['ttl'] = ttl
         if version is not default:
             params['version'] = int(version)
-        if version_type in ('internal', 'external',
-                            'external_gt', 'external_gte', 'force'):
-            params['version_type'] = version_type
+
+        if version_type is not default:
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
 
         _, data = yield from self.transport.perform_request(
             'PUT' if id else 'POST',
@@ -161,10 +188,10 @@ class Elasticsearch:
             params['parent'] = parent
         if preference is not default:
             params['preference'] = preference
-        if isinstance(realtime, bool):
-            params['realtime'] = realtime
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if realtime is not default:
+            params['realtime'] = bool(realtime)
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if routing is not default:
             params['routing'] = routing
 
@@ -188,7 +215,7 @@ class Elasticsearch:
         Get a typed JSON document from the index based on its id.
         """
         params = {}
-        if isinstance(_source, bool):
+        if _source is not default:
             params['_source'] = _source
         if _source_exclude is not default:
             params['_source_exclude'] = _source_exclude
@@ -200,16 +227,26 @@ class Elasticsearch:
             params['parent'] = parent
         if preference is not default:
             params['preference'] = preference
-        if isinstance(realtime, bool):
-            params['realtime'] = realtime
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if realtime is not default:
+            params['realtime'] = bool(realtime)
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if routing is not default:
             params['routing'] = routing
         if version is not default:
-            params['version'] = version
+            params['version'] = int(version)
+
         if version_type is not default:
-            params['version_type'] = version_type
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -239,16 +276,26 @@ class Elasticsearch:
             params['parent'] = parent
         if preference is not default:
             params['preference'] = preference
-        if isinstance(realtime, bool):
-            params['realtime'] = realtime
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if realtime is not default:
+            params['realtime'] = bool(realtime)
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if routing is not default:
             params['routing'] = routing
         if version is not default:
-            params['version'] = version
+            params['version'] = int(version)
+
         if version_type is not default:
-            params['version_type'] = version_type
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -269,17 +316,29 @@ class Elasticsearch:
         """
         params = {}
         if consistency is not default:
-            params['consistency'] = consistency
+            if not isinstance(consistency, str):
+                raise TypeError("'consistency' parameter is not a string")
+            elif consistency.lower() in ('one', 'quorum', 'all'):
+                params['consistency'] = consistency
+            else:
+                raise ValueError("'consistency' parameter should be one of "
+                                 "'one', 'quorum', 'all'")
         if fields is not default:
             params['fields'] = fields
         if lang is not default:
             params['lang'] = lang
         if parent is not default:
             params['parent'] = parent
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if replication is not default:
-            params['replication'] = replication
+            if not isinstance(replication, str):
+                raise TypeError("'replication' parameter is not a string")
+            elif replication.lower() in ('async', 'sync'):
+                params['replication'] = replication
+            else:
+                raise ValueError(
+                    "'replication' parameter should be one of 'async', 'sync'")
         if retry_on_conflict is not default:
             params['retry_on_conflict'] = retry_on_conflict
         if routing is not default:
@@ -293,9 +352,19 @@ class Elasticsearch:
         if ttl is not default:
             params['ttl'] = ttl
         if version is not default:
-            params['version'] = version
+            params['version'] = int(version)
+
         if version_type is not default:
-            params['version_type'] = version_type
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
 
         _, data = yield from self.transport.perform_request(
             'POST',
@@ -303,43 +372,43 @@ class Elasticsearch:
             params=params,
             body=body)
         return data
-    #
-    # @asyncio.coroutine
-    # def mget(self, body, index=None, doc_type=None, *,
-    #          _source=default, _source_exclude=default,
-    #          _source_include=default, fields=default, parent=default,
-    #          preference=default, realtime=default, refresh=default,
-    #          routing=default):
-    #     """
-    #     Get multiple documents based on an index, type (optional) and ids.
-    #     """
-    #     params = {}
-    #     if _source is not default:
-    #         params['_source'] = _source
-    #     if _source_exclude is not default:
-    #         params['_source_exclude'] = _source_exclude
-    #     if _source_include is not default:
-    #         params['_source_include'] = _source_include
-    #     if fields is not default:
-    #         params['fields'] = fields
-    #     if parent is not default:
-    #         params['parent'] = parent
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if isinstance(realtime, bool):
-    #         params['realtime'] = realtime
-    #     if isinstance(refresh, bool):
-    #         params['refresh'] = refresh
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_mget'),
-    #         params=params,
-    #         body=body)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def mget(self, body, index=None, doc_type=None, *,
+             _source=default, _source_exclude=default,
+             _source_include=default, fields=default, parent=default,
+             preference=default, realtime=default, refresh=default,
+             routing=default):
+        """
+        Get multiple documents based on an index, type (optional) and ids.
+        """
+        params = {}
+        if _source is not default:
+            params['_source'] = _source
+        if _source_exclude is not default:
+            params['_source_exclude'] = _source_exclude
+        if _source_include is not default:
+            params['_source_include'] = _source_include
+        if fields is not default:
+            params['fields'] = fields
+        if parent is not default:
+            params['parent'] = parent
+        if preference is not default:
+            params['preference'] = preference
+        if realtime is not default:
+            params['realtime'] = bool(realtime)
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
+        if routing is not default:
+            params['routing'] = routing
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_mget'),
+            params=params,
+            body=body)
+
+        return data
 
     @asyncio.coroutine
     def search(self, index=None, doc_type=None, body=None, *,
@@ -359,6 +428,9 @@ class Elasticsearch:
         """
         Execute a search query and get back search hits that match the query.
         """
+        if doc_type and index is None:
+            index = '_all'
+
         params = {}
         if _source is not default:
             params['_source'] = _source
@@ -367,32 +439,28 @@ class Elasticsearch:
         if _source_include is not default:
             params['_source_include'] = _source_include
         if analyze_wildcard is not default:
-            params['analyze_wildcard'] = analyze_wildcard
-        if analyzer is not default:
-            params['analyzer'] = analyzer
-        if default_operator is not default:
-            params['default_operator'] = default_operator
+            params['analyze_wildcard'] = bool(analyze_wildcard)
         if df is not default:
             params['df'] = df
         if explain is not default:
-            params['explain'] = explain
+            params['explain'] = bool(explain)
         if fields is not default:
             params['fields'] = fields
         if indices_boost is not default:
             params['indices_boost'] = indices_boost
         if lenient is not default:
-            params['lenient'] = lenient
+            params['lenient'] = bool(lenient)
         if allow_no_indices is not default:
-            params['allow_no_indices'] = allow_no_indices
+            params['allow_no_indices'] = bool(allow_no_indices)
         if expand_wildcards is not default:
             params['expand_wildcards'] = expand_wildcards
         if ignore_unavailable is not default:
-            params['ignore_unavailable'] = ignore_unavailable
+            params['ignore_unavailable'] = bool(ignore_unavailable)
         if lowercase_expanded_terms is not default:
-            params['lowercase_expanded_terms'] = lowercase_expanded_terms
+            params['lowercase_expanded_terms'] = bool(lowercase_expanded_terms)
         # from is a reserved word so it cannot be used, use from_ instead
         if from_ is not default:
-            params['from'] = from_
+            params['from'] = int(from_)
         if preference is not default:
             params['preference'] = preference
         if q is not default:
@@ -401,10 +469,8 @@ class Elasticsearch:
             params['routing'] = routing
         if scroll is not default:
             params['scroll'] = scroll
-        if search_type is not default:
-            params['search_type'] = search_type
         if size is not default:
-            params['size'] = size
+            params['size'] = int(size)
         if sort is not default:
             params['sort'] = sort
         if source is not default:
@@ -413,19 +479,50 @@ class Elasticsearch:
             params['stats'] = stats
         if suggest_field is not default:
             params['suggest_field'] = suggest_field
-        if suggest_mode is not default:
-            params['suggest_mode'] = suggest_mode
         if suggest_size is not default:
-            params['suggest_size'] = suggest_size
+            params['suggest_size'] = int(suggest_size)
         if suggest_text is not default:
             params['suggest_text'] = suggest_text
         if timeout is not default:
             params['timeout'] = timeout
         if version is not default:
-            params['version'] = version
+            params['version'] = int(version)
+        if analyzer is not default:
+            params['analyzer'] = analyzer
 
-        if doc_type and not index:
-            index = '_all'
+        if suggest_mode is not default:
+            if not isinstance(suggest_mode, str):
+                raise TypeError("'suggest_mode' parameter is not a string")
+            elif suggest_mode.lower() in ('missing', 'popular', 'always'):
+                params['suggest_mode'] = suggest_mode
+            else:
+                raise ValueError("'suggest_mode' parameter should be one of "
+                                 "'missing', 'popular', 'always'")
+
+        if search_type is not default:
+            if not isinstance(search_type, str):
+                raise TypeError("'search_type' parameter is not a string")
+            elif search_type.lower() in ('query_then_fetch',
+                                         'query_and_fetch',
+                                         'dfs_query_then_fetch',
+                                         'dfs_query_and_fetch',
+                                         'count',
+                                         'scan'):
+                params['search_type'] = search_type
+            else:
+                raise ValueError("'search_type' parameter should be one of "
+                                 "'query_then_fetch', 'query_and_fetch', "
+                                 "'dfs_query_then_fetch', "
+                                 "'dfs_query_and_fetch', 'count', 'scan'")
+
+        if default_operator is not default:
+            if not isinstance(default_operator, str):
+                raise TypeError("'default_operator' parameter is not a string")
+            elif default_operator.upper() in ('AND', 'OR'):
+                params['default_operator'] = default_operator
+            else:
+                raise ValueError("'default_operator' parameter should "
+                                 "be one of 'AND', 'OR'")
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -448,11 +545,11 @@ class Elasticsearch:
     #    """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if local is not default:
     #         params['local'] = local
     #     if preference is not default:
@@ -480,11 +577,11 @@ class Elasticsearch:
     #     """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if preference is not default:
     #         params['preference'] = preference
     #     if routing is not default:
@@ -492,7 +589,20 @@ class Elasticsearch:
     #     if scroll is not default:
     #         params['scroll'] = scroll
     #     if search_type is not default:
-    #         params['search_type'] = search_type
+    #         if not isinstance(search_type, str):
+    #             raise TypeError("'search_type' parameter is not a string")
+    #         elif search_type.lower() in ('query_then_fetch',
+    #                                      'query_and_fetch',
+    #                                      'dfs_query_then_fetch',
+    #                                      'dfs_query_and_fetch',
+    #                                      'count',
+    #                                      'scan'):
+    #             params['search_type'] = search_type
+    #         else:
+    #             raise ValueError("'search_type' parameter should be one of "
+    #                              "'query_then_fetch', 'query_and_fetch', "
+    #                              "'dfs_query_then_fetch', "
+    #                              "'dfs_query_and_fetch', 'count', 'scan'")
     #
     #     _, data = yield from self.transport.perform_request(
     #         'GET',
@@ -501,87 +611,88 @@ class Elasticsearch:
     #
     #     return data
     #
-    # @asyncio.coroutine
-    # def explain(self, index, doc_type, id, body=None, *,
-    #             _source=default, _source_exclude=default,
-    #             _source_include=default, analyze_wildcard=default,
-    #             analyzer=default, default_operator=default,
-    #             df=default, fields=default, lenient=default,
-    #             lowercase_expanded_terms=default, parent=default,
-    #             preference=default, q=default, routing=default,
-    #             source=default):
-    #     """
-    #     The explain api computes a score explanation for a query and a
-    #     specific document. This can give useful feedback whether a document
-    #     matches or didn't match a specific query.
-    #     """
-    #     params = {}
-    #     if _source is not default:
-    #         params['_source'] = _source
-    #     if _source_exclude is not default:
-    #         params['_source_exclude'] = _source_exclude
-    #     if _source_include is not default:
-    #         params['_source_include'] = _source_include
-    #     if analyze_wildcard is not default:
-    #         params['analyze_wildcard'] = analyze_wildcard
-    #     if analyzer is not default:
-    #         params['analyzer'] = analyzer
-    #     if default_operator is not default:
-    #         params['default_operator'] = default_operator
-    #     if df is not default:
-    #         params['df'] = df
-    #     if fields is not default:
-    #         params['fields'] = fields
-    #     if lenient is not default:
-    #         params['lenient'] = lenient
-    #     if lowercase_expanded_terms is not default:
-    #         params['lowercase_expanded_terms'] = lowercase_expanded_terms
-    #     if parent is not default:
-    #         params['parent'] = parent
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if q is not default:
-    #         params['q'] = q
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if source is not default:
-    #         params['source'] = source
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, id, '_explain'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def scroll(self, scroll_id, *, scroll=default):
-    #     """
-    #     Scroll a search request created by specifying the scroll parameter.
-    #     """
-    #     params = {}
-    #     if scroll is not default:
-    #         params['scroll'] = scroll
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         '/_search/scroll',
-    #         params=params, body=scroll_id)
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def clear_scroll(self, scroll_id=None, body=None):
-    #     """
-    #     Clear the scroll request created by specifying the scroll parameter
-    #     to search.
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'DELETE',
-    #         _make_path('_search', 'scroll', scroll_id),
-    #         body=body)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def explain(self, index, doc_type, id, body=None, *,
+                _source=default, _source_exclude=default,
+                _source_include=default, analyze_wildcard=default,
+                analyzer=default, default_operator=default,
+                df=default, fields=default, lenient=default,
+                lowercase_expanded_terms=default, parent=default,
+                preference=default, q=default, routing=default,
+                source=default):
+        """
+        The explain api computes a score explanation for a query and a
+        specific document. This can give useful feedback whether a document
+        matches or didn't match a specific query.
+        """
+        params = {}
+        if _source is not default:
+            params['_source'] = _source
+        if _source_exclude is not default:
+            params['_source_exclude'] = _source_exclude
+        if _source_include is not default:
+            params['_source_include'] = _source_include
+        if analyze_wildcard is not default:
+            params['analyze_wildcard'] = bool(analyze_wildcard)
+        if analyzer is not default:
+            params['analyzer'] = analyzer
+        if default_operator is not default:
+            params['default_operator'] = default_operator
+        if df is not default:
+            params['df'] = df
+        if fields is not default:
+            params['fields'] = fields
+        if lenient is not default:
+            params['lenient'] = bool(lenient)
+        if lowercase_expanded_terms is not default:
+            params['lowercase_expanded_terms'] = bool(lowercase_expanded_terms)
+        if parent is not default:
+            params['parent'] = parent
+        if preference is not default:
+            params['preference'] = preference
+        if q is not default:
+            params['q'] = q
+        if routing is not default:
+            params['routing'] = routing
+        if source is not default:
+            params['source'] = source
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, id, '_explain'),
+            params=params, body=body)
+
+        return data
+
+    @asyncio.coroutine
+    def scroll(self, scroll_id, *, scroll=default):
+        """
+        Scroll a search request created by specifying the scroll parameter.
+        """
+        params = {}
+        if scroll is not default:
+            params['scroll'] = scroll
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            '/_search/scroll',
+            params=params, body=scroll_id)
+
+        return data
+
+    @asyncio.coroutine
+    def clear_scroll(self, scroll_id=None, body=None):
+        """
+        Clear the scroll request created by specifying the scroll parameter
+        to search.
+        """
+        _, data = yield from self.transport.perform_request(
+            'DELETE',
+            _make_path('_search', 'scroll', scroll_id),
+            body=body)
+
+        return data
 
     @asyncio.coroutine
     def delete(self, index, doc_type, id, *,
@@ -593,21 +704,44 @@ class Elasticsearch:
         """
         params = {}
         if consistency is not default:
-            params['consistency'] = consistency
+            if not isinstance(consistency, str):
+                raise TypeError("'consistency' parameter is not a string")
+            elif consistency.lower() in ('one', 'quorum', 'all'):
+                params['consistency'] = consistency
+            else:
+                raise ValueError(
+                    "'consistency' parameter should be one of "
+                    "'one', 'quorum', 'all'")
         if replication is not default:
-            params['replication'] = replication
+            if not isinstance(replication, str):
+                raise TypeError("'replication' parameter is not a string")
+            elif replication.lower() in ('async', 'sync'):
+                params['replication'] = replication
+            else:
+                raise ValueError("'replication' parameter should be one of "
+                                 "'async', 'sync'")
         if timeout is not default:
             params['timeout'] = timeout
         if parent is not default:
             params['parent'] = parent
-        if isinstance(refresh, bool):
-            params['refresh'] = refresh
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
         if routing is not default:
             params['routing'] = routing
         if version is not default:
-            params['version'] = version
+            params['version'] = int(version)
+
         if version_type is not default:
-            params['version_type'] = version_type
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
 
         _, data = yield from self.transport.perform_request(
             'DELETE',
@@ -616,129 +750,166 @@ class Elasticsearch:
 
         return data
 
-    # @asyncio.coroutine
-    # def count(self, index=None, doc_type=None, body=None, *,
-    #           allow_no_indices=default, expand_wildcards=default,
-    #           ignore_unavailable=default, min_score=default,
-    #           preference=default, q=default, routing=default,
-    #           source=default):
-    #     """
-    #     Execute a query and get the number of matches for that query.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
-    #     if min_score is not default:
-    #         params['min_score'] = min_score
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if q is not default:
-    #         params['q'] = q
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if source is not default:
-    #         params['source'] = source
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'POST',
-    #         _make_path(index, doc_type, '_count'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def bulk(self, body, index=None, doc_type=None, *,
-    #          consistency=default, refresh=default, routing=default,
-    #          replication=default, timeout=default):
-    #     """
-    #     Perform many index/delete operations in a single API call.
-    #     """
-    #     params = {}
-    #     if consistency is not default:
-    #         params['consistency'] = consistency
-    #     if isinstance(refresh, bool):
-    #         params['refresh'] = refresh
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if replication is not default:
-    #         params['replication'] = replication
-    #     if timeout is not default:
-    #         params['timeout'] = timeout
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'POST',
-    #         _make_path(index, doc_type, '_bulk'),
-    #         params=params,
-    #         body=self._bulk_body(body))
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def msearch(self, body, index=None, doc_type=None, *,
-    #             search_type=default):
-    #     """
-    #     Execute several search requests within the same API.
-    #     """
-    #     params = {}
-    #     if search_type is not default:
-    #         params['search_type'] = search_type
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_msearch'),
-    #         params=params,
-    #         body=self._bulk_body(body))
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def delete_by_query(self, index, doc_type=None, body=None, *,
-    #                     allow_no_indices=default, analyzer=default,
-    #                     consistency=default, default_operator=default,
-    #                     df=default, expand_wildcards=default,
-    #                     ignore_unavailable=default, q=default,
-    #                     replication=default, routing=default,
-    #                     source=default, timeout=default):
-    #     """
-    #     Delete documents from one or more indices and one or more types based
-    #     on a query.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
-    #     if analyzer is not default:
-    #         params['analyzer'] = analyzer
-    #     if consistency is not default:
-    #         params['consistency'] = consistency
-    #     if default_operator is not default:
-    #         params['default_operator'] = default_operator
-    #     if df is not default:
-    #         params['df'] = df
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
-    #     if q is not default:
-    #         params['q'] = q
-    #     if replication is not default:
-    #         params['replication'] = replication
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if source is not default:
-    #         params['source'] = source
-    #     if timeout is not default:
-    #         params['timeout'] = timeout
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'DELETE',
-    #         _make_path(index, doc_type, '_query'),
-    #         params=params, body=body)
-    #
-    #     return data
+    @asyncio.coroutine
+    def count(self, index=None, doc_type=None, body=None, *,
+              allow_no_indices=default, expand_wildcards=default,
+              ignore_unavailable=default, min_score=default,
+              preference=default, q=default, routing=default,
+              source=default):
+        """
+        Execute a query and get the number of matches for that query.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            params['expand_wildcards'] = expand_wildcards
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if min_score is not default:
+            params['min_score'] = min_score
+        if preference is not default:
+            params['preference'] = preference
+        if q is not default:
+            params['q'] = q
+        if routing is not default:
+            params['routing'] = routing
+        if source is not default:
+            params['source'] = source
+
+        _, data = yield from self.transport.perform_request(
+            'POST',
+            _make_path(index, doc_type, '_count'),
+            params=params, body=body)
+
+        return data
+
+    @asyncio.coroutine
+    def bulk(self, body, index=None, doc_type=None, *,
+             consistency=default, refresh=default, routing=default,
+             replication=default, timeout=default):
+        """
+        Perform many index/delete operations in a single API call.
+        """
+        params = {}
+        if consistency is not default:
+            if not isinstance(consistency, str):
+                raise TypeError("'consistency' parameter is not a string")
+            elif consistency.lower() in ('one', 'quorum', 'all'):
+                params['consistency'] = consistency
+            else:
+                raise ValueError("'consistency' parameter should be one of "
+                                 "'one', 'quorum', 'all'")
+        if refresh is not default:
+            params['refresh'] = bool(refresh)
+        if routing is not default:
+            params['routing'] = routing
+        if replication is not default:
+            if not isinstance(replication, str):
+                raise TypeError("'replication' parameter is not a string")
+            elif replication.lower() in ('async', 'sync'):
+                params['replication'] = replication
+            else:
+                raise ValueError("'replication' parameter should be one of"
+                                 " 'async', 'sync'")
+        if timeout is not default:
+            params['timeout'] = timeout
+
+        _, data = yield from self.transport.perform_request(
+            'POST',
+            _make_path(index, doc_type, '_bulk'),
+            params=params,
+            body=self._bulk_body(body))
+
+        return data
+
+    @asyncio.coroutine
+    def msearch(self, body, index=None, doc_type=None, *,
+                search_type=default):
+        """
+        Execute several search requests within the same API.
+        """
+        params = {}
+        if search_type is not default:
+            if not isinstance(search_type, str):
+                raise TypeError("'search_type' parameter is not a string")
+            elif search_type.lower() in ('query_then_fetch',
+                                         'query_and_fetch',
+                                         'dfs_query_then_fetch',
+                                         'dfs_query_and_fetch',
+                                         'count',
+                                         'scan'):
+                params['search_type'] = search_type
+            else:
+                raise ValueError("'search_type' parameter should be one of "
+                                 "'query_then_fetch', 'query_and_fetch', "
+                                 "'dfs_query_then_fetch', "
+                                 "'dfs_query_and_fetch', 'count', 'scan'")
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_msearch'),
+            params=params,
+            body=self._bulk_body(body))
+
+        return data
+
+    @asyncio.coroutine
+    def delete_by_query(self, index, doc_type=None, body=None, *,
+                        allow_no_indices=default, analyzer=default,
+                        consistency=default, default_operator=default,
+                        df=default, expand_wildcards=default,
+                        ignore_unavailable=default, q=default,
+                        replication=default, routing=default,
+                        source=default, timeout=default):
+        """
+        Delete documents from one or more indices and one or more types based
+        on a query.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if analyzer is not default:
+            params['analyzer'] = analyzer
+        if consistency is not default:
+            if not isinstance(consistency, str):
+                raise TypeError("'consistency' parameter is not a string")
+            elif consistency.lower() in ('one', 'quorum', 'all'):
+                params['consistency'] = consistency
+            else:
+                raise ValueError("'consistency' parameter should be one of "
+                                 "'one', 'quorum', 'all'")
+        if default_operator is not default:
+            params['default_operator'] = default_operator
+        if df is not default:
+            params['df'] = df
+        if expand_wildcards is not default:
+            params['expand_wildcards'] = expand_wildcards
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if q is not default:
+            params['q'] = q
+        if replication is not default:
+            if not isinstance(replication, str):
+                raise TypeError("'replication' parameter is not a string")
+            elif replication.lower() in ('async', 'sync'):
+                params['replication'] = replication
+            else:
+                raise ValueError("'replication' parameter should be one of"
+                                 " 'async', 'sync'")
+        if routing is not default:
+            params['routing'] = routing
+        if source is not default:
+            params['source'] = source
+        if timeout is not default:
+            params['timeout'] = timeout
+
+        _, data = yield from self.transport.perform_request(
+            'DELETE',
+            _make_path(index, doc_type, '_query'),
+            params=params, body=body)
+
+        return data
     #
     # @asyncio.coroutine
     # def suggest(self, body, index=None, *,
@@ -751,11 +922,11 @@ class Elasticsearch:
     #     """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if preference is not default:
     #         params['preference'] = preference
     #     if routing is not default:
@@ -784,11 +955,11 @@ class Elasticsearch:
     #     """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if percolate_format is not default:
     #         params['percolate_format'] = percolate_format
     #     if percolate_index is not default:
@@ -800,9 +971,18 @@ class Elasticsearch:
     #     if routing is not default:
     #         params['routing'] = routing
     #     if version is not default:
-    #         params['version'] = version
+    #         params['version'] = int(version)
     #     if version_type is not default:
-    #         params['version_type'] = version_type
+    #         if not isinstance(version_type, str):
+    #             raise TypeError("'version_type' parameter is not a string")
+    #         elif version_type.lower() in ('internal', 'external',
+    #                                       'external_gt', 'external_gte',
+    #                                       'force'):
+    #             params['version_type'] = version_type
+    #         else:
+    #             raise ValueError("'version_type' parameter should be one of "
+    #                              "'internal', 'external', 'external_gt', "
+    #                              "'external_gte', 'force'")
     #
     #     _, data = yield from self.transport.perform_request(
     #         'GET',
@@ -822,11 +1002,11 @@ class Elasticsearch:
     #     """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #
     #     _, data = yield from self.transport.perform_request(
     #         'GET',
@@ -850,11 +1030,11 @@ class Elasticsearch:
     #     """
     #     params = {}
     #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = allow_no_indices
+    #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
     #         params['expand_wildcards'] = expand_wildcards
     #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = ignore_unavailable
+    #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if percolate_index is not default:
     #         params['percolate_index'] = percolate_index
     #     if percolate_type is not default:
@@ -864,9 +1044,18 @@ class Elasticsearch:
     #     if routing is not default:
     #         params['routing'] = routing
     #     if version is not default:
-    #         params['version'] = version
+    #         params['version'] = int(version)
     #     if version_type is not default:
-    #         params['version_type'] = version_type
+    #         if not isinstance(version_type, str):
+    #             raise TypeError("'version_type' parameter is not a string")
+    #         elif version_type.lower() in ('internal', 'external',
+    #                                       'external_gt', 'external_gte',
+    #                                       'force'):
+    #             params['version_type'] = version_type
+    #         else:
+    #             raise ValueError("'version_type' parameter should be one of "
+    #                              "'internal', 'external', 'external_gt', "
+    #                              "'external_gte', 'force'")
     #
     #     _, data = yield from self.transport.perform_request(
     #         'GET',
@@ -925,7 +1114,20 @@ class Elasticsearch:
     #     if search_source is not default:
     #         params['search_source'] = search_source
     #     if search_type is not default:
-    #         params['search_type'] = search_type
+    #         if not isinstance(search_type, str):
+    #             raise TypeError("'search_type' parameter is not a string")
+    #         elif search_type.lower() in ('query_then_fetch',
+    #                                      'query_and_fetch',
+    #                                      'dfs_query_then_fetch',
+    #                                      'dfs_query_and_fetch',
+    #                                      'count',
+    #                                      'scan'):
+    #             params['search_type'] = search_type
+    #         else:
+    #             raise ValueError("'search_type' parameter should be one of "
+    #                              "'query_then_fetch', 'query_and_fetch', "
+    #                              "'dfs_query_then_fetch', "
+    #                              "'dfs_query_and_fetch', 'count', 'scan'")
     #     if search_types is not default:
     #         params['search_types'] = search_types
     #     if stop_words is not default:
