@@ -90,57 +90,38 @@ class Elasticsearch:
         Adds a typed JSON document in a specific index, making it searchable.
         Behind the scenes this method calls index(..., op_type='create')
         """
-        params = {}
-        if consistency is not default:
-            params['consistency'] = consistency
-        if parent is not default:
-            params['parent'] = parent
-        if percolate is not default:
-            params['percolate'] = percolate
-        if refresh is not default:
-            params['refresh'] = refresh
-        if replication is not default:
-            params['replication'] = replication
-        if routing is not default:
-            params['routing'] = routing
-        if timeout is not default:
-            params['timeout'] = timeout
-        if timestamp is not default:
-            params['timestamp'] = timestamp
-        if ttl is not default:
-            params['ttl'] = ttl
-        if version is not default:
-            params['version'] = version
-        if version_type is not default:
-            params['version_type'] = version_type
-        params['op_type'] = 'create'
-
-        _, data = yield from self._transport.perform_request(
-            'PUT' if id else 'POST',
-            _make_path(index, doc_type, id),
-            params=params,
-            body=body)
+        data = yield from self.index(
+            index, doc_type, body, id,
+            consistency=consistency, parent=parent, percolate=percolate,
+            refresh=refresh, replication=replication, routing=routing,
+            timeout=timeout, timestamp=timestamp, ttl=ttl,
+            version=version, version_type=version_type, op_type='create')
+        return data
 
     @asyncio.coroutine
     def index(self, index, doc_type, body, id=None, *,
               consistency=default, op_type=default, parent=default,
-              refresh=default, replication=default, routing=default,
-              timeout=default, timestamp=default, ttl=default,
-              version=default, version_type=default):
+              percolate=default, refresh=default, replication=default,
+              routing=default, timeout=default, timestamp=default,
+              ttl=default, version=default, version_type=default):
         """
         Adds or updates a typed JSON document in a specific index, making it
         searchable.
         """
         params = {}
-        if consistency is not default:
+        if consistency in ('one', 'quorum', 'all'):
             params['consistency'] = consistency
         if op_type is not default:
+                # in ('create',):
             params['op_type'] = op_type
         if parent is not default:
             params['parent'] = parent
-        if refresh is not default:
+        if percolate is not default:
+            params['percolate'] = percolate
+        if isinstance(refresh, bool):
             params['refresh'] = refresh
         if replication is not default:
+            # in ('async',):
             params['replication'] = replication
         if routing is not default:
             params['routing'] = routing
@@ -151,8 +132,9 @@ class Elasticsearch:
         if ttl is not default:
             params['ttl'] = ttl
         if version is not default:
-            params['version'] = version
-        if version_type is not default:
+            params['version'] = int(version)
+        if version_type in ('internal', 'external',
+                            'external_gt', 'external_gte', 'force'):
             params['version_type'] = version_type
 
         _, data = yield from self._transport.perform_request(

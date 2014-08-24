@@ -1,11 +1,11 @@
 import asyncio
 import unittest
-# import yaml
 from aioes import Elasticsearch
-from aioes.exception import NotFoundError
+from aioes.exception import NotFoundError, ConflictError
 
 import pprint
 pp = pprint.pprint
+
 
 MESSAGES = [
     {
@@ -63,8 +63,31 @@ class TestClient(unittest.TestCase):
             self.assertEqual(data['status'], 200)
         self.loop.run_until_complete(go())
 
+    def test_create(self):
+        """ create index """
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.create(
+                self._index, 'tweet',
+                {
+                    'user': 'Bob',
+                    'skills': ['C', 'Python', 'Assembler'],
+                    'date': '2009-11-15T14:12:12'
+                },
+                '1',
+                routing='Bob')
+            self.assertEqual(data['_index'], self._index)
+            self.assertEqual(data['_type'], 'tweet')
+            self.assertEqual(data['_version'], 1)
+            self.assertTrue(data['created'], data)
+            # test for conflict
+            with self.assertRaises(ConflictError):
+                yield from self.cl.create(
+                    self._index, 'tweet', {}, '1')
+        self.loop.run_until_complete(go())
+
     def test_index(self):
-        """ index """
+        """ auto-create index """
         @asyncio.coroutine
         def go():
             data = yield from self.cl.index(self._index, 'tweet', {}, '1')
@@ -73,13 +96,23 @@ class TestClient(unittest.TestCase):
             self.assertEqual(data['_id'], '1')
             self.assertEqual(data['_version'], 1)
             self.assertTrue(data['created'], data)
-            # test bulk version
+            # test increment version
             data = yield from self.cl.index(self._index, 'tweet', {}, '1')
-            self.assertEqual(data['_index'], self._index)
-            self.assertEqual(data['_type'], 'tweet')
-            self.assertEqual(data['_id'], '1')
             self.assertEqual(data['_version'], 2)
             self.assertFalse(data['created'], data)
+            # test 'external' version_type
+            data = yield from self.cl.index(self._index, 'tweet', {}, '12',
+                                            version_type='external',
+                                            version=122,
+                                            timestamp='2009-11-15T14:12:12',
+                                            ttl='1d',
+                                            consistency='one',
+                                            timeout='5m',
+                                            refresh=True,
+                                            replication='async')
+            self.assertEqual(data['_version'], 122)
+            self.assertTrue(data['created'], data)
+
         self.loop.run_until_complete(go())
 
     def test_exist(self):
