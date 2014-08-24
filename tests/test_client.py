@@ -121,11 +121,18 @@ class TestClient(unittest.TestCase):
         def go():
             id = '100'
             # test non-exist
-            data = yield from self.cl.exists(self._index, id)
+            data = yield from self.cl.exists(self._index, id,
+                                             refresh=True,
+                                             realtime=True,
+                                             preference='_local')
             self.assertFalse(data)
             # test exist
-            yield from self.cl.index(self._index, 'exist', {}, id)
-            data = yield from self.cl.exists(self._index, id)
+            yield from self.cl.index(self._index, 'exist',
+                                     {'user': 'opa', 'tim': 'none'},
+                                     id,
+                                     routing='opa')
+            data = yield from self.cl.exists(self._index, id,
+                                             routing='opa')
             self.assertTrue(data)
         self.loop.run_until_complete(go())
 
@@ -135,13 +142,31 @@ class TestClient(unittest.TestCase):
         def go():
             id = '200'
             yield from self.cl.index(self._index, 'test_get', MESSAGES[1], id)
-            data = yield from self.cl.get(self._index, id)
+            data = yield from self.cl.get(self._index, id,
+                                          realtime=True,
+                                          refresh=True)
             self.assertEqual(data['_id'], id)
             self.assertEqual(data['_index'], self._index)
             self.assertEqual(data['_type'], 'test_get')
             self.assertEqual(data['_version'], 1)
             self.assertTrue(data['found'], data)
             self.assertEqual(data['_source'], MESSAGES[1])
+            data = yield from self.cl.get(self._index, id,
+                                          _source=False)
+            self.assertEqual(data['_source'], {})
+            data = yield from self.cl.get(self._index, id,
+                                          _source_exclude='counter',
+                                          _source_include='*')
+            self.assertNotIn('counter', data, data)
+            data = yield from self.cl.get(self._index, id,
+                                          fields='user,skills',
+                                          routing='Sidor',
+                                          preference='_local',
+                                          version=1,
+                                          version_type='internal')
+            self.assertIn('fields', data, data)
+            self.assertIn('user', data['fields'], data)
+            self.assertIn('skills', data['fields'], data)
         self.loop.run_until_complete(go())
 
     def test_update(self):
