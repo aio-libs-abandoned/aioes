@@ -2,10 +2,18 @@ import asyncio
 import unittest
 
 from aioes import Elasticsearch
-from aioes.exception import NotFoundError
+from aioes.exception import NotFoundError, RequestError
 
 import pprint
 pp = pprint.pprint
+
+MESSAGE = {
+    "user": "Johny Mnemonic",
+    "birthDate": "2109-11-15T14:12:12",
+    "message": "trying out Elasticsearch",
+    "skills": ["Python", "PHP", "HTML", "C++", ".NET", "JavaScript"],
+    "counter": 0,
+    "test_field": "this, is a test 125 !"}
 
 
 class TestIndices(unittest.TestCase):
@@ -43,8 +51,14 @@ class TestIndices(unittest.TestCase):
                 tokenizer='keyword',
                 token_filters='lowercase',
                 char_filters='html_strip',
-                pretty='', format='detailed')
+                prefer_local=True)
             self.assertEqual(data['tokens'][0]['token'], 'this is a test')
+
+            with self.assertRaises(RequestError):
+                yield from self.cl.indices.analyze(
+                    analyzer='standard',
+                    filters='lowercase',
+                    field='w')
 
         self.loop.run_until_complete(go())
 
@@ -52,8 +66,7 @@ class TestIndices(unittest.TestCase):
         @asyncio.coroutine
         def go():
             data = yield from self.cl.indices.create(
-                self._index, pretty='', format='detailed',
-                timeout=1000, master_timeout=1000)
+                self._index, timeout=1000, master_timeout=1000)
             self.assertTrue(data['acknowledged'])
         self.loop.run_until_complete(go())
 
@@ -62,8 +75,7 @@ class TestIndices(unittest.TestCase):
         def go():
             yield from self.cl.indices.create(self._index)
             data = yield from self.cl.indices.open(
-                self._index, pretty='', format='detailed',
-                timeout=1000, master_timeout=1000,
+                self._index, timeout=1000, master_timeout=1000,
                 ignore_unavailable=True, expand_wildcards=False,
                 allow_no_indices=False)
             self.assertTrue(data['acknowledged'], data)
@@ -71,13 +83,30 @@ class TestIndices(unittest.TestCase):
                 self._index)
         self.loop.run_until_complete(go())
 
+    # def test_close_param(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.index(self._index, 'type',
+    #                                  MESSAGE,
+    #                                  '1')
+    #         data = yield from self.cl.indices.close(
+    #             self._index,
+    #             timeout='1s', master_timeout='1s',
+    #             expand_wildcards='',
+    #             allow_no_indices=True)
+    #         self.assertTrue(data['acknowledged'], data)
+    #     self.loop.run_until_complete(go())
+
     # def test_close(self):
     #     @asyncio.coroutine
     #     def go():
-    #         yield from self.cl.indices.create(self._index)
+    #         yield from self.cl.index(self._index, 'type',
+    #                                  MESSAGE,
+    #                                  '1')
     #         data = yield from self.cl.indices.close(
-    #             self._index, pretty='', format='detailed')
+    #             self._index)
     #         self.assertTrue(data['acknowledged'], data)
+    #
     #     self.loop.run_until_complete(go())
 
     def test_delete(self):
@@ -98,89 +127,89 @@ class TestIndices(unittest.TestCase):
             yield from self.cl.indices.exists_type()
         self.loop.run_until_complete(go())
 
-    def test_put_mapping(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.put_mapping()
-        self.loop.run_until_complete(go())
-
-    def test_get_mapping(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_mapping()
-        self.loop.run_until_complete(go())
-
-    def test_get_field_mapping(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_field_mapping()
-        self.loop.run_until_complete(go())
-
-    def test_delete_mapping(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.delete_mapping()
-        self.loop.run_until_complete(go())
-
-    def test_put_alias(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.put_alias()
-        self.loop.run_until_complete(go())
-
-    def test_exists_alias(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.exists_alias()
-        self.loop.run_until_complete(go())
-
-    def test_get_alias(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_alias()
-        self.loop.run_until_complete(go())
-
-    def test_get_aliases(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_aliases()
-        self.loop.run_until_complete(go())
-
-    def test_update_aliases(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.update_aliases()
-        self.loop.run_until_complete(go())
-
-    def test_delete_alias(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.delete_alias()
-        self.loop.run_until_complete(go())
-
-    def test_put_template(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.put_template()
-        self.loop.run_until_complete(go())
-
-    def test_exists_template(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.exists_template()
-        self.loop.run_until_complete(go())
-
-    def test_get_template(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_template()
-        self.loop.run_until_complete(go())
-
-    def test_delete_template(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.delete_template()
-        self.loop.run_until_complete(go())
+    # def test_put_mapping(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.put_mapping()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_mapping(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_mapping()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_field_mapping(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_field_mapping()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_delete_mapping(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.delete_mapping()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_put_alias(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.put_alias()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_exists_alias(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.exists_alias()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_alias(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_alias()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_aliases(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_aliases()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_update_aliases(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.update_aliases()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_delete_alias(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.delete_alias()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_put_template(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.put_template()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_exists_template(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.exists_template()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_template(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_template()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_delete_template(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.delete_template()
+    #     self.loop.run_until_complete(go())
 
     def test_get_settings(self):
         @asyncio.coroutine
@@ -194,23 +223,23 @@ class TestIndices(unittest.TestCase):
             yield from self.cl.indices.put_settings()
         self.loop.run_until_complete(go())
 
-    def test_put_warmer(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.put_warmer()
-        self.loop.run_until_complete(go())
-
-    def test_get_warmer(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.get_warmer()
-        self.loop.run_until_complete(go())
-
-    def test_delete_warmer(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.indices.delete_warmer()
-        self.loop.run_until_complete(go())
+    # def test_put_warmer(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.put_warmer()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_get_warmer(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.get_warmer()
+    #     self.loop.run_until_complete(go())
+    #
+    # def test_delete_warmer(self):
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.indices.delete_warmer()
+    #     self.loop.run_until_complete(go())
 
     def test_status(self):
         @asyncio.coroutine
