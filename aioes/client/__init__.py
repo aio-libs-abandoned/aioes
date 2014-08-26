@@ -115,7 +115,7 @@ class Elasticsearch:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
             elif consistency.lower() in ('one', 'quorum', 'all'):
-                params['consistency'] = consistency
+                params['consistency'] = consistency.lower()
             else:
                 raise ValueError("'consistency' parameter should be one of"
                                  " 'one', 'quorum', 'all'")
@@ -124,7 +124,7 @@ class Elasticsearch:
             if not isinstance(op_type, str):
                 raise TypeError("'op_type' parameter is not a string")
             elif op_type.lower() in ('index', 'create'):
-                params['op_type'] = op_type
+                params['op_type'] = op_type.lower()
             else:
                 raise ValueError(
                     "'op_type' parameter should be one of 'index', 'create'")
@@ -139,7 +139,7 @@ class Elasticsearch:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
             elif replication.lower() in ('async', 'sync'):
-                params['replication'] = replication
+                params['replication'] = replication.lower()
             else:
                 raise ValueError(
                     "'replication' parameter should be one of 'async', 'sync'")
@@ -160,7 +160,7 @@ class Elasticsearch:
             elif version_type.lower() in ('internal', 'external',
                                           'external_gt', 'external_gte',
                                           'force'):
-                params['version_type'] = version_type
+                params['version_type'] = version_type.lower()
             else:
                 raise ValueError("'version_type' parameter should be one of "
                                  "'internal', 'external', 'external_gt', "
@@ -242,7 +242,7 @@ class Elasticsearch:
             elif version_type.lower() in ('internal', 'external',
                                           'external_gt', 'external_gte',
                                           'force'):
-                params['version_type'] = version_type
+                params['version_type'] = version_type.lower()
             else:
                 raise ValueError("'version_type' parameter should be one of "
                                  "'internal', 'external', 'external_gt', "
@@ -291,7 +291,7 @@ class Elasticsearch:
             elif version_type.lower() in ('internal', 'external',
                                           'external_gt', 'external_gte',
                                           'force'):
-                params['version_type'] = version_type
+                params['version_type'] = version_type.lower()
             else:
                 raise ValueError("'version_type' parameter should be one of "
                                  "'internal', 'external', 'external_gt', "
@@ -319,7 +319,7 @@ class Elasticsearch:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
             elif consistency.lower() in ('one', 'quorum', 'all'):
-                params['consistency'] = consistency
+                params['consistency'] = consistency.lower()
             else:
                 raise ValueError("'consistency' parameter should be one of "
                                  "'one', 'quorum', 'all'")
@@ -335,7 +335,7 @@ class Elasticsearch:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
             elif replication.lower() in ('async', 'sync'):
-                params['replication'] = replication
+                params['replication'] = replication.lower()
             else:
                 raise ValueError(
                     "'replication' parameter should be one of 'async', 'sync'")
@@ -360,7 +360,7 @@ class Elasticsearch:
             elif version_type.lower() in ('internal', 'external',
                                           'external_gt', 'external_gte',
                                           'force'):
-                params['version_type'] = version_type
+                params['version_type'] = version_type.lower()
             else:
                 raise ValueError("'version_type' parameter should be one of "
                                  "'internal', 'external', 'external_gt', "
@@ -492,7 +492,7 @@ class Elasticsearch:
             if not isinstance(expand_wildcards, str):
                 raise TypeError("'expand_wildcards' parameter is not a string")
             elif expand_wildcards.lower() in ('open', 'closed'):
-                params['expand_wildcards'] = expand_wildcards
+                params['expand_wildcards'] = expand_wildcards.lower()
             else:
                 raise ValueError("'expand_wildcards' parameter should be one"
                                  " of 'open', 'closed'")
@@ -501,7 +501,7 @@ class Elasticsearch:
             if not isinstance(suggest_mode, str):
                 raise TypeError("'suggest_mode' parameter is not a string")
             elif suggest_mode.lower() in ('missing', 'popular', 'always'):
-                params['suggest_mode'] = suggest_mode
+                params['suggest_mode'] = suggest_mode.lower()
             else:
                 raise ValueError("'suggest_mode' parameter should be one of "
                                  "'missing', 'popular', 'always'")
@@ -515,7 +515,7 @@ class Elasticsearch:
                                          'dfs_query_and_fetch',
                                          'count',
                                          'scan'):
-                params['search_type'] = search_type
+                params['search_type'] = search_type.lower()
             else:
                 raise ValueError("'search_type' parameter should be one of "
                                  "'query_then_fetch', 'query_and_fetch', "
@@ -526,7 +526,7 @@ class Elasticsearch:
             if not isinstance(default_operator, str):
                 raise TypeError("'default_operator' parameter is not a string")
             elif default_operator.upper() in ('AND', 'OR'):
-                params['default_operator'] = default_operator
+                params['default_operator'] = default_operator.upper()
             else:
                 raise ValueError("'default_operator' parameter should "
                                  "be one of 'AND', 'OR'")
@@ -558,7 +558,7 @@ class Elasticsearch:
     #             raise TypeError("'expand_wildcards' parameter is not "
     #                             "a string")
     #         elif expand_wildcards.lower() in ('open', 'closed'):
-    #             params['expand_wildcards'] = expand_wildcards
+    #             params['expand_wildcards'] = expand_wildcards.lower()
     #         else:
     #             raise ValueError("'expand_wildcards' parameter should be"
     #                              " one of 'open', 'closed'")
@@ -597,7 +597,7 @@ class Elasticsearch:
     #             raise TypeError("'expand_wildcards' parameter is not "
     #                             "a string")
     #         elif expand_wildcards.lower() in ('open', 'closed'):
-    #             params['expand_wildcards'] = expand_wildcards
+    #             params['expand_wildcards'] = expand_wildcards.lower()
     #         else:
     #             raise ValueError("'expand_wildcards' parameter should be"
     #                              " one of 'open', 'closed'")
@@ -618,7 +618,7 @@ class Elasticsearch:
     #                                      'dfs_query_and_fetch',
     #                                      'count',
     #                                      'scan'):
-    #             params['search_type'] = search_type
+    #             params['search_type'] = search_type.lower()
     #         else:
     #             raise ValueError("'search_type' parameter should be one of "
     #                              "'query_then_fetch', 'query_and_fetch', "
@@ -658,8 +658,6 @@ class Elasticsearch:
             params['analyze_wildcard'] = bool(analyze_wildcard)
         if analyzer is not default:
             params['analyzer'] = analyzer
-        if default_operator is not default:
-            params['default_operator'] = default_operator
         if df is not default:
             params['df'] = df
         if fields is not default:
@@ -678,6 +676,14 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
+        if default_operator is not default:
+            if not isinstance(default_operator, str):
+                raise TypeError("'default_operator' parameter is not a string")
+            elif default_operator.upper() in ('AND', 'OR'):
+                params['default_operator'] = default_operator.upper()
+            else:
+                raise ValueError("'default_operator' parameter should "
+                                 "be one of 'AND', 'OR'")
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -728,7 +734,7 @@ class Elasticsearch:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
             elif consistency.lower() in ('one', 'quorum', 'all'):
-                params['consistency'] = consistency
+                params['consistency'] = consistency.lower()
             else:
                 raise ValueError(
                     "'consistency' parameter should be one of "
@@ -737,7 +743,7 @@ class Elasticsearch:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
             elif replication.lower() in ('async', 'sync'):
-                params['replication'] = replication
+                params['replication'] = replication.lower()
             else:
                 raise ValueError("'replication' parameter should be one of "
                                  "'async', 'sync'")
@@ -758,7 +764,7 @@ class Elasticsearch:
             elif version_type.lower() in ('internal', 'external',
                                           'external_gt', 'external_gte',
                                           'force'):
-                params['version_type'] = version_type
+                params['version_type'] = version_type.lower()
             else:
                 raise ValueError("'version_type' parameter should be one of "
                                  "'internal', 'external', 'external_gt', "
@@ -801,7 +807,7 @@ class Elasticsearch:
                 raise TypeError("'expand_wildcards' parameter is not "
                                 "a string")
             elif expand_wildcards.lower() in ('open', 'closed'):
-                params['expand_wildcards'] = expand_wildcards
+                params['expand_wildcards'] = expand_wildcards.lower()
             else:
                 raise ValueError("'expand_wildcards' parameter should be"
                                  " one of 'open', 'closed'")
@@ -825,7 +831,7 @@ class Elasticsearch:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
             elif consistency.lower() in ('one', 'quorum', 'all'):
-                params['consistency'] = consistency
+                params['consistency'] = consistency.lower()
             else:
                 raise ValueError("'consistency' parameter should be one of "
                                  "'one', 'quorum', 'all'")
@@ -837,7 +843,7 @@ class Elasticsearch:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
             elif replication.lower() in ('async', 'sync'):
-                params['replication'] = replication
+                params['replication'] = replication.lower()
             else:
                 raise ValueError("'replication' parameter should be one of"
                                  " 'async', 'sync'")
@@ -868,7 +874,7 @@ class Elasticsearch:
                                          'dfs_query_and_fetch',
                                          'count',
                                          'scan'):
-                params['search_type'] = search_type
+                params['search_type'] = search_type.lower()
             else:
                 raise ValueError("'search_type' parameter should be one of "
                                  "'query_then_fetch', 'query_and_fetch', "
@@ -901,7 +907,13 @@ class Elasticsearch:
         if analyzer is not default:
             params['analyzer'] = analyzer
         if default_operator is not default:
-            params['default_operator'] = default_operator
+            if not isinstance(default_operator, str):
+                raise TypeError("'default_operator' parameter is not a string")
+            elif default_operator.upper() in ('AND', 'OR'):
+                params['default_operator'] = default_operator.upper()
+            else:
+                raise ValueError("'default_operator' parameter should "
+                                 "be one of 'AND', 'OR'")
         if df is not default:
             params['df'] = df
         if ignore_unavailable is not default:
@@ -919,7 +931,7 @@ class Elasticsearch:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
             elif consistency.lower() in ('one', 'quorum', 'all'):
-                params['consistency'] = consistency
+                params['consistency'] = consistency.lower()
             else:
                 raise ValueError("'consistency' parameter should be one of "
                                  "'one', 'quorum', 'all'")
@@ -928,7 +940,7 @@ class Elasticsearch:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
             elif replication.lower() in ('async', 'sync'):
-                params['replication'] = replication
+                params['replication'] = replication.lower()
             else:
                 raise ValueError("'replication' parameter should be one of"
                                  " 'async', 'sync'")
@@ -938,7 +950,7 @@ class Elasticsearch:
                 raise TypeError("'expand_wildcards' parameter is not "
                                 "a string")
             elif expand_wildcards.lower() in ('open', 'closed'):
-                params['expand_wildcards'] = expand_wildcards
+                params['expand_wildcards'] = expand_wildcards.lower()
             else:
                 raise ValueError("'expand_wildcards' parameter should be"
                                  " one of 'open', 'closed'")
@@ -966,7 +978,7 @@ class Elasticsearch:
     #         if not isinstance(consistency, str):
     #             raise TypeError("'consistency' parameter is not a string")
     #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency
+    #             params['consistency'] = consistency.lower()
     #         else:
     #             raise ValueError("'consistency' parameter should be one of "
     #                              "'one', 'quorum', 'all'")
@@ -1005,7 +1017,7 @@ class Elasticsearch:
     #         if not isinstance(consistency, str):
     #             raise TypeError("'consistency' parameter is not a string")
     #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency
+    #             params['consistency'] = consistency.lower()
     #         else:
     #             raise ValueError("'consistency' parameter should be one of "
     #                              "'one', 'quorum', 'all'")
@@ -1029,7 +1041,7 @@ class Elasticsearch:
     #         elif version_type.lower() in ('internal', 'external',
     #                                       'external_gt', 'external_gte',
     #                                       'force'):
-    #             params['version_type'] = version_type
+    #             params['version_type'] = version_type.lower()
     #         else:
     #             raise ValueError("'version_type' parameter should be one of "
     #                              "'internal', 'external', 'external_gt', "
@@ -1058,7 +1070,7 @@ class Elasticsearch:
     #         if not isinstance(consistency, str):
     #             raise TypeError("'consistency' parameter is not a string")
     #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency
+    #             params['consistency'] = consistency.lower()
     #         else:
     #             raise ValueError("'consistency' parameter should be one of "
     #                              "'one', 'quorum', 'all'")
@@ -1092,7 +1104,7 @@ class Elasticsearch:
     #         if not isinstance(consistency, str):
     #             raise TypeError("'consistency' parameter is not a string")
     #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency
+    #             params['consistency'] = consistency.lower()
     #         else:
     #             raise ValueError("'consistency' parameter should be one of "
     #                              "'one', 'quorum', 'all'")
@@ -1114,7 +1126,7 @@ class Elasticsearch:
     #         elif version_type.lower() in ('internal', 'external',
     #                                       'external_gt', 'external_gte',
     #                                       'force'):
-    #             params['version_type'] = version_type
+    #             params['version_type'] = version_type.lower()
     #         else:
     #             raise ValueError("'version_type' parameter should be one of "
     #                              "'internal', 'external', 'external_gt', "
@@ -1185,7 +1197,7 @@ class Elasticsearch:
     #                                      'dfs_query_and_fetch',
     #                                      'count',
     #                                      'scan'):
-    #             params['search_type'] = search_type
+    #             params['search_type'] = search_type.lower()
     #         else:
     #             raise ValueError("'search_type' parameter should be one of "
     #                              "'query_then_fetch', 'query_and_fetch', "

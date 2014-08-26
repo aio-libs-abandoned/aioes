@@ -255,6 +255,7 @@ class TestClient(unittest.TestCase):
         self.loop.run_until_complete(go())
 
     def test_delete(self):
+        """ delete """
         @asyncio.coroutine
         def go():
             yield from self.cl.index(self._index, 'testdoc', MESSAGES[2], '1')
@@ -483,6 +484,55 @@ class TestClient(unittest.TestCase):
                     expand_wildcards='1',
                     routing='Sidor',
                     source='Query DSL')
+
+        self.loop.run_until_complete(go())
+
+    def test_explain(self):
+        """ explain """
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[1], '2',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[2], '3',
+                                     refresh=True)
+
+            data = yield from self.cl.explain(
+                self._index, 'testdoc', '3',
+                q='skills:Python')
+            self.assertTrue(data['matched'], data)
+            data = yield from self.cl.explain(
+                self._index, 'testdoc', '1',
+                q='skills:Python',
+                analyze_wildcard=True,
+                _source=False,
+                _source_include='user',
+                _source_exclude='counter',
+                analyzer='standard',
+                default_operator='and',
+                df='_all',
+                fields='user,counter',
+                lenient=True,
+                lowercase_expanded_terms=False,
+                preference='random')
+            self.assertTrue(data['matched'], data)
+
+            with self.assertRaises(TypeError):
+                yield from self.cl.explain(
+                    self._index, 'testdoc', '1',
+                    q='skills:Python',
+                    default_operator=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.explain(
+                    self._index, 'testdoc', '1',
+                    default_operator='1',
+                    parent='2',
+                    routing='Sidor',
+                    source='DSL Query')
 
         self.loop.run_until_complete(go())
 
