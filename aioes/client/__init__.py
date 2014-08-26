@@ -452,8 +452,6 @@ class Elasticsearch:
             params['lenient'] = bool(lenient)
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
-        if expand_wildcards is not default:
-            params['expand_wildcards'] = expand_wildcards
         if ignore_unavailable is not default:
             params['ignore_unavailable'] = bool(ignore_unavailable)
         if lowercase_expanded_terms is not default:
@@ -489,6 +487,15 @@ class Elasticsearch:
             params['version'] = int(version)
         if analyzer is not default:
             params['analyzer'] = analyzer
+
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards
+            else:
+                raise ValueError("'expand_wildcards' parameter should be one"
+                                 " of 'open', 'closed'")
 
         if suggest_mode is not default:
             if not isinstance(suggest_mode, str):
@@ -547,7 +554,14 @@ class Elasticsearch:
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #         if not isinstance(expand_wildcards, str):
+    #             raise TypeError("'expand_wildcards' parameter is not "
+    #                             "a string")
+    #         elif expand_wildcards.lower() in ('open', 'closed'):
+    #             params['expand_wildcards'] = expand_wildcards
+    #         else:
+    #             raise ValueError("'expand_wildcards' parameter should be"
+    #                              " one of 'open', 'closed'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if local is not default:
@@ -579,7 +593,14 @@ class Elasticsearch:
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
     #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #         if not isinstance(expand_wildcards, str):
+    #             raise TypeError("'expand_wildcards' parameter is not "
+    #                             "a string")
+    #         elif expand_wildcards.lower() in ('open', 'closed'):
+    #             params['expand_wildcards'] = expand_wildcards
+    #         else:
+    #             raise ValueError("'expand_wildcards' parameter should be"
+    #                              " one of 'open', 'closed'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if preference is not default:
@@ -762,12 +783,10 @@ class Elasticsearch:
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
-        if expand_wildcards is not default:
-            params['expand_wildcards'] = expand_wildcards
         if ignore_unavailable is not default:
             params['ignore_unavailable'] = bool(ignore_unavailable)
         if min_score is not default:
-            params['min_score'] = min_score
+            params['min_score'] = int(min_score)
         if preference is not default:
             params['preference'] = preference
         if q is not default:
@@ -776,6 +795,16 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
+
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not "
+                                "a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards
+            else:
+                raise ValueError("'expand_wildcards' parameter should be"
+                                 " one of 'open', 'closed'")
 
         _, data = yield from self.transport.perform_request(
             'POST',
@@ -871,6 +900,21 @@ class Elasticsearch:
             params['allow_no_indices'] = bool(allow_no_indices)
         if analyzer is not default:
             params['analyzer'] = analyzer
+        if default_operator is not default:
+            params['default_operator'] = default_operator
+        if df is not default:
+            params['df'] = df
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if q is not default:
+            params['q'] = q
+        if routing is not default:
+            params['routing'] = routing
+        if source is not default:
+            params['source'] = source
+        if timeout is not default:
+            params['timeout'] = timeout
+
         if consistency is not default:
             if not isinstance(consistency, str):
                 raise TypeError("'consistency' parameter is not a string")
@@ -879,16 +923,7 @@ class Elasticsearch:
             else:
                 raise ValueError("'consistency' parameter should be one of "
                                  "'one', 'quorum', 'all'")
-        if default_operator is not default:
-            params['default_operator'] = default_operator
-        if df is not default:
-            params['df'] = df
-        if expand_wildcards is not default:
-            params['expand_wildcards'] = expand_wildcards
-        if ignore_unavailable is not default:
-            params['ignore_unavailable'] = bool(ignore_unavailable)
-        if q is not default:
-            params['q'] = q
+
         if replication is not default:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
@@ -897,12 +932,16 @@ class Elasticsearch:
             else:
                 raise ValueError("'replication' parameter should be one of"
                                  " 'async', 'sync'")
-        if routing is not default:
-            params['routing'] = routing
-        if source is not default:
-            params['source'] = source
-        if timeout is not default:
-            params['timeout'] = timeout
+
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not "
+                                "a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards
+            else:
+                raise ValueError("'expand_wildcards' parameter should be"
+                                 " one of 'open', 'closed'")
 
         _, data = yield from self.transport.perform_request(
             'DELETE',
@@ -923,8 +962,14 @@ class Elasticsearch:
     #     params = {}
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #     if consistency is not default:
+    #         if not isinstance(consistency, str):
+    #             raise TypeError("'consistency' parameter is not a string")
+    #         elif consistency.lower() in ('one', 'quorum', 'all'):
+    #             params['consistency'] = consistency
+    #         else:
+    #             raise ValueError("'consistency' parameter should be one of "
+    #                              "'one', 'quorum', 'all'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if preference is not default:
@@ -956,8 +1001,14 @@ class Elasticsearch:
     #     params = {}
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #     if consistency is not default:
+    #         if not isinstance(consistency, str):
+    #             raise TypeError("'consistency' parameter is not a string")
+    #         elif consistency.lower() in ('one', 'quorum', 'all'):
+    #             params['consistency'] = consistency
+    #         else:
+    #             raise ValueError("'consistency' parameter should be one of "
+    #                              "'one', 'quorum', 'all'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if percolate_format is not default:
@@ -1003,8 +1054,14 @@ class Elasticsearch:
     #     params = {}
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #     if consistency is not default:
+    #         if not isinstance(consistency, str):
+    #             raise TypeError("'consistency' parameter is not a string")
+    #         elif consistency.lower() in ('one', 'quorum', 'all'):
+    #             params['consistency'] = consistency
+    #         else:
+    #             raise ValueError("'consistency' parameter should be one of "
+    #                              "'one', 'quorum', 'all'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #
@@ -1031,8 +1088,14 @@ class Elasticsearch:
     #     params = {}
     #     if allow_no_indices is not default:
     #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         params['expand_wildcards'] = expand_wildcards
+    #     if consistency is not default:
+    #         if not isinstance(consistency, str):
+    #             raise TypeError("'consistency' parameter is not a string")
+    #         elif consistency.lower() in ('one', 'quorum', 'all'):
+    #             params['consistency'] = consistency
+    #         else:
+    #             raise ValueError("'consistency' parameter should be one of "
+    #                              "'one', 'quorum', 'all'")
     #     if ignore_unavailable is not default:
     #         params['ignore_unavailable'] = bool(ignore_unavailable)
     #     if percolate_index is not default:

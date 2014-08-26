@@ -109,7 +109,7 @@ class TestClient(unittest.TestCase):
                                             timestamp='2009-11-15T14:12:12',
                                             ttl='1d',
                                             consistency='one',
-                                            timeout='5m',
+                                            timeout=30000,
                                             refresh=True,
                                             replication='async')
             self.assertEqual(data['_version'], 122)
@@ -267,7 +267,7 @@ class TestClient(unittest.TestCase):
                                                  refresh=True,
                                                  version_type='internal',
                                                  version=2,
-                                                 timeout='1s',
+                                                 timeout=30000,
                                                  routing='test',
                                                  parent='1')
             with self.assertRaises(TypeError):
@@ -317,7 +317,7 @@ class TestClient(unittest.TestCase):
                                              timestamp='2009-11-15T14:12:12',
                                              ttl='1d',
                                              consistency='one',
-                                             timeout='5m',
+                                             timeout=30000,
                                              refresh=True,
                                              replication='async',
                                              retry_on_conflict=2,
@@ -352,6 +352,7 @@ class TestClient(unittest.TestCase):
         self.loop.run_until_complete(go())
 
     def test_search(self):
+        """ search """
         @asyncio.coroutine
         def go():
             yield from self.cl.index(self._index, 'testdoc',
@@ -379,7 +380,7 @@ class TestClient(unittest.TestCase):
                                              default_operator='AND',
                                              analyze_wildcard=True,
                                              version=2,
-                                             timeout='1s',
+                                             timeout=30000,
                                              allow_no_indices=True,
                                              ignore_unavailable=True,
                                              df='_all',
@@ -398,7 +399,6 @@ class TestClient(unittest.TestCase):
                                              )
             self.assertNotIn('skills', data['hits']['hits'][0]['_source'])
             self.assertNotIn('skills', data['hits']['hits'][1]['_source'])
-            # import ipdb; ipdb.set_trace()
             with self.assertRaises(TypeError):
                 yield from self.cl.search(default_operator=1,
                                           indices_boost=False)
@@ -435,18 +435,86 @@ class TestClient(unittest.TestCase):
                                           q='skills:Python',
                                           search_type='1')
 
+            with self.assertRaises(TypeError):
+                yield from self.cl.search(self._index,
+                                          'testdoc',
+                                          q='skills:Python',
+                                          expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.search(self._index,
+                                          'testdoc',
+                                          q='skills:Python',
+                                          expand_wildcards='1')
         self.loop.run_until_complete(go())
 
-#    def test_mget(self):
-#        """ mget """
-#        @asyncio.coroutine
-#        def go():
-#            body = {"ids": ['200', '2']}
-#            yield from self.cl.index(
-#                             self._index, 'test_mget', MESSAGES[0], '200')
-#            data = yield from self.cl.mget(body, index=self._index)
-#            import ipdb; ipdb.set_trace()
-#        self.loop.run_until_complete(go())
+    def test_count(self):
+        """ count """
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[1], '2',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[2], '3',
+                                     refresh=True)
+            data = yield from self.cl.count(
+                self._index, 'testdoc', q='skills:Python')
+            self.assertEqual(data['count'], 2, data)
+            data = yield from self.cl.count(
+                self._index, 'testdoc', q='skills:Python',
+                ignore_unavailable=True,
+                expand_wildcards='open',
+                allow_no_indices=False,
+                min_score=1,
+                preference='random')
+            self.assertEqual(data['count'], 2, data)
+
+            with self.assertRaises(TypeError):
+                yield from self.cl.count(
+                    self._index, 'testdoc',
+                    expand_wildcards=1)
+
+            with self.assertRaises(ValueError):
+                yield from self.cl.count(
+                    self._index, 'testdoc', q='skills:Python',
+                    expand_wildcards='1',
+                    routing='Sidor',
+                    source='Query DSL')
+
+        self.loop.run_until_complete(go())
+
+    # def test_mget(self):
+    #     """ mget """
+    #     @asyncio.coroutine
+    #     def go():
+    #         yield from self.cl.index(self._index, 'testdoc',
+    #                                 MESSAGES[0], '1',
+    #                                 refresh=True)
+    #         yield from self.cl.index(self._index, 'testdoc',
+    #                                 MESSAGES[1], '2',
+    #                                 refresh=True)
+    #         yield from self.cl.index(self._index, 'testdoc',
+    #                                 MESSAGES[2], '3',
+    #                                 refresh=True)
+    #         body = {
+    #             "docs": [
+    #                 {
+    #                     "_type": "testdoc",
+    #                     "_id" : "1"
+    #                 },
+    #                 {
+    #                     "_type": "testdoc",
+    #                     "_id": "2"
+    #                 }
+    #             ]
+    #         }
+    #
+    #         data = yield from self.cl.mget(body, index=self._index)
+    #         import ipdb; ipdb.set_trace()
+    #     self.loop.run_until_complete(go())
 
     # def test_(self):
     #     @asyncio.coroutine
