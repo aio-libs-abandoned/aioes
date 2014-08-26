@@ -35,6 +35,7 @@ class Connection:
         url = self._base_url + url
         resp = yield from self._request(method, url,
                                         params=params, data=body,
+                                        connector=self._connector,
                                         loop=self._loop)
         resp_body = yield from resp.text()
         if not (200 <= resp.status <= 300):
