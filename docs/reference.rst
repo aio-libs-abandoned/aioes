@@ -377,7 +377,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-shards.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-shards.html>`_
 
 
    .. method:: search_template(index=None, doc_type=None, body=None, *, \
@@ -413,7 +413,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/query-dsl-template-query.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-template-query.html>`_
 
 
    .. method:: explain(index, doc_type, id, body=None, *, \
@@ -949,7 +949,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-benchmark.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-benchmark.html>`_
 
 
 IndicesClient

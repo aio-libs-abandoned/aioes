@@ -1,11 +1,13 @@
 import asyncio
 # import json
+# import urllib
 
 from .indices import IndicesClient
+from .cluster import ClusterClient
 from aioes.transport import Transport
 from .utils import _make_path
-from aioes.exception import NotFoundError, TransportError\
-    # , SerializationError
+from aioes.exception import (NotFoundError, TransportError)
+# , SerializationError)
 
 default = object()
 
@@ -14,7 +16,7 @@ class Elasticsearch:
     def __init__(self, endpoints, *, loop=None, **kwargs):
         self._transport = Transport(endpoints, loop=loop, **kwargs)
         self._indices = IndicesClient(self)
-        # self._cluster = ClusterClient(self)
+        self._cluster = ClusterClient(self)
         # self._cat = CatClient(self)
         # self._nodes = NodesClient(self)
         # self._snapshot = SnapshotClient(self)
@@ -23,9 +25,9 @@ class Elasticsearch:
     def indices(self):
         return self._indices
 
-    # @property
-    # def cluster(self):
-    #     return self._cluster
+    @property
+    def cluster(self):
+        return self._cluster
 
     # @property
     # def cat(self):
@@ -47,16 +49,23 @@ class Elasticsearch:
         return "<Elasticsearch [{}]".format(self.transport)
 
     # def _bulk_body(self, body):
+    #     def dumps(self, data):
+    #         # don't serialize strings
+    #         if isinstance(data, (str, bytes)):
+    #             return data
+    #         try:
+    #             return json.dumps(data, default=self.default)
+    #         except (ValueError, TypeError) as e:
+    #             raise SerializationError(data, e)
+    #
     #     # if not passed in a string, serialize items and join by newline
     #     if not isinstance(body, (str, bytes)):
     #         try:
-    #             body = '\n'.join(map(json.dumps, body))
+    #             body = '\n'.join(map(dumps, body))
     #         except (ValueError, TypeError) as e:
     #             raise SerializationError(body, e)
-    #     # bulk body must end with a newline
-    #     if not body.endswith('\n'):
-    #         body += '\n'
     #
+    #     import ipdb; ipdb.set_trace()
     #     return body
 
     def close(self):
@@ -722,7 +731,7 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def delete(self, index, doc_type, id, *,
+    def delete(self, index, doc_type=None, id=None, *,
                consistency=default, parent=default, refresh=default,
                replication=default, routing=default, timeout=default,
                version=default, version_type=default):
@@ -890,7 +899,7 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def delete_by_query(self, index, doc_type=None, body=None, *,
+    def delete_by_query(self, index=None, doc_type=None, body=None, *,
                         allow_no_indices=default, analyzer=default,
                         consistency=default, default_operator=default,
                         df=default, expand_wildcards=default,
@@ -901,6 +910,9 @@ class Elasticsearch:
         Delete documents from one or more indices and one or more types based
         on a query.
         """
+        if index is None:
+            index = '_all'
+
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
