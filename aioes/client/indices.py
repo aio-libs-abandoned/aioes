@@ -322,6 +322,12 @@ class IndicesClient(NamespacedClient):
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
+        if ignore_indices is not default:
+            params['ignore_indices'] = ignore_indices
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if local is not default:
+            params['local'] = bool(local)
         if expand_wildcards is not default:
             if not isinstance(expand_wildcards, str):
                 raise TypeError("'expand_wildcards' parameter is not a string")
@@ -330,13 +336,6 @@ class IndicesClient(NamespacedClient):
             else:
                 raise ValueError("'expand_wildcards' parameter should be one"
                                  " of 'open', 'closed'")
-        if ignore_indices is not default:
-            params['ignore_indices'] = ignore_indices
-        if ignore_unavailable is not default:
-            params['ignore_unavailable'] = bool(ignore_unavailable)
-        if local is not default:
-            params['local'] = bool(local)
-
         try:
             yield from self.transport.perform_request(
                 'HEAD', _make_path(index, doc_type), params=params)

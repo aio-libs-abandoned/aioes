@@ -1,13 +1,10 @@
 import asyncio
-# import json
-# import urllib
-
+import json
 from .indices import IndicesClient
 from .cluster import ClusterClient
 from aioes.transport import Transport
 from .utils import _make_path
 from aioes.exception import (NotFoundError, TransportError)
-# , SerializationError)
 
 default = object()
 
@@ -48,25 +45,8 @@ class Elasticsearch:
     def __repr__(self):
         return "<Elasticsearch [{}]".format(self.transport)
 
-    # def _bulk_body(self, body):
-    #     def dumps(self, data):
-    #         # don't serialize strings
-    #         if isinstance(data, (str, bytes)):
-    #             return data
-    #         try:
-    #             return json.dumps(data, default=self.default)
-    #         except (ValueError, TypeError) as e:
-    #             raise SerializationError(data, e)
-    #
-    #     # if not passed in a string, serialize items and join by newline
-    #     if not isinstance(body, (str, bytes)):
-    #         try:
-    #             body = '\n'.join(map(dumps, body))
-    #         except (ValueError, TypeError) as e:
-    #             raise SerializationError(body, e)
-    #
-    #     import ipdb; ipdb.set_trace()
-    #     return body
+    def _bulk_body(self, body):
+        return '\n'.join(map(json.dumps, body)) + '\n'
 
     def close(self):
         self.transport.close()
@@ -891,7 +871,7 @@ class Elasticsearch:
                                  "'dfs_query_and_fetch', 'count', 'scan'")
 
         _, data = yield from self.transport.perform_request(
-            'GET',
+            'POST',
             _make_path(index, doc_type, '_msearch'),
             params=params,
             body=self._bulk_body(body))
