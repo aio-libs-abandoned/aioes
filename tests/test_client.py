@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from aioes import Elasticsearch
 from aioes.exception import (NotFoundError, ConflictError,
-                             RequestError)
+                             RequestError, TransportError)
 
 import pprint
 pp = pprint.pprint
@@ -30,6 +30,13 @@ MESSAGES = [
         "skills": ["MODULA", "ADA", "PLM", "BASIC", "Python"],
         "counter": 0
     },
+    {
+        "user": "Super",
+        "birthDate": "1912-11-15T14:12:12",
+        "message": "trying out ssdff  everything",
+        "skills": ["MODULA", "ADA", "PLM", "BASIC", "Python"],
+        "counter": 10
+    },
 ]
 
 
@@ -50,10 +57,22 @@ class TestClient(unittest.TestCase):
 
     def test_ping(self):
         """ ping """
+
+        class R:
+            @asyncio.coroutine
+            def perform_request(self, a, b):
+                yield
+                raise TransportError
+
+            def close(self):
+                pass
+
         @asyncio.coroutine
         def go():
             data = yield from self.cl.ping()
             self.assertTrue(data)
+            self.cl._transport = R()
+            yield from self.cl.ping()
         self.loop.run_until_complete(go())
         self.cl.__repr__()
 
@@ -536,35 +555,181 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
-    # def test_mget(self):
-    #     """ mget """
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.index(self._index, 'testdoc',
-    #                                 MESSAGES[0], '1',
-    #                                 refresh=True)
-    #         yield from self.cl.index(self._index, 'testdoc',
-    #                                 MESSAGES[1], '2',
-    #                                 refresh=True)
-    #         yield from self.cl.index(self._index, 'testdoc',
-    #                                 MESSAGES[2], '3',
-    #                                 refresh=True)
-    #         body = {
-    #             "docs": [
-    #                 {
-    #                     "_type": "testdoc",
-    #                     "_id" : "1"
-    #                 },
-    #                 {
-    #                     "_type": "testdoc",
-    #                     "_id": "2"
-    #                 }
-    #             ]
-    #         }
-    #
-    #         data = yield from self.cl.mget(body, index=self._index)
-    #         import ipdb; ipdb.set_trace()
-    #     self.loop.run_until_complete(go())
+    def test_delete_by_query(self):
+        """ delete_by_query """
+        DQ = {"query": {"term": {"user": "Fedor Poligrafovich"}}}
+
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'testdoc', MESSAGES[3], '1')
+            yield from self.cl.index(self._index, 'testdoc', MESSAGES[2], '2')
+            # data = yield from self.cl.delete(self._index, 'testdoc', '1')
+            # self.assertTrue(data['found'], data)
+
+            data = yield from self.cl.delete_by_query(
+                self._index,
+                'testdoc',
+                q='user:Fedor Poligrafovich'
+            )
+            self.assertIn('_indices', data, data)
+            with self.assertRaises(TransportError):
+                yield from self.cl.delete_by_query(
+                    body=DQ,
+                    allow_no_indices=True,
+                    analyzer='standard',
+                    df='_all',
+                    expand_wildcards='open',
+                    consistency='all',
+                    default_operator='AND',
+                    ignore_unavailable=True,
+                    replication='async',
+                    routing='Fedor',
+                    source='',
+                    timeout='100ms')
+            with self.assertRaises(TypeError):
+                yield from self.cl.delete_by_query(default_operator=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.delete_by_query(default_operator='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.delete_by_query(consistency=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.delete_by_query(consistency='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.delete_by_query(replication=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.delete_by_query(replication='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.delete_by_query(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.delete_by_query(expand_wildcards='1')
+        self.loop.run_until_complete(go())
+
+    def test_msearch(self):
+        """ msearch """
+        queries = [
+            {"_index": self._index},
+            {"query": {"match_all": {}}, "from": 0, "size": 10},
+            {"_index": self._index},
+            {"query": {"match_all": {}}}
+        ]
+
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[1], '2',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[2], '3',
+                                     refresh=True)
+
+            data = yield from self.cl.msearch(queries)
+            self.assertGreater(len(data['responses']), 0, data)
+            data = yield from self.cl.msearch(queries, search_type='count')
+            self.assertGreater(len(data['responses']), 0, data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.msearch(queries, search_type=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.msearch(queries, search_type='1')
+
+        self.loop.run_until_complete(go())
+
+    def test_scroll(self):
+        """ scroll """
+        @asyncio.coroutine
+        def go():
+            pass
+            scroll_id = 'c2Nhbjs2OzMFXNlNyNm5JWUc1'
+            with self.assertRaises(RequestError):
+                yield from self.cl.scroll(scroll_id,
+                                          scroll='1m')
+            with self.assertRaises(RequestError):
+                yield from self.cl.scroll(scroll_id)
+
+        self.loop.run_until_complete(go())
+
+    def test_clear_scroll(self):
+        """ clear_scroll """
+        @asyncio.coroutine
+        def go():
+            pass
+            # scroll_id = 'c2Nhbjs2OzMFXNlNyNm5JWUc1'
+            # yield from self.cl.scroll(scroll_id)
+            # yield from self.cl.clear_scroll(scroll_id)
+
+        self.loop.run_until_complete(go())
+
+    def test_bulk(self):
+        bulks = [
+            {"index": {"_index": self._index, "_type": "type1", "_id": "1"}},
+            {"name": "hiq", "age": 10},
+            {"index": {"_index": self._index, "_type": "type1", "_id": "2"}},
+            {"name": "hiq", "age": 10},
+            {"index": {"_index": self._index, "_type": "type1", "_id": "3"}},
+            {"name": "hiq", "age": 10}
+        ]
+
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.bulk(bulks)
+            self.assertFalse(data['errors'])
+            self.assertEqual(3, len(data['items']), data)
+            data = yield from self.cl.bulk(
+                bulks,
+                consistency='one',
+                refresh=True,
+                routing='hiq',
+                replication='async',
+                timeout='1s'
+            )
+            with self.assertRaises(TypeError):
+                yield from self.cl.bulk(bulks, consistency=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.bulk(bulks, consistency='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.bulk(bulks, replication=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.bulk(bulks, replication='1')
+        self.loop.run_until_complete(go())
+
+    def test_mget(self):
+        """ mget """
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[0], '1', refresh=True)
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[1], '2', refresh=True)
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[2], '3', refresh=True)
+            body = {
+                "docs": [
+                    {"_index": self._index, "_type": "testdoc", "_id": "1"},
+                    {"_index": self._index, "_type": "testdoc", "_id": "2"}
+                ]
+            }
+            data = yield from self.cl.mget(body)
+            self.assertEqual(len(data['docs']), 2)
+            data = yield from self.cl.mget(
+                body,
+                _source_exclude='birthDate',
+                _source_include='user,skills',
+                _source=False,
+                fields='user,skills',
+                realtime=True,
+                refresh=True,
+                preference='random',
+                parent=''
+            )
+            self.assertIn('skills', data['docs'][0]['fields'], data)
+            self.assertIn('user', data['docs'][0]['fields'], data)
+            self.assertIn('skills', data['docs'][0]['_source'], data)
+            self.assertIn('user', data['docs'][0]['_source'], data)
+            yield from self.cl.mget(body, routing='Sidor')
+
+        self.loop.run_until_complete(go())
 
     # def test_(self):
     #     @asyncio.coroutine

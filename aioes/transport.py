@@ -11,7 +11,6 @@ from .connection import Connection
 from .exception import ConnectionError, TransportError
 from .pool import ConnectionPool
 
-
 Endpoint = collections.namedtuple('TCPEndpoint', 'host port')
 
 
@@ -227,7 +226,8 @@ class Transport:
             passed to the connection
         """
         if body is not None:
-            body = json.dumps(body)
+            if not isinstance(body, (str, bytes)):
+                body = json.dumps(body)
             body = body.encode('utf-8')
 
         for attempt in range(self.max_retries + 1):
