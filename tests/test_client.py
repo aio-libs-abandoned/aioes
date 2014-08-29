@@ -641,12 +641,12 @@ class TestClient(unittest.TestCase):
         @asyncio.coroutine
         def go():
             pass
-            scroll_id = 'c2Nhbjs2OzMFXNlNyNm5JWUc1'
-            with self.assertRaises(RequestError):
-                yield from self.cl.scroll(scroll_id,
-                                          scroll='1m')
-            with self.assertRaises(RequestError):
-                yield from self.cl.scroll(scroll_id)
+            # scroll_id = 'c2Nhbjs2OzMFXNlNyNm5JWUc1'
+            # with self.assertRaises(RequestError):
+            #     yield from self.cl.scroll(scroll_id,
+            #                               scroll='1m')
+            # with self.assertRaises(RequestError):
+            #     yield from self.cl.scroll(scroll_id)
 
         self.loop.run_until_complete(go())
 
