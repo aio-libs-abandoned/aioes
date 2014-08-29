@@ -896,8 +896,6 @@ class IndicesClient(NamespacedClient):
             params['field_data'] = bool(field_data)
         if fielddata is not default:
             params['fielddata'] = bool(fielddata)
-        if allow_no_indices is not default:
-            params['allow_no_indices'] = bool(allow_no_indices)
         if ignore_indices is not default:
             params['ignore_indices'] = ignore_indices
         if allow_no_indices is not default:
@@ -947,52 +945,4 @@ class IndicesClient(NamespacedClient):
 
         _, data = yield from self.transport.perform_request(
             'GET', _make_path(index, '_recovery'), params=params)
-        return data
-
-    @asyncio.coroutine
-    def snapshot_index(self, index=None, *,
-                       allow_no_indices=default, expand_wildcards=default,
-                       ignore_indices=default, ignore_unavailable=default):
-        """
-        Explicitly perform a snapshot through the gateway of one or more
-        indices (backup them).
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-gateway-snapshot.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string for all indices
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        """
-        params = {}
-        if id is not default:
-            params['id'] = bool(id)
-        if filter is not default:
-            params['filter'] = bool(filter)
-        if allow_no_indices is not default:
-            params['allow_no_indices'] = bool(allow_no_indices)
-        if ignore_indices is not default:
-            params['ignore_indices'] = ignore_indices
-        if allow_no_indices is not default:
-            params['allow_no_indices'] = bool(allow_no_indices)
-        if expand_wildcards is not default:
-            if not isinstance(expand_wildcards, str):
-                raise TypeError("'expand_wildcards' parameter is not a string")
-            elif expand_wildcards.lower() in ('open', 'closed'):
-                params['expand_wildcards'] = expand_wildcards.lower()
-            else:
-                raise ValueError("'expand_wildcards' parameter should be one"
-                                 " of 'open', 'closed'")
-        if ignore_unavailable is not default:
-            params['ignore_unavailable'] = bool(ignore_unavailable)
-
-        _, data = yield from self.transport.perform_request(
-            'POST', _make_path(index, '_gateway', 'snapshot'), params=params)
         return data

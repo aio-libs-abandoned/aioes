@@ -192,12 +192,12 @@ class TestIndices(unittest.TestCase):
         @asyncio.coroutine
         def go():
             yield from self.cl.index(self._index, 'type', MESSAGE, '1')
-            # yield from self.cl.cluster.health(
-            #     self._index,
-            #     wait_for_status='green')
+            yield from self.cl.cluster.health(
+                self._index,
+                wait_for_status='green')
             data = yield from self.cl.indices.exists_type(
-                self._index, 'type')
-            # self.assertTrue(data)
+                self._index, 'type', allow_no_indices=False)
+            self.assertTrue(data)
             data = yield from self.cl.indices.exists_type(
                 self._index, 'ert', expand_wildcards='open')
             self.assertFalse(data)
@@ -214,69 +214,212 @@ class TestIndices(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
-    # def test_get_settings(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_settings()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_put_settings(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.index(self._index, 'type', MESSAGE, '1')
-    #         # yield from self.cl.indices.put_settings(self._index)
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_status(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.status()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_stats(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.stats()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_segments(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.segments()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_optimize(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.optimize()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_validate_query(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.validate_query()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_clear_cache(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.clear_cache()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_recovery(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.recovery()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_snapshot_index(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         # yield from self.cl.indices.snapshot_index()
-    #         pass
-    #     self.loop.run_until_complete(go())
+    def test_get_settings(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+            yield from self.cl.indices.refresh(self._index)
+            data = yield from self.cl.indices.get_settings()
+            self.assertIn(self._index, data)
+            data = yield from self.cl.indices.get_settings(
+                expand_wildcards='open',
+                ignore_indices='',
+                flat_settings=False,
+                ignore_unavailable=False,
+                local=True)
+            self.assertIn(self._index, data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.get_settings(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.get_settings(expand_wildcards='1')
 
-    # ************************
+        self.loop.run_until_complete(go())
+
+    def test_put_settings(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+            yield from self.cl.indices.refresh(self._index)
+            data = yield from self.cl.indices.put_settings(
+                {"persistent": {}}, self._index)
+            self.assertTrue(data['acknowledged'], data)
+            with self.assertRaises(RequestError):
+                yield from self.cl.indices.put_settings(
+                    {"persistent": {}},
+                    allow_no_indices=True,
+                    expand_wildcards='open',
+                    flat_settings=False,
+                    ignore_unavailable=False,
+                    master_timeout='1s')
+            self.assertTrue(data['acknowledged'], data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.put_settings(
+                    {}, expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.put_settings(
+                    {}, expand_wildcards='1')
+
+        self.loop.run_until_complete(go())
+
+    def test_status(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.status()
+            self.assertIn('indices', data)
+            data = yield from self.cl.indices.status(
+                ignore_indices='',
+                allow_no_indices=True,
+                recovery=False,
+                snapshot=False,
+                operation_threading='',
+                expand_wildcards='open',
+                ignore_unavailable=False,
+                human=True)
+            self.assertIn('_shards', data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.status(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.status(expand_wildcards='1')
+
+        self.loop.run_until_complete(go())
+
+    def test_stats(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.stats()
+            self.assertIn('indices', data, data)
+            data = yield from self.cl.indices.stats(
+                metric='_all',
+                completion_fields='*',
+                docs=1,
+                fielddata_fields='*',
+                fields='*',
+                groups='*',
+                allow_no_indices=True,
+                expand_wildcards='open',
+                ignore_indices=False,
+                ignore_unavailable=True,
+                level='cluster',
+                types='*',
+                human=True)
+            self.assertIn('_all', data, data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.stats(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.stats(expand_wildcards='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.stats(level=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.stats(level='1')
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.stats(metric=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.stats(metric='1')
+        self.loop.run_until_complete(go())
+
+    def test_segments(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.segments()
+            self.assertIn('indices', data, data)
+            self.assertIn('_shards', data, data)
+            data = yield from self.cl.indices.segments(
+                allow_no_indices=True,
+                ignore_indices=True,
+                ignore_unavailable=True,
+                expand_wildcards='open',
+                human=True)
+            self.assertIn('indices', data, data)
+            self.assertIn('_shards', data, data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.segments(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.segments(expand_wildcards='1')
+
+        self.loop.run_until_complete(go())
+
+    def test_optimize(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.optimize()
+            self.assertIn('_shards', data)
+            data = yield from self.cl.indices.optimize(
+                allow_no_indices=True,
+                expand_wildcards='open',
+                ignore_indices=True,
+                ignore_unavailable=True,
+                max_num_segments=0,
+                only_expunge_deletes=True,
+                operation_threading='',
+                wait_for_merge=False,
+                force=True,
+                flush=True)
+            self.assertIn('_shards', data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.optimize(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.optimize(expand_wildcards='1')
+        self.loop.run_until_complete(go())
+
+    def test_validate_query(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.validate_query()
+            self.assertIn('_shards', data)
+            yield from self.cl.indices.validate_query(
+                explain=True,
+                allow_no_indices=True,
+                q='',
+                ignore_indices=True,
+                source='',
+                operation_threading='',
+                expand_wildcards='open',
+                ignore_unavailable=False)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.validate_query(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.validate_query(expand_wildcards='1')
+        self.loop.run_until_complete(go())
+
+    def test_clear_cache(self):
+        @asyncio.coroutine
+        def go():
+            data = yield from self.cl.indices.clear_cache()
+            self.assertIn('_shards', data)
+            yield from self.cl.indices.clear_cache(
+                field_data=True,
+                fielddata=True,
+                recycler=True,
+                id_cache=True,
+                filter_keys='',
+                filter_cache=True,
+                filter=False,
+                fields='',
+                id=False,
+                allow_no_indices=False,
+                ignore_indices=False,
+                ignore_unavailable=True,
+                expand_wildcards='open')
+            self.assertIn('_shards', data)
+            with self.assertRaises(TypeError):
+                yield from self.cl.indices.clear_cache(expand_wildcards=1)
+            with self.assertRaises(ValueError):
+                yield from self.cl.indices.clear_cache(expand_wildcards='1')
+        self.loop.run_until_complete(go())
+
+    def test_recovery(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+            data = yield from self.cl.indices.refresh(self._index)
+            data = yield from self.cl.indices.recovery()
+            self.assertIn(self._index, data)
+            data = yield from self.cl.indices.recovery(
+                active_only=False,
+                detailed=True,
+                human=True)
+        self.loop.run_until_complete(go())
+
     # ************************
     #
     # def test_put_warmer(self):

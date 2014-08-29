@@ -604,10 +604,6 @@ class TestClient(unittest.TestCase):
                 yield from self.cl.delete_by_query(expand_wildcards='1')
         self.loop.run_until_complete(go())
 
-    def test_bulk_body(self):
-        data = self.cl._bulk_body([{'abc': 123}])
-        self.assertEqual('{"abc": 123}\n', data, data)
-
     def test_msearch(self):
         """ msearch """
         queries = [
