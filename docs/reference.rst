@@ -21,13 +21,10 @@ Elasticsearch
       :returns: bool
 
 
-   .. method:: info(*, pretty=default, format=default)
+   .. method:: info()
 
       A :ref:`coroutine <coroutine>` that returns basic info from the
       current cluster.
-
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: bool
 
@@ -36,8 +33,7 @@ Elasticsearch
                      consistency=default, op_type=default, parent=default, \
                      refresh=default, replication=default, routing=default, \
                      timeout=default, timestamp=default, ttl=default, \
-                     version=default, version_type=default, pretty=default, \
-                     format=default)
+                     version=default, version_type=default)
 
       A :ref:`coroutine <coroutine>` that adds or updates a typed JSON
       document in a specific index, making it searchable.
@@ -57,8 +53,6 @@ Elasticsearch
       :param ttl: Expiration time for the document
       :param version: Explicit version number for concurrency control
       :param version_type: Specific version type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -71,7 +65,7 @@ Elasticsearch
                       parent=default, percolate=default, refresh=default, \
                       replication=default, routing=default, timeout=default, \
                       timestamp=default, ttl=default, version=default, \
-                      version_type=default, pretty=default, format=default)
+                      version_type=default)
 
       A :ref:`coroutine <coroutine>` that adds a typed JSON document in a
       specific index, making it searchable.
@@ -93,8 +87,6 @@ Elasticsearch
       :param ttl: Expiration time for the document
       :param version: Explicit version number for concurrency control
       :param version_type: Specific version type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -134,8 +126,7 @@ Elasticsearch
                    _source_exclude=default, _source_include=default, \
                    fields=default, parent=default, preference=default, \
                    realtime=default, refresh=default, routing=default, \
-                   version=default, version_type=default, pretty=default, \
-                   format=default)
+                   version=default, version_type=default)
 
       A :ref:`coroutine <coroutine>` that get a typed JSON document from the
       index based on its id.
@@ -161,8 +152,6 @@ Elasticsearch
       :param routing: Specific routing value
       :param version: Explicit version number for concurrency control
       :param version_type: Explicit version number for concurrency control
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -174,8 +163,7 @@ Elasticsearch
    .. method:: mget(body, index=None, doc_type=None, *, _source=default, \
                     _source_exclude=default, _source_include=default, \
                     fields=default, parent=default, preference=default, \
-                    realtime=default, refresh=default, routing=default, \
-                    pretty=default, format=default)
+                    realtime=default, refresh=default, routing=default)
 
       A :ref:`coroutine <coroutine>` that get multiple documents based on an index, 
       type (optional) and ids.
@@ -199,8 +187,6 @@ Elasticsearch
       :param refresh: Refresh the shard containing the document before
              performing the operation
       :param routing: Specific routing value
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -213,7 +199,7 @@ Elasticsearch
                           _source_exclude=default, _source_include=default, \
                           parent=default, preference=default, realtime=default,\
                           refresh=default, routing=default, version=default, \
-                          version_type=default, pretty=default, format=default)
+                          version_type=default)
 
       A :ref:`coroutine <coroutine>` that get the source of a document by it's 
       index, type and id.
@@ -238,8 +224,6 @@ Elasticsearch
       :param routing: Specific routing value
       :param version: Explicit version number for concurrency control
       :param version_type: Explicit version number for concurrency control
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -254,7 +238,7 @@ Elasticsearch
                       replication=default, retry_on_conflict=default, \
                       routing=default, script=default, timeout=default,\
                       timestamp=default, ttl=default, version=default, \
-                      version_type=default, pretty=default, format=default)
+                      version_type=default)
 
       A :ref:`coroutine <coroutine>` that update a document based on a script or partial data provided.
 
@@ -277,8 +261,6 @@ Elasticsearch
       :param ttl: Expiration time for the document
       :param version: Explicit version number for concurrency control
       :param version_type: Explicit version number for concurrency control
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -300,8 +282,7 @@ Elasticsearch
                       sort=default, source=default, stats=default, \
                       suggest_field=default, suggest_mode=default, \
                       suggest_size=default, suggest_text=default, \
-                      timeout=default, version=default, pretty=default, \
-                      format=default)
+                      timeout=default, version=default)
 
       A :ref:`coroutine <coroutine>` that execute a search query and get back 
       search hits that match the query.
@@ -357,8 +338,6 @@ Elasticsearch
       :param suggest_text: The source text for which the suggestions should be returned
       :param timeout: Explicit operation timeout
       :param version: Specify whether to return document version as part of a hit
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -372,8 +351,7 @@ Elasticsearch
                              expand_wildcards=default,\
                              ignore_unavailable=default, \
                              local=default, preference=default, \
-                             routing=default, pretty=default, \
-                             format=default)
+                             routing=default)
 
       A :ref:`coroutine <coroutine>` that returns the indices and shards that a search
       request would be executed against. This can give useful feedback for working
@@ -394,14 +372,12 @@ Elasticsearch
       :param preference: Specify the node or shard the operation should be
              performed on (default: random)
       :param routing: Specific routing value
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-shards.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-shards.html>`_
 
 
    .. method:: search_template(index=None, doc_type=None, body=None, *, \
@@ -409,8 +385,7 @@ Elasticsearch
                                expand_wildcards=default, \
                                ignore_unavailable=default, preference=default, \
                                routing=default, scroll=default, \
-                               search_type=default, pretty=default, \
-                               format=default)
+                               search_type=default)
 
       A :ref:`coroutine <coroutine>` that accepts a query template and a map of
       key/value pairs to fill in template parameters.
@@ -433,14 +408,12 @@ Elasticsearch
       :param scroll: Specify how long a consistent view of the index should be
              maintained for scrolled search
       :param search_type: Search operation type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/query-dsl-template-query.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-template-query.html>`_
 
 
    .. method:: explain(index, doc_type, id, body=None, *, \
@@ -450,7 +423,7 @@ Elasticsearch
                        df=default, fields=default, lenient=default,\
                        lowercase_expanded_terms=default, parent=default,\
                        preference=default, q=default, routing=default,\
-                       source=default, pretty=default, format=default)
+                       source=default)
 
       A :ref:`coroutine <coroutine>` that computes a score explanation for a 
       query and a specific document. This can give useful feedback whether a 
@@ -483,8 +456,6 @@ Elasticsearch
       :param routing: Specific routing value
       :param source: The URL-encoded query definition (instead of using the
              request body)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -493,8 +464,7 @@ Elasticsearch
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-explain.html>`_
 
 
-   .. method:: scroll(scroll_id, *, scroll=default, pretty=default, \
-                      format=default)
+   .. method:: scroll(scroll_id, *, scroll=default)
 
       A :ref:`coroutine <coroutine>` that scroll a search request created by 
       specifying the scroll parameter
@@ -502,8 +472,6 @@ Elasticsearch
       :param scroll_id: The scroll ID
       :param scroll: Specify how long a consistent view of the index should be
              maintained for scrolled search
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -512,8 +480,7 @@ Elasticsearch
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
 
 
-   .. method:: clear_scroll(scroll_id=None, body=None, *, pretty=default,\
-                            format=default)
+   .. method:: clear_scroll(scroll_id=None, body=None)
 
       A :ref:`coroutine <coroutine>` that clear the scroll request created
       by specifying the scroll parameter to search.
@@ -521,8 +488,6 @@ Elasticsearch
       :param scroll_id: The scroll ID or a list of scroll IDs
       :param body: A comma-separated list of scroll IDs to clear if none was
              specified via the scroll_id parameter
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -535,7 +500,7 @@ Elasticsearch
                       parent=default, refresh=default,\
                       replication=default, routing=default, \
                       timeout=default, version=default, \
-                      version_type=default, pretty=default, format=default)
+                      version_type=default)
 
       A :ref:`coroutine <coroutine>` that delete a typed JSON document from
       a specific index based on its id.
@@ -551,8 +516,6 @@ Elasticsearch
       :param timeout: Explicit operation timeout
       :param version: Explicit version number for concurrency control
       :param version_type: Specific version type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -565,7 +528,7 @@ Elasticsearch
                      allow_no_indices=default, expand_wildcards=default,\
                      ignore_unavailable=default, min_score=default,\
                      preference=default, q=default, routing=default,
-                     source=default, pretty=default, format=default)
+                     source=default)
 
       A :ref:`coroutine <coroutine>` that execute a query and get the 
       number of matches for that query.
@@ -587,8 +550,6 @@ Elasticsearch
       :param q: Query in the Lucene query string syntax
       :param routing: Specific routing value
       :param source: The URL-encoded query definition (instead of using the request body)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -599,7 +560,7 @@ Elasticsearch
 
    .. method:: bulk(body, index=None, doc_type=None, *, consistency=default,\
                     refresh=default, routing=default, replication=default, \
-                    timeout=default, pretty=default, format=default)
+                    timeout=default)
 
       A :ref:`coroutine <coroutine>` that perform many index/delete 
       operations in a single API call.
@@ -614,8 +575,6 @@ Elasticsearch
       :param routing: Specific routing value
       :param replication: Explicitly set the replication type (default: sync)
       :param timeout: Explicit operation timeout
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -625,7 +584,7 @@ Elasticsearch
 
 
    .. method:: msearch(body, index=None, doc_type=None, *, \
-                       search_type=default, pretty=default, format=default)
+                       search_type=default)
 
       A :ref:`coroutine <coroutine>` that executes several search requests
       within the same API.
@@ -636,8 +595,6 @@ Elasticsearch
       :param index: A comma-separated list of index names to use as default
       :param doc_type: A comma-separated list of document types to use as default
       :param search_type: Search operation type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -652,8 +609,7 @@ Elasticsearch
                                df=default, expand_wildcards=default, \
                                ignore_unavailable=default, q=default, \
                                replication=default, routing=default, \
-                               source=default, timeout=default, pretty=default, \
-                               format=default)
+                               source=default, timeout=default)
 
       A :ref:`coroutine <coroutine>` that delete documents from one or more 
       indices and one or more types based on a query.
@@ -682,8 +638,6 @@ Elasticsearch
       :param source: The URL-encoded query definition (instead of using the
              request body)
       :param timeout: Explicit operation timeout
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -695,8 +649,7 @@ Elasticsearch
 
    .. method:: suggest(body, index=None, *, allow_no_indices=default, \
                        expand_wildcards=default, ignore_unavailable=default,\
-                       preference=default, routing=default, source, \
-                       pretty=default, format=default)
+                       preference=default, routing=default, source)
 
       A :ref:`coroutine <coroutine>` that suggests similar looking terms based on a provided
       text by using a suggester.
@@ -715,8 +668,6 @@ Elasticsearch
              performed on (default: random)
       :param routing: Specific routing value
       :param source: The URL-encoded request definition (instead of using request body)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -730,7 +681,7 @@ Elasticsearch
                          ignore_unavailable=default, percolate_format=default,\
                          percolate_index=default, percolate_type=default,\
                          preference=default, routing=default, version=default,\
-                         version_type=default, pretty=default, format=default)
+                         version_type=default)
 
       A :ref:`coroutine <coroutine>` that allows to register queries against 
       an index, and then send percolate requests which include a doc, and getting 
@@ -761,8 +712,6 @@ Elasticsearch
       :param routing: A comma-separated list of specific routing values
       :param version: Explicit version number for concurrency control
       :param version_type: Specific version type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -773,8 +722,7 @@ Elasticsearch
 
    .. method:: mpercolate(body, index=None, doc_type=None, *, \
                           allow_no_indices=default, expand_wildcards=default, \
-                          ignore_unavailable=default, pretty=default, \
-                          format=default)
+                          ignore_unavailable=default)
 
       A :ref:`coroutine <coroutine>` that allows to register queries against 
       an index, and then send percolate requests which include a doc, and getting
@@ -793,8 +741,6 @@ Elasticsearch
              indices that are open, closed or both., default 'open'
       :param ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -810,8 +756,7 @@ Elasticsearch
                                percolate_index=default, \
                                percolate_type=default, preference=default, \
                                routing=default, version=default, \
-                               version_type=default, pretty=default, \
-                               format=default)
+                               version_type=default)
 
       A :ref:`coroutine <coroutine>` that allows to register queries against an 
       index, and then send percolate requests which include a doc, and getting back 
@@ -840,8 +785,6 @@ Elasticsearch
       :param routing: A comma-separated list of specific routing values
       :param version: Explicit version number for concurrency control
       :param version_type: Specific version type
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -859,8 +802,7 @@ Elasticsearch
                    search_from=default, search_indices=default, \
                    search_query_hint=default, search_scroll=default, \
                    search_size=default, search_source=default, \
-                   search_type=default, search_types=default, stop_words=default,\
-                   pretty=default, format=default)
+                   search_type=default, search_types=default, stop_words=default)
 
       A :ref:`coroutine <coroutine>` which get documents that are "like" a specified document
 
@@ -896,8 +838,6 @@ Elasticsearch
       :param search_types: A comma-separated list of types to perform the query
              against (default: the same type as the document)
       :param stop_words: A list of stop words to be ignored
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -910,7 +850,7 @@ Elasticsearch
                           field_statistics=default, fields=default, \
                           offsets=default, parent=default, payloads=default,\
                           positions=default, preference=default, routing=default,\
-                          term_statistics=default, pretty=default, format=default)
+                          term_statistics=default)
 
       A :ref:`coroutine <coroutine>` that returns information and statistics on 
       terms in the fields of a particular document as stored in the index.
@@ -932,8 +872,6 @@ Elasticsearch
       :param routing: Specific routing value.
       :param term_statistics: Specifies if total term frequency and document
              frequency should be returned., default False
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -947,8 +885,7 @@ Elasticsearch
                             ids=default, offsets=default, parent=default,
                             payloads=default, positions=default,
                             preference=default, routing=default,
-                            term_statistics=default, pretty=default,
-                            format=default)
+                            term_statistics=default)
 
       A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on 
       an index, type and id.
@@ -987,8 +924,6 @@ Elasticsearch
              frequency should be returned. Applies to all returned documents
              unless otherwise specified in body "params" or "docs". (default
              False)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -998,7 +933,7 @@ Elasticsearch
 
 
    .. method:: benchmark(index=None, doc_type=None, body=None, *, \
-                         verbose=default, pretty=default, format=default)
+                         verbose=default)
 
       A :ref:`coroutine <coroutine>` that provides a standard mechanism for 
       submitting queries and measuring their performance relative to one another.
@@ -1009,14 +944,12 @@ Elasticsearch
       :param body: The search definition using the Query DSL
       :param verbose: Specify whether to return verbose statistics about each
              iteration (default: false)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-benchmark.html>`_
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-benchmark.html>`_
 
 
 IndicesClient
@@ -1029,8 +962,7 @@ IndicesClient
 
    .. method:: analyze(index=None, body=None, *, analyzer=default, \
                        char_filters=default, field=default, filters=default,\
-                       prefer_local=default, text=default, tokenizer=default,\
-                       pretty=default, format=default)
+                       prefer_local=default, text=default, tokenizer=default)
 
       A :ref:`coroutine <coroutine>` that make analysis process on a text
       and return the tokens breakdown of the text.
@@ -1048,8 +980,6 @@ IndicesClient
       :param text: The text on which the analysis should be performed (when
              request body is not used)
       :param tokenizer: The name of the tokenizer to use for the analysis
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -1060,7 +990,7 @@ IndicesClient
 
 
    .. method:: create(index, body=None, *, timeout=default, \
-                      master_timeout=default, pretty=default, format=default)
+                      master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that creates an index in Elasticsearch
 
@@ -1068,8 +998,6 @@ IndicesClient
       :param body: The configuration for the index (`settings` and `mappings`)
       :param master_timeout: Specify timeout for connection to master
       :param timeout: Explicit operation timeout
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -1080,7 +1008,7 @@ IndicesClient
 
    .. method:: open(index, *, timeout=default, master_timeout=default, \
                     allow_no_indices=default, expand_wildcards=default, \
-                    ignore_unavailable=default, pretty=default, format=default)
+                    ignore_unavailable=default)
 
       A :ref:`coroutine <coroutine>` that open a closed index to make it
       available for search.
@@ -1095,8 +1023,6 @@ IndicesClient
              that are open, closed or both.
       :param ignore_unavailable: Whether specified concrete indices should be ignored
              when unavailable (missing or closed)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
@@ -1107,8 +1033,7 @@ IndicesClient
 
    .. method:: close(index, *, allow_no_indices=default, \
                      expand_wildcards=default, ignore_unavailable=default,\
-                     master_timeout=default, timeout=default, pretty=default,\
-                     format=default)
+                     master_timeout=default, timeout=default)
 
       A :ref:`coroutine <coroutine>` that close an index to remove it's overhead from
       the cluster. Closed index is blocked for read/write operations.
@@ -1123,8 +1048,6 @@ IndicesClient
              indices that are open, closed or both., default u'open'
       :param ignore_unavailable: Whether specified concrete indices should be ignored
              when unavailable (missing or closed)
-      :param pretty: the JSON returned will be pretty formatted (use it for debugging only!)
-      :param format: Format of the output, default 'detailed'
 
       :returns: resulting JSON
 
