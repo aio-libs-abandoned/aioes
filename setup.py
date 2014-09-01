@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 
-install_requires = ['aiohttp>=0.9']
+install_requires = ['aiohttp>=0.9.1']
 
 PY_VER = sys.version_info
 
@@ -59,4 +59,4 @@ setup(name='aioes',
       license='BSD',
       packages=find_packages(),
       install_requires=install_requires,
-      include_package_data = True)
+      include_package_data=True)
