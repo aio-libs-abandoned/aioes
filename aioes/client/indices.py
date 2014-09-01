@@ -50,21 +50,6 @@ class IndicesClient(NamespacedClient):
         """
         Explicitly refresh one or more index, making all operations performed
         since the last refresh available for search.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-refresh.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones, default u'none'
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param force: Force a refresh even if not required
         """
         params = {}
         if force is not default:
@@ -97,26 +82,6 @@ class IndicesClient(NamespacedClient):
               ignore_unavailable=default):
         """
         Explicitly flush one or more indices.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-flush.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string for all indices
-        :param force: Whether a flush should be forced even if it is not
-               necessarily needed ie. if no changes will be committed to
-               the index.
-        :param full: If set to true a new index writer is created and settings
-               that have been changed related to the index writer will be
-               refreshed.
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
         """
         params = {}
         if force is not default:
@@ -257,19 +222,6 @@ class IndicesClient(NamespacedClient):
                ignore_unavailable=default, local=default):
         """
         Return a boolean indicating whether given index exists.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-indices-exists.html>`_
-
-        :param index: A list of indices to check
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both., default u'open'
-        :param ignore_unavailable: Whether specified concrete indices should be
-               ignored when unavailable (missing or closed)
-        :param local: Return local information, do not retrieve the state from
-               master node (default: false)
         """
         params = {}
         if allow_no_indices is not default:
@@ -301,23 +253,6 @@ class IndicesClient(NamespacedClient):
                     local=default):
         """
         Check if a type/types exists in an index/indices.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-types-exists.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` to
-               check the types across all indices
-        :param doc_type: A comma-separated list of document types to check
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param local: Return local information, do not retrieve the state from
-               master node (default: false)
         """
         params = {}
         if allow_no_indices is not default:
@@ -406,21 +341,6 @@ class IndicesClient(NamespacedClient):
                      local=default):
         """
         Retrieve settings for one or more (or all) indices.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-get-settings.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param name: The name of the settings that should be included
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones, default u'none'
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param flat_settings: Return settings in flat format (default: false)
-        :param local: Return local information, do not retrieve the state from
-               master node (default: false)
         """
         params = {}
         if ignore_indices is not default:
@@ -452,22 +372,6 @@ class IndicesClient(NamespacedClient):
                      master_timeout=default):
         """
         Change specific index level settings in real time.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-update-settings.html>`_
-
-        :param body: The index settings to be updated
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both., default
-               u'open'
-        :param flat_settings: Return settings in flat format (default: false)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param master_timeout: Specify timeout for connection to master
         """
         params = {}
         if allow_no_indices is not default:
@@ -512,24 +416,6 @@ class IndicesClient(NamespacedClient):
                human=default):
         """
         Get a comprehensive status information of one or more indices.
-        `<http://elasticsearch.org/guide/reference/api/admin-indices-_/>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows
-               to ignore `missing` ones, default u'none'
-        :param ignore_unavailable: Whether specified concrete indices
-               should be ignored when unavailable (missing or closed)
-        :param operation_threading: TODO: ?
-        :param recovery: Return information about shard recovery
-        :param snapshot: For snapshot status set it to true
-        :param human: Whether to return time and byte values in human-readable
-               format.
         """
         params = {}
         if ignore_indices is not default:
@@ -570,39 +456,6 @@ class IndicesClient(NamespacedClient):
               types=default):
         """
         Retrieve statistics on different operations happening on an index.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-stats.html>`_
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param metric: A comma-separated list of metrics to display. Possible
-               values: "_all", "completion", "docs", "fielddata",
-               "filter_cache", "flush", "get", "id_cache", "indexing", "merge",
-               "percolate", "refresh", "search", "segments", "store", "warmer"
-        :param completion_fields: A comma-separated list of fields for
-               `completion` metric (supports wildcards)
-        :param docs: the number of docs / deleted docs (docs not yet merged
-               out). Note, affected by refreshing the index
-        :param fielddata_fields: A comma-separated list of fields for
-               `fielddata` metric (supports wildcards)
-        :param fields: A comma-separated list of fields for `fielddata` and
-               `completion` metric (supports wildcards)
-        :param groups: A comma-separated list of search groups for `search`
-               statistics
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-            expression resolves into no concrete indices. (This includes
-             `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows
-               to ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param human: Whether to return time and byte values in human-readable
-               format.
-        :param level: Return stats aggregated at cluster, index or shard level.
-               ("cluster", "indices" or "shards", default: "indices")
-        :param types: A comma-separated list of document types for the
-               `indexing` index metric
         """
         params = {}
         if completion_fields is not default:
@@ -672,22 +525,6 @@ class IndicesClient(NamespacedClient):
         """
         Provide low level segments information that a Lucene index (shard
         level) is built with.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-segments.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones, default u'none'
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param human: Whether to return time and byte values in human-readable
-               format (default: false)
         """
         params = {}
         if ignore_indices is not default:
@@ -720,29 +557,6 @@ class IndicesClient(NamespacedClient):
                  wait_for_merge=default, force=default):
         """
         Explicitly optimize one or more indices through an API.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-optimize.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param flush: Specify whether the index should be flushed after
-            performing the operation (default: true)
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones, default u'none'
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param max_num_segments: The number of segments the index should be
-               merged into (default: dynamic)
-        :param only_expunge_deletes: Specify whether the operation should only
-               expunge deleted documents
-        :param operation_threading: TODO: ?
-        :param wait_for_merge: Specify whether the request should block until
-               the merge process is finished (default: true)
         """
         params = {}
         if force is not default:
@@ -784,29 +598,6 @@ class IndicesClient(NamespacedClient):
                        q=default, source=default):
         """
         Validate a potentially expensive query without executing it.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/search-validate.html>`_
-
-        :param index: A comma-separated list of index names to restrict the
-               operation; use `_all` or empty string to perform the operation
-               on all indices
-        :param doc_type: A comma-separated list of document types to restrict
-               the operation; leave empty to perform the operation on all types
-        :param body: The query definition
-        :param explain: Return detailed information about the error
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should
-               be ignored when unavailable (missing or closed)
-        :param operation_threading: TODO: ?
-        :param q: Query in the Lucene query string syntax
-        :param source: The URL-encoded query definition (instead of using the
-               request body)
         """
         params = {}
         if explain is not default:
@@ -849,33 +640,6 @@ class IndicesClient(NamespacedClient):
         """
         Clear either all caches or specific cached associated with one or
         more indices.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-clearcache.html>`_
-
-        :param index: A comma-separated list of index name to limit the
-               operation
-        :param field_data: Clear field data
-        :param fielddata: Clear field data
-        :param fields: A comma-separated list of fields to clear when using
-               the `field_data` parameter (default: all)
-        :param filter: Clear filter caches
-        :param filter_cache: Clear filter caches
-        :param filter_keys: A comma-separated list of keys to clear when using
-               the `filter_cache` parameter (default: all)
-        :param id: Clear ID caches for parent/child
-        :param id_cache: Clear ID caches for parent/child
-        :param allow_no_indices: Whether to ignore if a wildcard indices
-               expression resolves into no concrete indices. (This includes
-               `_all` string or when no indices have been specified)
-        :param expand_wildcards: Whether to expand wildcard expression to
-               concrete indices that are open, closed or both.
-        :param ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones (default: none)
-        :param ignore_unavailable: Whether specified concrete indices should be
-               ignored when unavailable (missing or closed)
-        :param index: A comma-separated list of index name to limit the
-               operation
-        :param recycler: Clear the recycler cache
         """
         params = {}
         if recycler is not default:
@@ -923,17 +687,6 @@ class IndicesClient(NamespacedClient):
         The indices recovery API provides insight into on-going shard
         recoveries. Recovery status may be reported for specific indices, or
         cluster-wide.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/master/indices-recovery.html>`_
-
-        :param index: A comma-separated list of index names; use `_all` or
-               empty string to perform the operation on all indices
-        :param active_only: Display only those recoveries that are currently
-               on-going (default: 'false')
-        :param detailed: Whether to display detailed information about shard
-               recovery (default: 'false')
-        :param human: Whether to return time and byte values in human-readable
-               format. (default: 'false')
         """
         params = {}
         if active_only is not default:

@@ -26,7 +26,7 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that returns basic info from the
       current cluster.
 
-      :returns: bool
+      :returns: resulting JSON
 
 
    .. method:: index(index, doc_type, body, id=None, *, \
@@ -527,7 +527,7 @@ Elasticsearch
    .. method:: count(index=None, doc_type=None, body=None, *, \
                      allow_no_indices=default, expand_wildcards=default,\
                      ignore_unavailable=default, min_score=default,\
-                     preference=default, q=default, routing=default,
+                     preference=default, q=default, routing=default,\
                      source=default)
 
       A :ref:`coroutine <coroutine>` that execute a query and get the 
@@ -881,10 +881,10 @@ Elasticsearch
 
 
    .. method:: mtermvectors(index=None, doc_type=None, body=None, *, \
-                            field_statistics=default, fields=default,
-                            ids=default, offsets=default, parent=default,
-                            payloads=default, positions=default,
-                            preference=default, routing=default,
+                            field_statistics=default, fields=default, \
+                            ids=default, offsets=default, parent=default,\
+                            payloads=default, positions=default,\
+                            preference=default, routing=default,\
                             term_statistics=default)
 
       A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on 
@@ -1081,3 +1081,392 @@ IndicesClient
       .. Seealso::
 
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-refresh.html>`_
+
+   .. method:: flush(index=None, *,\
+                     force=default, full=default, allow_no_indices=default,\
+                     expand_wildcards=default, ignore_indices=default,\
+                     ignore_unavailable=default)
+
+      A :ref:`coroutine <coroutine>` that flush one or more indices.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param force: Whether a flush should be forced even if it is not
+             necessarily needed ie. if no changes will be committed to
+             the index.
+      :param full: If set to true a new index writer is created and settings
+             that have been changed related to the index writer will be
+             refreshed.
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones (default: none)
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-flush.html>`_
+
+   .. method:: exists(index, *, \
+               allow_no_indices=default, expand_wildcards=default, \
+               ignore_unavailable=default, local=default)
+
+      A :ref:`coroutine <coroutine>` that return a boolean indicating
+      whether given index exists.
+
+      :param index: A list of indices to check
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both., default u'open'
+      :param ignore_unavailable: Whether specified concrete indices should be
+             ignored when unavailable (missing or closed)
+      :param local: Return local information, do not retrieve the state from
+             master node (default: false)
+
+      :returns: resulting bool
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-indices-exists.html>`_
+
+   .. method:: exists_type(index, doc_type, *, \
+                           allow_no_indices=default, expand_wildcards=default,\
+                           ignore_indices=default, ignore_unavailable=default,\
+                           local=default)
+
+      A :ref:`coroutine <coroutine>` that check if a type/types exists
+      in an index/indices.
+
+      :param index: A comma-separated list of index names; use `_all` to
+               check the types across all indices
+      :param doc_type: A comma-separated list of document types to check
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones (default: none)
+      :param ignore_unavailable: Whether specified concrete indices should
+               be ignored when unavailable (missing or closed)
+      :param local: Return local information, do not retrieve the state from
+               master node (default: false)
+
+      :returns: resulting bool
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>`_
+
+   .. method:: get_settings(index=None, name=None, *, \
+                            expand_wildcards=default, ignore_indices=default,\
+                            ignore_unavailable=default, flat_settings=default,\
+                            local=default)
+
+      A :ref:`coroutine <coroutine>` that retrieve settings for one or
+      more (or all) indices.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param name: The name of the settings that should be included
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones, default u'none'
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param flat_settings: Return settings in flat format (default: false)
+      :param local: Return local information, do not retrieve the state from
+             master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-settings.html>`_
+
+   .. method:: put_settings(body, index=None, *, \
+                            allow_no_indices=default,\
+                            expand_wildcards=default,\
+                            flat_settings=default,\
+                            ignore_unavailable=default,\
+                            master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that change specific index level
+      settings in real time.
+
+      :param body: The index settings to be updated
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both., default
+             u'open'
+      :param flat_settings: Return settings in flat format (default: false)
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param master_timeout: Specify timeout for connection to master
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-update-settings.html>`_
+
+   .. method:: status(index=None, *, \
+                      allow_no_indices=default, expand_wildcards=default,\
+                      ignore_indices=default, ignore_unavailable=default,\
+                      operation_threading=default, recovery=default, \
+                      snapshot=default, human=default)
+
+      A :ref:`coroutine <coroutine>` that get a comprehensive status
+      information of one or more indices.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows
+             to ignore `missing` ones, default u'none'
+      :param ignore_unavailable: Whether specified concrete indices
+             should be ignored when unavailable (missing or closed)
+      :param operation_threading: TODO: ?
+      :param recovery: Return information about shard recovery
+      :param snapshot: For snapshot status set it to true
+      :param human: Whether to return time and byte values in human-readable
+             format.
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-status.html>`_
+
+   .. method:: stats(index=None, *, metric=default, \
+                     completion_fields=default, docs=default, \
+                     fielddata_fields=default, fields=default, \
+                     groups=default, allow_no_indices=default, \
+                     expand_wildcards=default, ignore_indices=default,\
+                     ignore_unavailable=default, human=default, \
+                     level=default, types=default)
+
+      A :ref:`coroutine <coroutine>` that retrieve statistics on different
+      operations happening on an index.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param metric: A comma-separated list of metrics to display. Possible
+             values: "_all", "completion", "docs", "fielddata",
+             "filter_cache", "flush", "get", "id_cache", "indexing", "merge",
+             "percolate", "refresh", "search", "segments", "store", "warmer"
+      :param completion_fields: A comma-separated list of fields for
+             `completion` metric (supports wildcards)
+      :param docs: the number of docs / deleted docs (docs not yet merged
+             out). Note, affected by refreshing the index
+      :param fielddata_fields: A comma-separated list of fields for
+             `fielddata` metric (supports wildcards)
+      :param fields: A comma-separated list of fields for `fielddata` and
+             `completion` metric (supports wildcards)
+      :param groups: A comma-separated list of search groups for `search`
+             statistics
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows
+             to ignore `missing` ones (default: none)
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param human: Whether to return time and byte values in human-readable
+             format.
+      :param level: Return stats aggregated at cluster, index or shard level.
+             ("cluster", "indices" or "shards", default: "indices")
+      :param types: A comma-separated list of document types for the
+               `indexing` index metric
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-stats.html>`_
+
+   .. method:: segments(index=None, *, \
+                        allow_no_indices=default, expand_wildcards=default,\
+                        ignore_indices=default, ignore_unavailable=default,\
+                        human=default)
+
+      A :ref:`coroutine <coroutine>` that provide low level segments
+      information that a Lucene index (shard level) is built with.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones, default u'none'
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param human: Whether to return time and byte values in human-readable
+             format (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-segments.html>`_
+
+   .. method:: optimize(index=None, *, \
+                 flush=default, allow_no_indices=default, \
+                 expand_wildcards=default, ignore_indices=default, \
+                 ignore_unavailable=default, max_num_segments=default, \
+                 only_expunge_deletes=default, operation_threading=default,\
+                 wait_for_merge=default, force=default)
+
+      A :ref:`coroutine <coroutine>` that explicitly optimize one or more
+      indices through an API.
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param flush: Specify whether the index should be flushed after
+              performing the operation (default: true)
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones, default u'none'
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param max_num_segments: The number of segments the index should be
+             merged into (default: dynamic)
+      :param only_expunge_deletes: Specify whether the operation should only
+             expunge deleted documents
+      :param operation_threading: TODO: ?
+      :param wait_for_merge: Specify whether the request should block until
+             the merge process is finished (default: true)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html>`_
+
+   .. method:: recovery(index=None, *, \
+                        active_only=default, detailed=default, human=default)
+
+      A :ref:`coroutine <coroutine>` that provides insight into on-going shard
+      recoveries. Recovery status may be reported for specific indices, or
+      cluster-wide..
+
+      :param index: A comma-separated list of index names; use `_all` or
+             empty string to perform the operation on all indices
+      :param active_only: Display only those recoveries that are currently
+             on-going (default: 'false')
+      :param detailed: Whether to display detailed information about shard
+             recovery (default: 'false')
+      :param human: Whether to return time and byte values in human-readable
+             format. (default: 'false')
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-recovery.html>`_
+
+   .. method:: clear_cache(index=None, *, \
+                           field_data=default, fielddata=default, \
+                           fields=default, filter=default, \
+                           filter_cache=default, filter_keys=default,\
+                           id=default, id_cache=default, \
+                           allow_no_indices=default, expand_wildcards=default,\
+                           ignore_indices=default, ignore_unavailable=default,\
+                           recycler=default)
+
+      A :ref:`coroutine <coroutine>` that clear either all caches or
+      specific cached associated with one or more indices.
+
+      :param index: A comma-separated list of index name to limit the
+             operation
+      :param field_data: Clear field data
+      :param fielddata: Clear field data
+      :param fields: A comma-separated list of fields to clear when using the
+             `field_data` parameter (default: all)
+      :param filter: Clear filter caches
+      :param filter_cache: Clear filter caches
+      :param filter_keys: A comma-separated list of keys to clear when using
+             the `filter_cache` parameter (default: all)
+      :param id: Clear ID caches for parent/child
+      :param id_cache: Clear ID caches for parent/child
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones (default: none)
+      :param ignore_unavailable: Whether specified concrete indices should be
+             ignored when unavailable (missing or closed)
+      :param index: A comma-separated list of index name to limit the
+             operation
+      :param recycler: Clear the recycler cache
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-clearcache.html>`_
+
+   .. method:: validate_query(index=None, doc_type=None, body=None, *, \
+                       explain=default, allow_no_indices=default,\
+                       expand_wildcards=default, ignore_indices=default,\
+                       ignore_unavailable=default,\
+                       operation_threading=default,\
+                       q=default, source=default)
+
+      A :ref:`coroutine <coroutine>` that validate a potentially expensive
+      query without executing it.
+
+      :param index: A comma-separated list of index names to restrict the
+             operation; use `_all` or empty string to perform the operation
+             on all indices
+      :param doc_type: A comma-separated list of document types to restrict
+             the operation; leave empty to perform the operation on all types
+      :param body: The query definition
+      :param explain: Return detailed information about the error
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+             expression resolves into no concrete indices. (This includes
+             `_all` string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+             concrete indices that are open, closed or both.
+      :param ignore_indices: When performed on multiple indices, allows to
+             ignore `missing` ones (default: none)
+      :param ignore_unavailable: Whether specified concrete indices should
+             be ignored when unavailable (missing or closed)
+      :param operation_threading: TODO: ?
+      :param q: Query in the Lucene query string syntax
+      :param source: The URL-encoded query definition (instead of using the
+             request body)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html>`_
