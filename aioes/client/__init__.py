@@ -6,6 +6,7 @@ from aioes.transport import Transport
 from .utils import _make_path
 from aioes.exception import (NotFoundError, TransportError)
 
+
 default = object()
 
 
