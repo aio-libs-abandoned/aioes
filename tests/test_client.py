@@ -773,9 +773,9 @@ class TestClient(unittest.TestCase):
                                      refresh=True)
             b = {
                 "my-suggestion": {
-                    "text" : "trying out",
-                    "completion" : {
-                        "field" : "message"
+                    "text": "trying out",
+                    "completion": {
+                        "field": "message"
                     }
                 }
             }

@@ -447,7 +447,7 @@ class TestIndices(unittest.TestCase):
             mapping = {
                 'testdoc': {
                     'properties': {
-                        'message' : {
+                        'message': {
                             'type': 'string',
                         }
                     }
@@ -478,7 +478,6 @@ class TestIndices(unittest.TestCase):
                 'testdoc',
             )
             self.assertFalse(data)
-
 
         self.loop.run_until_complete(go())
     #
