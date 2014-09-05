@@ -731,6 +731,65 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_suggest(self):
+        """ search """
+        @asyncio.coroutine
+        def go():
+            mapping = {
+                "testdoc": {
+                    "properties": {
+                        "birthDate": {
+                            "type": "date",
+                            "format": "dateOptionalTime"
+                        },
+                        "counter": {
+                            "type": "long"
+                        },
+                        # this one is different
+                        "message": {
+                            "type": "completion"
+                        },
+                        "skills": {
+                            "type": "string"
+                        },
+                        "user": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+
+            yield from self.cl.indices.create(self._index)
+            yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[1], '2',
+                                     refresh=True)
+            b = {
+                "my-suggestion": {
+                    "text" : "trying out",
+                    "completion" : {
+                        "field" : "message"
+                    }
+                }
+            }
+
+            data = yield from self.cl.suggest(
+                self._index,
+                body=b,
+            )
+            results = data['my-suggestion'][0]['options']
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0]['text'], 'trying out Elasticsearch')
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():

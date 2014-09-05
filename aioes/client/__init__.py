@@ -954,42 +954,34 @@ class Elasticsearch:
             params=params, body=body)
 
         return data
-    #
-    # @asyncio.coroutine
-    # def suggest(self, body, index=None, *,
-    #             allow_no_indices=default, expand_wildcards=default,
-    #             ignore_unavailable=default, preference=default,
-    #             routing=default, source):
-    #     """
-    #     The suggest feature suggests similar looking terms based on a
-    #     provided text by using a suggester.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if consistency is not default:
-    #         if not isinstance(consistency, str):
-    #             raise TypeError("'consistency' parameter is not a string")
-    #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency.lower()
-    #         else:
-    #             raise ValueError("'consistency' parameter should be one of "
-    #                              "'one', 'quorum', 'all'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if source is not default:
-    #         params['source'] = source
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'POST',
-    #         _make_path(index, '_suggest'),
-    #         params=params, body=body)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def suggest(self, index, body, *,
+                allow_no_indices=default, expand_wildcards=default,
+                ignore_unavailable=default, preference=default,
+                routing=default, source=default):
+        """
+        The suggest feature suggests similar looking terms based on a
+        provided text by using a suggester.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if source is not default:
+            params['source'] = source
+
+        _, data = yield from self.transport.perform_request(
+            'POST',
+            _make_path(index, '_suggest'),
+            params=params, body=body)
+
+        return data
     #
     # @asyncio.coroutine
     # def percolate(self, index, doc_type, id=None, body=None, *,
