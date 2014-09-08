@@ -165,7 +165,7 @@ Elasticsearch
                     fields=default, parent=default, preference=default, \
                     realtime=default, refresh=default, routing=default)
 
-      A :ref:`coroutine <coroutine>` that get multiple documents based on an index, 
+      A :ref:`coroutine <coroutine>` that get multiple documents based on an index,
       type (optional) and ids.
 
       :param body: Document identifiers; can be either `docs` (containing full
@@ -201,7 +201,7 @@ Elasticsearch
                           refresh=default, routing=default, version=default, \
                           version_type=default)
 
-      A :ref:`coroutine <coroutine>` that get the source of a document by it's 
+      A :ref:`coroutine <coroutine>` that get the source of a document by it's
       index, type and id.
 
       :param index: The name of the index
@@ -284,7 +284,7 @@ Elasticsearch
                       suggest_size=default, suggest_text=default, \
                       timeout=default, version=default)
 
-      A :ref:`coroutine <coroutine>` that execute a search query and get back 
+      A :ref:`coroutine <coroutine>` that execute a search query and get back
       search hits that match the query.
 
       :param index: A comma-separated list of index names to search; use `_all`
@@ -425,8 +425,8 @@ Elasticsearch
                        preference=default, q=default, routing=default,\
                        source=default)
 
-      A :ref:`coroutine <coroutine>` that computes a score explanation for a 
-      query and a specific document. This can give useful feedback whether a 
+      A :ref:`coroutine <coroutine>` that computes a score explanation for a
+      query and a specific document. This can give useful feedback whether a
       document matches or didn't match a specific query.
 
       :param index: The name of the index
@@ -466,7 +466,7 @@ Elasticsearch
 
    .. method:: scroll(scroll_id, *, scroll=default)
 
-      A :ref:`coroutine <coroutine>` that scroll a search request created by 
+      A :ref:`coroutine <coroutine>` that scroll a search request created by
       specifying the scroll parameter
 
       :param scroll_id: The scroll ID
@@ -530,7 +530,7 @@ Elasticsearch
                      preference=default, q=default, routing=default,\
                      source=default)
 
-      A :ref:`coroutine <coroutine>` that execute a query and get the 
+      A :ref:`coroutine <coroutine>` that execute a query and get the
       number of matches for that query.
 
       :param index: A comma-separated list of indices to restrict the results
@@ -543,7 +543,7 @@ Elasticsearch
              indices that are open, closed or both., default 'open'
       :param ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param min_score: Include only documents with a specific `_score` value 
+      :param min_score: Include only documents with a specific `_score` value
              in the result
       :param preference: Specify the node or shard the operation should be
              performed on (default: random)
@@ -562,7 +562,7 @@ Elasticsearch
                     refresh=default, routing=default, replication=default, \
                     timeout=default)
 
-      A :ref:`coroutine <coroutine>` that perform many index/delete 
+      A :ref:`coroutine <coroutine>` that perform many index/delete
       operations in a single API call.
 
       :param body: The operation definition and data (action-data pairs), as
@@ -611,7 +611,7 @@ Elasticsearch
                                replication=default, routing=default, \
                                source=default, timeout=default)
 
-      A :ref:`coroutine <coroutine>` that delete documents from one or more 
+      A :ref:`coroutine <coroutine>` that delete documents from one or more
       indices and one or more types based on a query.
 
       :param index: A comma-separated list of indices to restrict the operation;
@@ -647,9 +647,9 @@ Elasticsearch
 
 
 
-   .. method:: suggest(body, index=None, *, allow_no_indices=default, \
+   .. method:: suggest(index, body, *, allow_no_indices=default,\
                        expand_wildcards=default, ignore_unavailable=default,\
-                       preference=default, routing=default, source)
+                       preference=default, routing=default, source=default)
 
       A :ref:`coroutine <coroutine>` that suggests similar looking terms based on a provided
       text by using a suggester.
@@ -683,8 +683,8 @@ Elasticsearch
                          preference=default, routing=default, version=default,\
                          version_type=default)
 
-      A :ref:`coroutine <coroutine>` that allows to register queries against 
-      an index, and then send percolate requests which include a doc, and getting 
+      A :ref:`coroutine <coroutine>` that allows to register queries against
+      an index, and then send percolate requests which include a doc, and getting
       back the queries that match on that doc out of the set of registered queries.
 
       :param index: The index of the document being percolated.
@@ -724,7 +724,7 @@ Elasticsearch
                           allow_no_indices=default, expand_wildcards=default, \
                           ignore_unavailable=default)
 
-      A :ref:`coroutine <coroutine>` that allows to register queries against 
+      A :ref:`coroutine <coroutine>` that allows to register queries against
       an index, and then send percolate requests which include a doc, and getting
       back the queries that match on that doc out of the set of registered queries.
 
@@ -758,8 +758,8 @@ Elasticsearch
                                routing=default, version=default, \
                                version_type=default)
 
-      A :ref:`coroutine <coroutine>` that allows to register queries against an 
-      index, and then send percolate requests which include a doc, and getting back 
+      A :ref:`coroutine <coroutine>` that allows to register queries against an
+      index, and then send percolate requests which include a doc, and getting back
       the queries that match on that doc out of the set of registered queries.
 
       :param index: The index of the document being count percolated.
@@ -852,7 +852,7 @@ Elasticsearch
                           positions=default, preference=default, routing=default,\
                           term_statistics=default)
 
-      A :ref:`coroutine <coroutine>` that returns information and statistics on 
+      A :ref:`coroutine <coroutine>` that returns information and statistics on
       terms in the fields of a particular document as stored in the index.
 
       :param index: The index in which the document resides.
@@ -887,7 +887,7 @@ Elasticsearch
                             preference=default, routing=default,\
                             term_statistics=default)
 
-      A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on 
+      A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on
       an index, type and id.
 
       :param index: The index in which the document resides.
@@ -935,7 +935,7 @@ Elasticsearch
    .. method:: benchmark(index=None, doc_type=None, body=None, *, \
                          verbose=default)
 
-      A :ref:`coroutine <coroutine>` that provides a standard mechanism for 
+      A :ref:`coroutine <coroutine>` that provides a standard mechanism for
       submitting queries and measuring their performance relative to one another.
 
       :param index: A comma-separated list of index names; use `_all` or empty
@@ -1470,3 +1470,52 @@ IndicesClient
       .. Seealso::
 
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html>`_
+
+   .. method:: put_mapping(doc_type, body, *, index=None, params=None)
+
+      A :ref:`coroutine <coroutine>` that registers specific mapping
+      definition for a specific type.
+
+      :param index: A comma-separated list of index names the alias should
+             point to (supports wildcards); use `_all` or omit to perform the
+             operation on all indices.
+      :param doc_type: The name of the document type
+      :param body: The mapping definition
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
+
+   .. method:: get_mapping(index, doc_type, params=None)
+
+      A :ref:`coroutine <coroutine>` that retrieves mapping
+      definition of index or index/type.
+
+      :param index: A comma-separated list of index names the alias should
+             point to (supports wildcards); use `_all` or omit to perform the
+             operation on all indices.
+      :param doc_type: The name of the document type
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
+
+   .. method:: delete_mapping(index, doc_type, params=None)
+
+      A :ref:`coroutine <coroutine>` that deletes a mapping (type)
+      along with its data
+
+      :param index: A comma-separated list of index names the alias should
+             point to (supports wildcards); use `_all` or omit to perform the
+             operation on all indices.
+      :param doc_type: The name of the document type
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
