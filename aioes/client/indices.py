@@ -278,21 +278,46 @@ class IndicesClient(NamespacedClient):
             return False
         return True
 
-    # @asyncio.coroutine
-    # def put_mapping(self):
-    #     pass
-    #
-    # @asyncio.coroutine
-    # def get_mapping(self):
-    #     pass
+    @asyncio.coroutine
+    def put_mapping(self, doc_type, body, *, index=None, params=None):
+        """
+        Register specific mapping definition for a specific type.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
+        """
+        _, data = yield from self.transport.perform_request(
+            'PUT', _make_path(index, '_mapping', doc_type),
+            params=params, body=body
+        )
+        return data
+
+    @asyncio.coroutine
+    def get_mapping(self, index, doc_type, params=None):
+        """
+        Retrieve mapping definition of index or index/type.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
+        """
+        _, data = yield from self.transport.perform_request(
+            'GET', _make_path(index, '_mapping', doc_type),
+            params=params
+        )
+        return data
+
+    @asyncio.coroutine
+    def delete_mapping(self, index, doc_type, params=None):
+        """
+        Delete a mapping (type) along with its data.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
+        """
+        _, data = yield from self.transport.perform_request(
+            'DELETE', _make_path(index, '_mapping', doc_type),
+            params=params
+        )
+        return data
     #
     # @asyncio.coroutine
     # def get_field_mapping(self):
     #     pass
     #
-    # @asyncio.coroutine
-    # def delete_mapping(self):
-    #     pass
     #
     # @asyncio.coroutine
     # def put_alias(self):

@@ -439,17 +439,47 @@ class TestIndices(unittest.TestCase):
     #     def go():
     #         yield from self.cl.indices.delete_warmer()
     #     self.loop.run_until_complete(go())
-    # def test_put_mapping(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.put_mapping()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_get_mapping(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_mapping()
-    #     self.loop.run_until_complete(go())
+
+    def test_mapping(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.indices.create(self._index)
+            mapping = {
+                'testdoc': {
+                    'properties': {
+                        'message': {
+                            'type': 'string',
+                        }
+                    }
+                }
+            }
+            # PUT
+            data = yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+            self.assertTrue(data['acknowledged'])
+
+            # GET
+            data = yield from self.cl.indices.get_mapping(
+                self._index,
+                'testdoc',
+            )
+            self.assertEqual(data['elastic_search']['mappings'], mapping)
+
+            # DELETE
+            yield from self.cl.indices.delete_mapping(
+                self._index,
+                'testdoc',
+            )
+            data = yield from self.cl.indices.get_mapping(
+                self._index,
+                'testdoc',
+            )
+            self.assertFalse(data)
+
+        self.loop.run_until_complete(go())
     #
     # def test_get_field_mapping(self):
     #     @asyncio.coroutine
