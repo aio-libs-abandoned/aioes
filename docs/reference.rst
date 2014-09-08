@@ -1477,7 +1477,7 @@ IndicesClient
       definition for a specific type.
 
       :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` or omit to perform the
+             point to (supports wildcards); use `_all` to perform the
              operation on all indices.
       :param doc_type: The name of the document type
       :param body: The mapping definition
@@ -1494,7 +1494,7 @@ IndicesClient
       definition of index or index/type.
 
       :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` or omit to perform the
+             point to (supports wildcards); use `_all` to perform the
              operation on all indices.
       :param doc_type: The name of the document type
 
@@ -1510,7 +1510,7 @@ IndicesClient
       along with its data
 
       :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` or omit to perform the
+             point to (supports wildcards); use `_all` to perform the
              operation on all indices.
       :param doc_type: The name of the document type
 
