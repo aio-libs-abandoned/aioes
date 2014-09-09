@@ -1,4 +1,3 @@
-import json
 import asyncio
 import unittest
 from aioes import Elasticsearch
