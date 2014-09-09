@@ -982,147 +982,132 @@ class Elasticsearch:
             params=params, body=body)
 
         return data
-    #
-    # @asyncio.coroutine
-    # def percolate(self, index, doc_type, id=None, body=None, *,
-    #               allow_no_indices=default, expand_wildcards=default,
-    #               ignore_unavailable=default, percolate_format=default,
-    #               percolate_index=default, percolate_type=default,
-    #               preference=default, routing=default, version=default,
-    #               version_type=default):
-    #     """
-    #     The percolator allows to register queries against an index, and then
-    #     send percolate requests which include a doc, and getting back the
-    #     queries that match on that doc out of the set of registered queries.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if consistency is not default:
-    #         if not isinstance(consistency, str):
-    #             raise TypeError("'consistency' parameter is not a string")
-    #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency.lower()
-    #         else:
-    #             raise ValueError("'consistency' parameter should be one of "
-    #                              "'one', 'quorum', 'all'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if percolate_format is not default:
-    #         params['percolate_format'] = percolate_format
-    #     if percolate_index is not default:
-    #         params['percolate_index'] = percolate_index
-    #     if percolate_type is not default:
-    #         params['percolate_type'] = percolate_type
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if version is not default:
-    #         params['version'] = int(version)
-    #     if version_type is not default:
-    #         if not isinstance(version_type, str):
-    #             raise TypeError("'version_type' parameter is not a string")
-    #         elif version_type.lower() in ('internal', 'external',
-    #                                       'external_gt', 'external_gte',
-    #                                       'force'):
-    #             params['version_type'] = version_type.lower()
-    #         else:
-    #             raise ValueError("'version_type' parameter should be one of "
-    #                              "'internal', 'external', 'external_gt', "
-    #                              "'external_gte', 'force'")
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, id, '_percolate'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def mpercolate(self, body, index=None, doc_type=None, *,
-    #                allow_no_indices=default, expand_wildcards=default,
-    #                ignore_unavailable=default):
-    #     """
-    #     The percolator allows to register queries against an index, and then
-    #     send percolate requests which include a doc, and getting back the
-    #     queries that match on that doc out of the set of registered queries.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if consistency is not default:
-    #         if not isinstance(consistency, str):
-    #             raise TypeError("'consistency' parameter is not a string")
-    #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency.lower()
-    #         else:
-    #             raise ValueError("'consistency' parameter should be one of "
-    #                              "'one', 'quorum', 'all'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_mpercolate'),
-    #         params=params,
-    #         body=self._bulk_body(body))
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def count_percolate(self, index, doc_type, id=None, body=None, *,
-    #                     allow_no_indices=default, expand_wildcards=default,
-    #                     ignore_unavailable=default, percolate_index=default,
-    #                     percolate_type=default, preference=default,
-    #                     routing=default, version=default,
-    #                     version_type=default):
-    #     """
-    #     The percolator allows to register queries against an index, and then
-    #     send percolate requests which include a doc, and getting back the
-    #     queries that match on that doc out of the set of registered queries.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if consistency is not default:
-    #         if not isinstance(consistency, str):
-    #             raise TypeError("'consistency' parameter is not a string")
-    #         elif consistency.lower() in ('one', 'quorum', 'all'):
-    #             params['consistency'] = consistency.lower()
-    #         else:
-    #             raise ValueError("'consistency' parameter should be one of "
-    #                              "'one', 'quorum', 'all'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if percolate_index is not default:
-    #         params['percolate_index'] = percolate_index
-    #     if percolate_type is not default:
-    #         params['percolate_type'] = percolate_type
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if version is not default:
-    #         params['version'] = int(version)
-    #     if version_type is not default:
-    #         if not isinstance(version_type, str):
-    #             raise TypeError("'version_type' parameter is not a string")
-    #         elif version_type.lower() in ('internal', 'external',
-    #                                       'external_gt', 'external_gte',
-    #                                       'force'):
-    #             params['version_type'] = version_type.lower()
-    #         else:
-    #             raise ValueError("'version_type' parameter should be one of "
-    #                              "'internal', 'external', 'external_gt', "
-    #                              "'external_gte', 'force'")
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, id, '_percolate', 'count'),
-    #         params=params, body=body)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def percolate(self, index, doc_type, doc_id=None, body=None, *,
+                  allow_no_indices=default, expand_wildcards=default,
+                  ignore_unavailable=default, percolate_format=default,
+                  percolate_index=default, percolate_type=default,
+                  preference=default, routing=default, version=default,
+                  version_type=default):
+        """
+        The percolator allows to register queries against an index, and then
+        send percolate requests which include a doc, and getting back the
+        queries that match on that doc out of the set of registered queries.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if percolate_format is not default:
+            params['percolate_format'] = percolate_format
+        if percolate_index is not default:
+            params['percolate_index'] = percolate_index
+        if percolate_type is not default:
+            params['percolate_type'] = percolate_type
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if version is not default:
+            params['version'] = int(version)
+        if version_type is not default:
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type.lower()
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
+
+        if bool(doc_id) == bool(body):
+            raise ValueError('Please provide either doc_id or body')
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, doc_id, '_percolate'),
+            params=params, body=body)
+
+        return data
+
+    @asyncio.coroutine
+    def percolate_count(self, index, doc_type, doc_id=None, body=None, *,
+                        allow_no_indices=default, expand_wildcards=default,
+                        ignore_unavailable=default, percolate_format=default,
+                        percolate_index=default, percolate_type=default,
+                        preference=default, routing=default, version=default,
+                        version_type=default):
+        """
+        The percolator allows to register queries against an index, and then
+        send percolate requests which include a doc, and getting back the
+        queries that match on that doc out of the set of registered queries.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if percolate_format is not default:
+            params['percolate_format'] = percolate_format
+        if percolate_index is not default:
+            params['percolate_index'] = percolate_index
+        if percolate_type is not default:
+            params['percolate_type'] = percolate_type
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if version is not default:
+            params['version'] = int(version)
+        if version_type is not default:
+            if not isinstance(version_type, str):
+                raise TypeError("'version_type' parameter is not a string")
+            elif version_type.lower() in ('internal', 'external',
+                                          'external_gt', 'external_gte',
+                                          'force'):
+                params['version_type'] = version_type.lower()
+            else:
+                raise ValueError("'version_type' parameter should be one of "
+                                 "'internal', 'external', 'external_gt', "
+                                 "'external_gte', 'force'")
+
+        if bool(doc_id) == bool(body):
+            raise ValueError('Please provide either doc_id or body')
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, doc_id, '_percolate', 'count'),
+            params=params, body=body)
+
+        return data
+
+    @asyncio.coroutine
+    def mpercolate(self, body, index=None, doc_type=None, *,
+                   allow_no_indices=default, expand_wildcards=default,
+                   ignore_unavailable=default):
+        """
+        The percolator allows to register queries against an index, and then
+        send percolate requests which include a doc, and getting back the
+        queries that match on that doc out of the set of registered queries.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_mpercolate'),
+            params=params,
+            body=self._bulk_body(body))
+
+        return data
+
     #
     # @asyncio.coroutine
     # def mlt(self, index, doc_type, id, body=None, *,
