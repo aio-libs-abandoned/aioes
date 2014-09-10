@@ -790,6 +790,127 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_percolate(self):
+        @asyncio.coroutine
+        def go():
+            mapping = {
+                "testdoc": {
+                    "properties": {
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+            yield from self.cl.indices.create(self._index)
+            yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+
+            percolator = {
+                "query": {
+                    "match": {
+                        "message": "bonsai tree"
+                    }
+                }
+            }
+            # register percolator
+            yield from self.cl.index(self._index, '.percolator',
+                                     percolator, '1',
+                                     refresh=True)
+
+            b = {
+                "doc": {
+                    "message": "A new bonsai tree in the office"
+                }
+            }
+            # percolate a doc from b
+            data = yield from self.cl.percolate(
+                self._index,
+                'testdoc',
+                body=b,
+            )
+            self.assertEqual(data['total'], 1)
+            self.assertEqual(
+                data['matches'][0],
+                {'_index': 'test_elasticsearch', '_id': '1'}
+            )
+
+            # percolate_count gives only count, no matches
+            data = yield from self.cl.percolate_count(
+                self._index,
+                'testdoc',
+                body=b,
+            )
+
+            self.assertEqual(data['total'], 1)
+            self.assertTrue('matches' not in data)
+
+        self.loop.run_until_complete(go())
+
+    def test_mpercolate(self):
+        @asyncio.coroutine
+        def go():
+            mapping = {
+                "testdoc": {
+                    "properties": {
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+            yield from self.cl.indices.create(self._index)
+            yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+
+            percolator = {
+                "query": {
+                    "match": {
+                        "message": "bonsai tree"
+                    }
+                }
+            }
+            # register percolator
+            yield from self.cl.index(self._index, '.percolator',
+                                     percolator, '1',
+                                     refresh=True)
+
+            body = [
+                {
+                    'percolate': {
+                        'index': self._index,
+                        'type': 'testdoc',
+                    }
+                },
+                {
+                    "doc": {
+                        "message": "A new bonsai tree in the office"
+                    }
+                }
+            ]
+
+            data = yield from self.cl.mpercolate(
+                body,
+                self._index,
+                'testdoc',
+            )
+
+            self.assertEqual(len(data['responses']), 1)
+            item = data['responses'][0]
+            self.assertEqual(item['total'], 1)
+            self.assertEqual(
+                item['matches'][0],
+                {'_index': 'test_elasticsearch', '_id': '1'}
+            )
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
