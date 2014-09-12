@@ -1185,82 +1185,82 @@ class Elasticsearch:
     #
     #     return data
     #
-    # @asyncio.coroutine
-    # def termvector(self, index, doc_type, id, body=None, *,
-    #                field_statistics=default, fields=default,
-    #                offsets=default, parent=default, payloads=default,
-    #                positions=default, preference=default, routing=default,
-    #                term_statistics=default):
-    #     """
-    #     Returns information and statistics on terms in the fields of
-    #     a particular document as stored in the index.
-    #     """
-    #     params = {}
-    #     if field_statistics is not default:
-    #         params['field_statistics'] = field_statistics
-    #     if fields is not default:
-    #         params['fields'] = fields
-    #     if offsets is not default:
-    #         params['offsets'] = offsets
-    #     if parent is not default:
-    #         params['parent'] = parent
-    #     if payloads is not default:
-    #         params['payloads'] = payloads
-    #     if positions is not default:
-    #         params['positions'] = positions
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if term_statistics is not default:
-    #         params['term_statistics'] = term_statistics
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, id, '_termvector'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def mtermvectors(self, index=None, doc_type=None, body=None, *,
-    #                  field_statistics=default, fields=default,
-    #                  ids=default, offsets=default, parent=default,
-    #                  payloads=default, positions=default,
-    #                  preference=default, routing=default,
-    #                  term_statistics=default):
-    #     """
-    #     Multi termvectors API allows to get multiple termvectors based on an
-    #     index, type and id.
-    #     """
-    #     params = {}
-    #     if field_statistics is not default:
-    #         params['field_statistics'] = field_statistics
-    #     if fields is not default:
-    #         params['fields'] = fields
-    #     if ids is not default:
-    #         params['ids'] = ids
-    #     if offsets is not default:
-    #         params['offsets'] = offsets
-    #     if parent is not default:
-    #         params['parent'] = parent
-    #     if payloads is not default:
-    #         params['payloads'] = payloads
-    #     if positions is not default:
-    #         params['positions'] = positions
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if term_statistics is not default:
-    #         params['term_statistics'] = term_statistics
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_mtermvectors'),
-    #         params=params, body=body)
-    #
-    #     return data
+    @asyncio.coroutine
+    def termvector(self, index, doc_type, id, body=None, *,
+                   field_statistics=default, fields=default,
+                   offsets=default, parent=default, payloads=default,
+                   positions=default, preference=default, routing=default,
+                   term_statistics=default):
+        """
+        Returns information and statistics on terms in the fields of
+        a particular document as stored in the index.
+        """
+        params = {}
+        if field_statistics is not default:
+            params['field_statistics'] = field_statistics
+        if fields is not default:
+            params['fields'] = fields
+        if offsets is not default:
+            params['offsets'] = offsets
+        if parent is not default:
+            params['parent'] = parent
+        if payloads is not default:
+            params['payloads'] = payloads
+        if positions is not default:
+            params['positions'] = positions
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if term_statistics is not default:
+            params['term_statistics'] = term_statistics
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, id, '_termvector'),
+            params=params, body=body)
+
+        return data
+
+    @asyncio.coroutine
+    def mtermvectors(self, index=None, doc_type=None, body=None, *,
+                     field_statistics=default, fields=default,
+                     ids=default, offsets=default, parent=default,
+                     payloads=default, positions=default,
+                     preference=default, routing=default,
+                     term_statistics=default):
+        """
+        Multi termvectors API allows to get multiple termvectors based on an
+        index, type and id.
+        """
+        params = {}
+        if field_statistics is not default:
+            params['field_statistics'] = field_statistics
+        if fields is not default:
+            params['fields'] = fields
+        if ids is not default:
+            params['ids'] = ids
+        if offsets is not default:
+            params['offsets'] = offsets
+        if parent is not default:
+            params['parent'] = parent
+        if payloads is not default:
+            params['payloads'] = payloads
+        if positions is not default:
+            params['positions'] = positions
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if term_statistics is not default:
+            params['term_statistics'] = term_statistics
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_mtermvectors'),
+            params=params, body=body)
+
+        return data
     #
     # @asyncio.coroutine
     # def benchmark(self, index=None, doc_type=None, body=None, *,
