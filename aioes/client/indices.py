@@ -14,9 +14,11 @@ class IndicesClient(NamespacedClient):
                 analyzer=default, char_filters=default, field=default,
                 filters=default, prefer_local=default, text=default,
                 tokenizer=default, token_filters=default):
-        """
-        Perform the analysis process on a text and return the tokens breakdown
-        of the text.
+        """Run analyze tool.
+
+        Perform the analysis process on a text and return the tokens
+        breakdown of the text.
+
         """
         params = {}
         if analyzer is not default:
@@ -47,7 +49,8 @@ class IndicesClient(NamespacedClient):
                 allow_no_indices=default, expand_wildcards=default,
                 ignore_indices=default, ignore_unavailable=default,
                 force=default):
-        """
+        """Refresh index.
+
         Explicitly refresh one or more index, making all operations performed
         since the last refresh available for search.
         """
@@ -80,9 +83,7 @@ class IndicesClient(NamespacedClient):
               force=default, full=default, allow_no_indices=default,
               expand_wildcards=default, ignore_indices=default,
               ignore_unavailable=default):
-        """
-        Explicitly flush one or more indices.
-        """
+        """Explicitly flush one or more indices."""
         params = {}
         if force is not default:
             params['force'] = bool(force)
@@ -112,9 +113,7 @@ class IndicesClient(NamespacedClient):
     @asyncio.coroutine
     def create(self, index, body=None, *, timeout=default,
                master_timeout=default):
-        """
-        Create an index in Elasticsearch.
-        """
+        """Create an index in Elasticsearch."""
         params = {}
         if timeout is not default:
             params['timeout'] = timeout
@@ -132,9 +131,7 @@ class IndicesClient(NamespacedClient):
     def open(self, index, *, timeout=default, master_timeout=default,
              allow_no_indices=default, expand_wildcards=default,
              ignore_unavailable=default):
-        """
-        Open a closed index to make it available for search.
-        """
+        """Open a closed index to make it available for search."""
         params = {}
         if timeout is not default:
             params['timeout'] = timeout
@@ -163,7 +160,8 @@ class IndicesClient(NamespacedClient):
     def close(self, index, *, allow_no_indices=default,
               expand_wildcards=default, ignore_unavailable=default,
               master_timeout=default, timeout=default):
-        """
+        """Close index.
+
         Close an index to remove it's overhead from the cluster. Closed index
         is blocked for read/write operations.
         """
@@ -211,9 +209,7 @@ class IndicesClient(NamespacedClient):
     def exists(self, index, *,
                allow_no_indices=default, expand_wildcards=default,
                ignore_unavailable=default, local=default):
-        """
-        Return a boolean indicating whether given index exists.
-        """
+        """Return a boolean indicating whether given index exists."""
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
@@ -242,9 +238,7 @@ class IndicesClient(NamespacedClient):
                     allow_no_indices=default, expand_wildcards=default,
                     ignore_indices=default, ignore_unavailable=default,
                     local=default):
-        """
-        Check if a type/types exists in an index/indices.
-        """
+        """Check if a type/types exists in an index/indices."""
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
@@ -271,10 +265,7 @@ class IndicesClient(NamespacedClient):
 
     @asyncio.coroutine
     def put_mapping(self, doc_type, body, *, index=None, params=None):
-        """
-        Register specific mapping definition for a specific type.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
-        """
+        """Register specific mapping definition for a specific type."""
         _, data = yield from self.transport.perform_request(
             'PUT', _make_path(index, '_mapping', doc_type),
             params=params, body=body
@@ -283,10 +274,7 @@ class IndicesClient(NamespacedClient):
 
     @asyncio.coroutine
     def get_mapping(self, index, doc_type, params=None):
-        """
-        Retrieve mapping definition of index or index/type.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
-        """
+        """Retrieve mapping definition of index or index/type."""
         _, data = yield from self.transport.perform_request(
             'GET', _make_path(index, '_mapping', doc_type),
             params=params
@@ -295,10 +283,7 @@ class IndicesClient(NamespacedClient):
 
     @asyncio.coroutine
     def delete_mapping(self, index, doc_type, params=None):
-        """
-        Delete a mapping (type) along with its data.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
-        """
+        """Delete a mapping (type) along with its data."""
         _, data = yield from self.transport.perform_request(
             'DELETE', _make_path(index, '_mapping', doc_type),
             params=params
@@ -355,9 +340,7 @@ class IndicesClient(NamespacedClient):
                      expand_wildcards=default, ignore_indices=default,
                      ignore_unavailable=default, flat_settings=default,
                      local=default):
-        """
-        Retrieve settings for one or more (or all) indices.
-        """
+        """Retrieve settings for one or more (or all) indices."""
         params = {}
         if ignore_indices is not default:
             params['ignore_indices'] = str(ignore_indices)
@@ -386,9 +369,7 @@ class IndicesClient(NamespacedClient):
                      allow_no_indices=default, expand_wildcards=default,
                      flat_settings=default, ignore_unavailable=default,
                      master_timeout=default):
-        """
-        Change specific index level settings in real time.
-        """
+        """Change specific index level settings in real time."""
         params = {}
         if allow_no_indices is not default:
             params['allow_no_indices'] = bool(allow_no_indices)
@@ -430,9 +411,7 @@ class IndicesClient(NamespacedClient):
                ignore_indices=default, ignore_unavailable=default,
                operation_threading=default, recovery=default, snapshot=default,
                human=default):
-        """
-        Get a comprehensive status information of one or more indices.
-        """
+        """Get a comprehensive status information of one or more indices."""
         params = {}
         if ignore_indices is not default:
             params['ignore_indices'] = ignore_indices
@@ -470,9 +449,7 @@ class IndicesClient(NamespacedClient):
               expand_wildcards=default, ignore_indices=default,
               ignore_unavailable=default, human=default, level=default,
               types=default):
-        """
-        Retrieve statistics on different operations happening on an index.
-        """
+        """Retrieve statistics on operations happening on an index."""
         params = {}
         if completion_fields is not default:
             params['completion_fields'] = completion_fields
@@ -538,7 +515,8 @@ class IndicesClient(NamespacedClient):
                  allow_no_indices=default, expand_wildcards=default,
                  ignore_indices=default, ignore_unavailable=default,
                  human=default):
-        """
+        """Get segments information.
+
         Provide low level segments information that a Lucene index (shard
         level) is built with.
         """
@@ -571,9 +549,7 @@ class IndicesClient(NamespacedClient):
                  ignore_unavailable=default, max_num_segments=default,
                  only_expunge_deletes=default, operation_threading=default,
                  wait_for_merge=default, force=default):
-        """
-        Explicitly optimize one or more indices through an API.
-        """
+        """Explicitly optimize one or more indices through an API."""
         params = {}
         if force is not default:
             params['force'] = bool(force)
@@ -612,9 +588,7 @@ class IndicesClient(NamespacedClient):
                        expand_wildcards=default, ignore_indices=default,
                        ignore_unavailable=default, operation_threading=default,
                        q=default, source=default):
-        """
-        Validate a potentially expensive query without executing it.
-        """
+        """Validate a potentially expensive query without executing it."""
         params = {}
         if explain is not default:
             params['explain'] = bool(explain)
@@ -653,7 +627,8 @@ class IndicesClient(NamespacedClient):
                     id=default, id_cache=default, allow_no_indices=default,
                     expand_wildcards=default, ignore_indices=default,
                     ignore_unavailable=default, recycler=default):
-        """
+        """Clear cache.
+
         Clear either all caches or specific cached associated with one or
         more indices.
         """
@@ -699,7 +674,8 @@ class IndicesClient(NamespacedClient):
     @asyncio.coroutine
     def recovery(self, index=None, *,
                  active_only=default, detailed=default, human=default):
-        """
+        """Recover an index.
+
         The indices recovery API provides insight into on-going shard
         recoveries. Recovery status may be reported for specific indices, or
         cluster-wide.
