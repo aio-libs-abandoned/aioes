@@ -911,6 +911,94 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_termvector(self):
+        @asyncio.coroutine
+        def go():
+            mapping = {
+                "testdoc": {
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "term_vector": "with_positions_offsets_payloads",
+                            "store": True,
+                        }
+                    }
+                }
+            }
+            yield from self.cl.indices.create(self._index)
+            yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+
+            doc = {
+                'message': 'Hello world',
+            }
+
+            yield from self.cl.index(self._index, 'testdoc',
+                                     doc, '1',
+                                     refresh=True)
+
+            data = yield from self.cl.termvector(self._index, 'testdoc', '1')
+
+            vector_data = data['term_vectors']['message']
+            self.assertEqual(vector_data['field_statistics'], {
+                "sum_doc_freq": 2,
+                "doc_count": 1,
+                "sum_ttf": 2
+            })
+            self.assertTrue('hello' in vector_data['terms'])
+            self.assertTrue('world' in vector_data['terms'])
+
+        self.loop.run_until_complete(go())
+
+    def test_mtermvectors(self):
+        @asyncio.coroutine
+        def go():
+            mapping = {
+                "testdoc": {
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "term_vector": "with_positions_offsets_payloads",
+                            "store": True,
+                        }
+                    }
+                }
+            }
+            yield from self.cl.indices.create(self._index)
+            yield from self.cl.indices.put_mapping(
+                'testdoc',
+                mapping,
+                index=self._index,
+            )
+
+            doc = {
+                'message': 'Hello world',
+            }
+
+            yield from self.cl.index(self._index, 'testdoc',
+                                     doc, '1',
+                                     refresh=True)
+            doc = {
+                'message': 'Second term',
+            }
+
+            yield from self.cl.index(self._index, 'testdoc',
+                                     doc, '2',
+                                     refresh=True)
+
+            data = yield from self.cl.mtermvectors(
+                self._index, 'testdoc', ids='1,2'
+            )
+
+            self.assertEqual(len(data['docs']), 2)
+            self.assertTrue('term_vectors' in data['docs'][0])
+            self.assertTrue('term_vectors' in data['docs'][1])
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
