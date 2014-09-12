@@ -1054,6 +1054,21 @@ IndicesClient
 
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
 
+   .. method:: delete(index, *, master_timeout=default, timeout=default)
+
+      A :ref:`coroutine <coroutine>` that deletes an index.
+
+      :param index: A comma-separated list of indices to delete; use ``'_all'``
+                    or ``'*'`` to delete all indices
+      :param master_timeout: Specify timeout for connection to master
+      :param timeout: Explicit operation timeout
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-index.html>_
+
 
    .. method:: refresh(index=None, *,\
                        allow_no_indices=default, expand_wildcards=default,\

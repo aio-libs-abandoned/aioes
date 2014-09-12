@@ -194,16 +194,7 @@ class IndicesClient(NamespacedClient):
     @asyncio.coroutine
     def delete(self, index, *,
                timeout=default, master_timeout=default):
-        """
-        Delete an index in Elasticsearch
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/
-        reference/current/indices-delete-index.html>`_
-
-        :param index: A comma-separated list of indices to delete; use `_all`
-               or '*' to delete all indices
-        :param master_timeout: Specify timeout for connection to master
-        :param timeout: Explicit operation timeout
-        """
+        """Delete an index in Elasticsearch."""
         params = {}
         if timeout is not default:
             params['timeout'] = timeout
