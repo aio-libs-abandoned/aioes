@@ -1035,7 +1035,7 @@ class Elasticsearch:
         return data
 
     @asyncio.coroutine
-    def percolate_count(self, index, doc_type, doc_id=None, body=None, *,
+    def count_percolate(self, index, doc_type, doc_id=None, body=None, *,
                         allow_no_indices=default, expand_wildcards=default,
                         ignore_unavailable=default, percolate_format=default,
                         percolate_index=default, percolate_type=default,

@@ -839,7 +839,7 @@ class TestClient(unittest.TestCase):
             )
 
             # percolate_count gives only count, no matches
-            data = yield from self.cl.percolate_count(
+            data = yield from self.cl.count_percolate(
                 self._index,
                 'testdoc',
                 body=b,
