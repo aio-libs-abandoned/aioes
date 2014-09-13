@@ -28,6 +28,6 @@ for sub in dir(obj):
         if val2 is None:
             continue
         right = {i for i in dir(val2) if not i.startswith('_')}
-        print(' '*10, sub)
+        print(' '*6, sub)
         print(' '*10, 'Missing: ', ' '.join(sorted(left - right)))
         print(' '*10, 'Extra: ', ' '.join(sorted(right - left)))
