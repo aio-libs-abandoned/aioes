@@ -206,7 +206,7 @@ class Transport:
 
     @asyncio.coroutine
     def perform_request(self, method, url, params=None, body=None,
-                        *, request_timeout=None):
+                        *, request_timeout=None, decoder=json.loads):
         """
         Perform the actual request. Retrieve a connection from the connection
         pool, pass all the information to it's perform_request method and
@@ -252,5 +252,5 @@ class Transport:
                 # connection didn't fail, confirm it's live status
                 yield from self._pool.mark_live(connection)
                 if data:
-                    data = json.loads(data)
+                    data = decoder(data)
                 return status, data

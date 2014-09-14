@@ -1534,3 +1534,36 @@ IndicesClient
       .. Seealso::
 
           `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
+
+
+CatClient
+-----------------
+
+
+.. class:: aioes.client.CatClient
+
+   Class for retrieving elasticsearch information in human-readable way.
+
+   .. method:: allocation(node_id=None, *, h=default, help=default, \
+               local=default, master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that returns a snapshot of how
+        shards have located around the cluster and the state of disk
+        usage.
+
+      :param node_id: A comma-separated list of node IDs or names to limit the
+            returned information
+      :param bytes: The unit in which to display byte values
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default ``False``
+      :param local: Return local information, do not retrieve the state from
+            master node (default: ``False``)
+      :param master_timeout: Explicit operation timeout for connection
+            to master node
+      :param v: Verbose mode. Display column headers, default ``False``
+
+      :returns: resulting text
+
+      .. Seealso::
+
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_

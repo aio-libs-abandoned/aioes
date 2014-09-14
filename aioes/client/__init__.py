@@ -1,7 +1,8 @@
 import asyncio
 import json
-from .indices import IndicesClient
+from .cat import CatClient
 from .cluster import ClusterClient
+from .indices import IndicesClient
 from aioes.transport import Transport
 from .utils import _make_path
 from aioes.exception import (NotFoundError, TransportError)
@@ -13,9 +14,9 @@ default = object()
 class Elasticsearch:
     def __init__(self, endpoints, *, loop=None, **kwargs):
         self._transport = Transport(endpoints, loop=loop, **kwargs)
-        self._indices = IndicesClient(self)
+        self._cat = CatClient(self)
         self._cluster = ClusterClient(self)
-        # self._cat = CatClient(self)
+        self._indices = IndicesClient(self)
         # self._nodes = NodesClient(self)
         # self._snapshot = SnapshotClient(self)
 
@@ -27,9 +28,9 @@ class Elasticsearch:
     def cluster(self):
         return self._cluster
 
-    # @property
-    # def cat(self):
-    #     return self._cat
+    @property
+    def cat(self):
+        return self._cat
 
     # @property
     # def nodes(self):
