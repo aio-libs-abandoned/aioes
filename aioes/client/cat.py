@@ -6,6 +6,10 @@ from .utils import _make_path
 default = object()
 
 
+def _decode_text(s):
+    return s
+
+
 class CatClient(NamespacedClient):
 
     @asyncio.coroutine
@@ -31,5 +35,15 @@ class CatClient(NamespacedClient):
         _, data = yield from self.transport.perform_request(
             'GET',
             _make_path('_cat', 'allocation', node_id),
-            params=params, decoder=lambda s: s)
+            params=params, decoder=_decode_text)
+        return data
+
+    @asyncio.coroutine
+    def help(self, *, help=default):
+        """A simple help for the cat api."""
+        params = {}
+        if help is not default:
+            params['help'] = bool(help)
+        _, data = yield from self.transport.perform_request(
+            'GET', '/_cat', params=params, decoder=_decode_text)
         return data

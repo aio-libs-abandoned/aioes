@@ -58,7 +58,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html>`_
 
 
    .. method:: create(index, doc_type, body, id=None, *, consistency=default, \
@@ -92,7 +92,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
 
 
    .. method:: exists(index, id, doc_type='_all', *, parent=default, \
@@ -119,7 +119,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
 
 
    .. method:: get(index, id, doc_type='_all', *, _source=default,\
@@ -157,7 +157,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
 
 
    .. method:: mget(body, index=None, doc_type=None, *, _source=default, \
@@ -192,7 +192,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
 
 
    .. method:: get_source(index, id, doc_type='_all', *, _source=default, \
@@ -229,7 +229,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html>`_
 
 
    .. method:: update(index, doc_type, id, body=None, *, \
@@ -266,7 +266,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html>`_
 
 
    .. method:: search(index=None, doc_type=None, body=None, *, \
@@ -343,7 +343,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>`_
 
 
    .. method:: search_shards(index=None, doc_type=None, *, \
@@ -377,7 +377,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-shards.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-shards.html>`_
 
 
    .. method:: search_template(index=None, doc_type=None, body=None, *, \
@@ -413,7 +413,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-template-query.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-template-query.html>`_
 
 
    .. method:: explain(index, doc_type, id, body=None, *, \
@@ -461,7 +461,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-explain.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-explain.html>`_
 
 
    .. method:: scroll(scroll_id, *, scroll=default)
@@ -477,7 +477,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
 
 
    .. method:: clear_scroll(scroll_id=None, body=None)
@@ -493,7 +493,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-scroll.html>`_
 
 
    .. method:: delete(index, doc_type, id, *, consistency=default, \
@@ -521,7 +521,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html>`_
 
 
    .. method:: count(index=None, doc_type=None, body=None, *, \
@@ -555,7 +555,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html>`_
 
 
    .. method:: bulk(body, index=None, doc_type=None, *, consistency=default,\
@@ -580,7 +580,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html>`_
 
 
    .. method:: msearch(body, index=None, doc_type=None, *, \
@@ -600,7 +600,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html>`_
 
 
    .. method:: delete_by_query(index, doc_type=None, body=None, *, \
@@ -643,7 +643,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html>`_
 
 
 
@@ -673,7 +673,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>`_
 
 
    .. method:: percolate(index, doc_type, id=None, body=None, *, \
@@ -717,7 +717,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
 
 
    .. method:: mpercolate(body, index=None, doc_type=None, *, \
@@ -746,7 +746,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
 
 
    .. method:: count_percolate(index, doc_type, id=None, body=None, *, \
@@ -790,7 +790,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html>`_
 
 
    .. method:: mlt(index, doc_type, id, body=None, *, boost_terms=default, \
@@ -843,7 +843,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-more-like-this.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-more-like-this.html>`_
 
 
    .. method:: termvector(index, doc_type, id, body=None, *, \
@@ -877,7 +877,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-termvectors.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-termvectors.html>`_
 
 
    .. method:: mtermvectors(index=None, doc_type=None, body=None, *, \
@@ -929,7 +929,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-termvectors.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-termvectors.html>`_
 
 
    .. method:: benchmark(index=None, doc_type=None, body=None, *, \
@@ -949,7 +949,7 @@ Elasticsearch
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-benchmark.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-benchmark.html>`_
 
 
 IndicesClient
@@ -985,7 +985,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-analyze.html>`_
 
 
    .. method:: create(index, body=None, *, timeout=default, \
@@ -1002,7 +1002,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html>`_
 
 
    .. method:: open(index, *, timeout=default, master_timeout=default, \
@@ -1027,7 +1027,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
 
 
    .. method:: close(index, *, allow_no_indices=default, \
@@ -1052,7 +1052,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-open-close.html>`_
 
    .. method:: delete(index, *, master_timeout=default, timeout=default)
 
@@ -1067,7 +1067,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-index.html>_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-index.html>_
 
 
    .. method:: refresh(index=None, *,\
@@ -1095,7 +1095,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-refresh.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-refresh.html>`_
 
    .. method:: flush(index=None, *,\
                      force=default, full=default, allow_no_indices=default,\
@@ -1126,7 +1126,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-flush.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-flush.html>`_
 
    .. method:: exists(index, *, \
                allow_no_indices=default, expand_wildcards=default, \
@@ -1150,7 +1150,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-indices-exists.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-indices-exists.html>`_
 
    .. method:: exists_type(index, doc_type, *, \
                            allow_no_indices=default, expand_wildcards=default,\
@@ -1179,7 +1179,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>`_
 
    .. method:: get_settings(index=None, name=None, *, \
                             expand_wildcards=default, ignore_indices=default,\
@@ -1236,7 +1236,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-update-settings.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-update-settings.html>`_
 
    .. method:: status(index=None, *, \
                       allow_no_indices=default, expand_wildcards=default,\
@@ -1268,7 +1268,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-status.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-status.html>`_
 
    .. method:: stats(index=None, *, metric=default, \
                      completion_fields=default, docs=default, \
@@ -1317,7 +1317,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-stats.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-stats.html>`_
 
    .. method:: segments(index=None, *, \
                         allow_no_indices=default, expand_wildcards=default,\
@@ -1345,7 +1345,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-segments.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-segments.html>`_
 
    .. method:: optimize(index=None, *, \
                  flush=default, allow_no_indices=default, \
@@ -1382,7 +1382,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html>`_
 
    .. method:: recovery(index=None, *, \
                         active_only=default, detailed=default, human=default)
@@ -1404,7 +1404,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-recovery.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-recovery.html>`_
 
    .. method:: clear_cache(index=None, *, \
                            field_data=default, fielddata=default, \
@@ -1447,7 +1447,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-clearcache.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-clearcache.html>`_
 
    .. method:: validate_query(index=None, doc_type=None, body=None, *, \
                        explain=default, allow_no_indices=default,\
@@ -1484,7 +1484,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html>`_
 
    .. method:: put_mapping(doc_type, body, *, index=None, params=None)
 
@@ -1501,7 +1501,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
 
    .. method:: get_mapping(index, doc_type, params=None)
 
@@ -1517,7 +1517,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
 
    .. method:: delete_mapping(index, doc_type, params=None)
 
@@ -1533,7 +1533,7 @@ IndicesClient
 
       .. Seealso::
 
-          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
 
 
 CatClient
@@ -1566,7 +1566,19 @@ CatClient
 
       .. Seealso::
 
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
+
+   .. method:: help(*, help=default)
+
+      A :ref:`coroutine <coroutine>` that returns help banner.
+
+      :param help: Return help information, default ``False``.
+
+      :returns: help text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html>`_
 
 NodesClient
 -----------------
@@ -1599,7 +1611,7 @@ NodesClient
 
       .. Seealso::
 
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>`_
 
 
 SnapshotClient
@@ -1624,4 +1636,4 @@ SnapshotClient
 
       .. Seealso::
 
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html#_snapshot_status>`_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html#_snapshot_status>`_
