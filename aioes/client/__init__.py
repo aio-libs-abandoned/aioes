@@ -4,6 +4,7 @@ from .cat import CatClient
 from .cluster import ClusterClient
 from .indices import IndicesClient
 from .nodes import NodesClient
+from .snapshot import SnapshotClient
 from aioes.transport import Transport
 from .utils import _make_path
 from aioes.exception import (NotFoundError, TransportError)
@@ -19,7 +20,7 @@ class Elasticsearch:
         self._cluster = ClusterClient(self)
         self._indices = IndicesClient(self)
         self._nodes = NodesClient(self)
-        # self._snapshot = SnapshotClient(self)
+        self._snapshot = SnapshotClient(self)
 
     @property
     def indices(self):
@@ -37,9 +38,9 @@ class Elasticsearch:
     def nodes(self):
         return self._nodes
 
-    # @property
-    # def snapshot(self):
-    #     return self._snapshot
+    @property
+    def snapshot(self):
+        return self._snapshot
 
     @property
     def transport(self):

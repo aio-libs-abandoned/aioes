@@ -4,7 +4,7 @@ from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
 
-class TestNodes(unittest.TestCase):
+class TestSnapshot(unittest.TestCase):
 
     def setUp(self):
         self._index = 'elastic_search'
@@ -21,10 +21,10 @@ class TestNodes(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
-    def test_allocation(self):
+    def test_status(self):
         @asyncio.coroutine
         def go():
-            ret = yield from self.cl.nodes.info()
-            self.assertIn('cluster_name', ret)
+            ret = yield from self.cl.snapshot.status()
+            self.assertEqual({'snapshots': []}, ret)
 
         self.loop.run_until_complete(go())

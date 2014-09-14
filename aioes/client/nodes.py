@@ -14,18 +14,6 @@ class NodesClient(NamespacedClient):
         """
         The cluster nodes info API allows to retrieve one or more (or all) of
         the cluster nodes information.
-        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>`_
-
-        :arg node_id: A comma-separated list of node IDs or names to limit the
-            returned information; use `_local` to return information from the
-            node you're connecting to, leave empty to get information from all
-            nodes
-        :arg metric: A comma-separated list of metrics you wish returned. Leave
-            empty to return all. Choices are "settings", "os", "process",
-            "jvm", "thread_pool", "network", "transport", "http", "plugin"
-        :arg flat_settings: Return settings in flat format (default: false)
-        :arg human: Whether to return time and byte values in human-readable
-            format., default False
         """
         params = {}
         if flat_settings is not default:

@@ -1567,3 +1567,61 @@ CatClient
       .. Seealso::
 
         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
+
+NodesClient
+-----------------
+
+
+.. class:: aioes.client.NodesClient
+
+   Class for getting information about elasticsearch nodes.
+
+   .. method:: info(node_id=None, metric=None, *, \
+                    flat_settings=default, human=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves one or more (or all)
+        of the cluster nodes information.
+
+      :arg node_id: A comma-separated list of node IDs or names to limit the
+          returned information; use ``"_local"`` to return information from the
+          node you're connecting to, leave empty to get information from all
+          nodes
+      :arg metric: A comma-separated list of metrics you wish
+          returned. Leave empty to return all. Choices are
+          ``"settings"``, ``"os"``, ``"process"``, ``"jvm"``,
+          ``"thread_pool"``, ``"network"``, ``"transport"``,
+          ``"http"``, ``"plugin"``
+      :arg flat_settings: Return settings in flat format (default: ``False``)
+      :arg human: Whether to return time and byte values in human-readable
+          format, default ``False``
+
+      :returns: resulting info
+
+      .. Seealso::
+
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>`_
+
+
+SnapshotClient
+-----------------
+
+
+.. class:: aioes.client.SnapshotClient
+
+   Class for manipulating elasticsearch snapshots.
+
+   .. method:: status(repository=None, snapshot=None, *, \
+               master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that returns snapshot status info.
+
+      :param repository: A repository name
+      :param snapshot: A comma-separated list of snapshot names
+      :param master_timeout: Explicit operation timeout for connection to master
+            node
+
+      :returns: resulting snapshot info.
+
+      .. Seealso::
+
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html#_snapshot_status>`_
