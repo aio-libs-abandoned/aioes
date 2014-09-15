@@ -952,6 +952,49 @@ Elasticsearch
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-benchmark.html>`_
 
 
+    .. method:: put_script(lang, id, body)
+
+      A :ref:`coroutine <coroutine>` that creates a script in given language with specified ID.
+
+      :param lang: Script language
+      :param id: Script ID
+      :param body: The document
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+
+    .. method:: get_script(lang, id)
+
+      A :ref:`coroutine <coroutine>` that retrieves a script from the API.
+
+      :param lang: Script language
+      :param id: Script ID
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+
+    .. method:: delete_script(lang, id)
+
+      A :ref:`coroutine <coroutine>` that removes a script from the API.
+
+      :param lang: Script language
+      :param id: Script ID
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+
 IndicesClient
 -----------------
 

@@ -1307,47 +1307,47 @@ class Elasticsearch:
     #     _, data = yield from self.transport.perform_request(
     #         'GET', _make_path(index, doc_type, '_bench'))
     #     return data
-    #
-    # @asyncio.coroutine
-    # def put_script(self, lang, id, body):
-    #     """
-    #     Create a script in given language with specified ID.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
-    #
-    #     :param lang: Script language
-    #     :param id: Script ID
-    #     :param body: The document
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'PUT', _make_path('_scripts', lang, id))
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def get_script(self, lang, id):
-    #     """
-    #     Retrieve a script from the API.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
-    #
-    #     :param lang: Script language
-    #     :param id: Script ID
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET', _make_path('_scripts', lang, id))
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def delete_script(self, lang, id):
-    #     """
-    #     Remove a stored script from elasticsearch.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
-    #
-    #     :param lang: Script language
-    #     :param id: Script ID
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'DELETE', _make_path('_scripts', lang, id))
-    #     return data
-    #
+
+    @asyncio.coroutine
+    def put_script(self, lang, id, body):
+        """
+        Create a script in given language with specified ID.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+        :param lang: Script language
+        :param id: Script ID
+        :param body: The document
+        """
+        _, data = yield from self.transport.perform_request(
+            'PUT', _make_path('_scripts', lang, id), body=body)
+        return data
+
+    @asyncio.coroutine
+    def get_script(self, lang, id):
+        """
+        Retrieve a script from the API.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+        :param lang: Script language
+        :param id: Script ID
+        """
+        _, data = yield from self.transport.perform_request(
+            'GET', _make_path('_scripts', lang, id))
+        return data
+
+    @asyncio.coroutine
+    def delete_script(self, lang, id):
+        """
+        Remove a stored script from elasticsearch.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+        :param lang: Script language
+        :param id: Script ID
+        """
+        _, data = yield from self.transport.perform_request(
+            'DELETE', _make_path('_scripts', lang, id))
+        return data
+
     # @asyncio.coroutine
     # def put_template(self, id, body):
     #     """

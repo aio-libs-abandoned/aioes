@@ -999,6 +999,61 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_scripts_management(self):
+        @asyncio.coroutine
+        def go():
+            script = {'script': 'log(_score * 2)'}
+
+            # adding
+            yield from self.cl.put_script('groovy', 'test_script', script)
+
+            # getting and checking
+            got_script = yield from self.cl.get_script('groovy', 'test_script')
+            self.assertEqual(script, got_script)
+
+            # deleting
+            yield from self.cl.delete_script('groovy', 'test_script')
+            with self.assertRaises(NotFoundError):
+                got_script = yield from self.cl.get_script(
+                    'groovy', 'test_script'
+                )
+
+        self.loop.run_until_complete(go())
+
+    def test_scripts_execution(self):
+        @asyncio.coroutine
+        def go():
+            script = {
+                'script': '2*val',
+            }
+            query = {
+                "query": {
+                    "match": {
+                        "user": "Johny Mnemonic"
+                    }
+                },
+                "script_fields": {
+                    "test1": {
+                        "lang": "groovy",
+                        "script_id": "calculate-score",
+                        "params": {
+                            "val": 2,
+                        }
+                    }
+                }
+            }
+
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+
+            yield from self.cl.put_script('groovy', 'calculate-score', script)
+            data = yield from self.cl.search(self._index, 'testdoc', query)
+            res = data['hits']['hits'][0]['fields']['test1'][0]
+            self.assertEqual(res, 4)  # 2*2
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
