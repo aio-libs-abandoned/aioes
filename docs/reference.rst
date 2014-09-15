@@ -387,8 +387,8 @@ Elasticsearch
                                routing=default, scroll=default, \
                                search_type=default)
 
-      A :ref:`coroutine <coroutine>` that accepts a query template and a map of
-      key/value pairs to fill in template parameters.
+      A :ref:`coroutine <coroutine>` that accepts a body with a query template and
+      a map of key/value pairs to fill in template parameters.
 
       :param index: A comma-separated list of index names to search; use `_all`
              or empty string to perform the operation on all indices
@@ -993,6 +993,46 @@ Elasticsearch
       .. Seealso::
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html>`_
+
+
+    .. method:: put_template(id, body)
+
+      A :ref:`coroutine <coroutine>` that creates a search template with specified ID.
+
+      :param id: Template ID
+      :param body: The document
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
+
+
+    .. method:: get_template(id)
+
+      A :ref:`coroutine <coroutine>` that retrieves a search template with specified ID.
+
+      :param id: Template ID
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
+
+
+    .. method:: delete_template(id)
+
+      A :ref:`coroutine <coroutine>` that removes a search template with specified ID.
+
+      :param id: Template ID
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
 
 
 IndicesClient

@@ -1054,6 +1054,64 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_templates_management(self):
+        @asyncio.coroutine
+        def go():
+            template = {
+                "template": {
+                    "query": {
+                        "match": {
+                            "user": "{{query_string}}"
+                        }
+                    }
+                }
+            }
+
+            yield from self.cl.put_template('test_template', template)
+
+            data = yield from self.cl.get_template('test_template')
+            self.assertTrue(template, data)
+
+            yield from self.cl.delete_template('test_template')
+            with self.assertRaises(NotFoundError):
+                yield from self.cl.get_template('test_template')
+
+        self.loop.run_until_complete(go())
+
+    def test_template_search(self):
+        @asyncio.coroutine
+        def go():
+            template = {
+                "template": {
+                    "query": {
+                        "match": {
+                            "user": "{{query_string}}"
+                        }
+                    }
+                }
+            }
+            search_body = {
+                "template": {
+                    "id": "test_template"
+                },
+                "params": {
+                    "query_string": "Johny Mnemonic"
+                }
+            }
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[0], '1',
+                refresh=True
+            )
+
+            yield from self.cl.put_template('test_template', template)
+
+            data = yield from self.cl.search_template(
+                self._index, 'testdoc', body=search_body
+            )
+            self.assertEqual(data['hits']['total'], 1)
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
