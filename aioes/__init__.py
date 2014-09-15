@@ -3,10 +3,10 @@ import sys
 from collections import namedtuple
 
 from .client import Elasticsearch
-from .exception import (ConnectionError, NotFountError, ConflictError,
+from .exception import (ConnectionError, NotFoundError, ConflictError,
                         RequestError, TransportError)
 
-__all__ = ('Elasticsearch', 'ConnectionError', 'NotFountError',
+__all__ = ('Elasticsearch', 'ConnectionError', 'NotFoundError',
            'ConflictError', 'RequestError', 'TransportError')
 
 
@@ -41,5 +41,5 @@ def _parse_version(ver):
 version_info = _parse_version(__version__)
 
 
-(Elasticsearch, ConnectionError, NotFountError, ConflictError,
+(Elasticsearch, ConnectionError, NotFoundError, ConflictError,
  RequestError, TransportError)
