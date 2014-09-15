@@ -761,9 +761,9 @@ class TestClient(unittest.TestCase):
 
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
             yield from self.cl.index(self._index, 'testdoc',
                                      MESSAGES[0], '1',
@@ -804,9 +804,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             percolator = {
@@ -864,9 +864,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             percolator = {
@@ -927,9 +927,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             doc = {
@@ -969,9 +969,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             doc = {

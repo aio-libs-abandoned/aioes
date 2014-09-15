@@ -1529,16 +1529,31 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html>`_
 
-   .. method:: put_mapping(doc_type, body, *, index=None, params=None)
+   .. method:: put_mapping(index, doc_type, body, *, \
+                           allow_no_indices=default, expand_wildcards=default, \
+                           ignore_conflicts=default, \
+                           ignore_unavailable=default, \
+                           master_timeout=default, timeout=default)
 
       A :ref:`coroutine <coroutine>` that registers specific mapping
       definition for a specific type.
 
       :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` to perform the
-             operation on all indices.
+          point to (supports wildcards); use `_all` or omit to perform the
+          operation on all indices.
       :param doc_type: The name of the document type
       :param body: The mapping definition
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices. (This includes `_all`
+          string or when no indices have been specified)
+      :param expand_wildcards: Whether to expand wildcard expression to concrete
+          indices that are open, closed or both., default u'open'
+      :param ignore_conflicts: Specify whether to ignore conflicts while
+          updating the mapping (default: false)
+      :param ignore_unavailable: Whether specified concrete indices should be
+          ignored when unavailable (missing or closed)
+      :param master_timeout: Specify timeout for connection to master
+      :param timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -1546,15 +1561,27 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html>`_
 
-   .. method:: get_mapping(index, doc_type, params=None)
+   .. method:: get_mapping(index, doc_type=None, *, \
+                           ignore_unavailable=default, \
+                           allow_no_indices=default, \
+                           expand_wildcards=default, local=default)
 
       A :ref:`coroutine <coroutine>` that retrieves mapping
       definition of index or index/type.
 
-      :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` to perform the
-             operation on all indices.
-      :param doc_type: The name of the document type
+      :param index: A comma-separated list of index names; use `_all` or
+            empty string for all indices
+      :param doc_type: A comma-separated list of document types
+      :param allow_no_indices: Whether to ignore if a wildcard indices
+            expression resolves into no concrete indices. (This
+            includes `_all` string or when no indices have been
+            specified)
+      :param expand_wildcards: Whether to expand wildcard expression to
+            concrete indices that are open, closed or both.
+      :param ignore_unavailable: Whether specified concrete indices
+            should be ignored when unavailable (missing or closed)
+      :param local: Return local information, do not retrieve the state from
+            master node (default: false)
 
       :returns: resulting JSON
 
@@ -1562,15 +1589,18 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html>`_
 
-   .. method:: delete_mapping(index, doc_type, params=None)
+   .. method:: delete_mapping(index, doc_type, *, \
+                              master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that deletes a mapping (type)
       along with its data
 
-      :param index: A comma-separated list of index names the alias should
-             point to (supports wildcards); use `_all` to perform the
-             operation on all indices.
-      :param doc_type: The name of the document type
+      :param index: A comma-separated list of index names (supports wildcard);
+            use `_all` for all indices
+      :param doc_type: A comma-separated list of document types to delete
+            (supports wildcards); use `_all` to delete all document types in the
+            specified indices.
+      :param master_timeout: Specify timeout for connection to master
 
       :returns: resulting JSON
 
@@ -1637,17 +1667,17 @@ NodesClient
       A :ref:`coroutine <coroutine>` that retrieves one or more (or all)
         of the cluster nodes information.
 
-      :arg node_id: A comma-separated list of node IDs or names to limit the
+      :param node_id: A comma-separated list of node IDs or names to limit the
           returned information; use ``"_local"`` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :arg metric: A comma-separated list of metrics you wish
+      :param metric: A comma-separated list of metrics you wish
           returned. Leave empty to return all. Choices are
           ``"settings"``, ``"os"``, ``"process"``, ``"jvm"``,
           ``"thread_pool"``, ``"network"``, ``"transport"``,
           ``"http"``, ``"plugin"``
-      :arg flat_settings: Return settings in flat format (default: ``False``)
-      :arg human: Whether to return time and byte values in human-readable
+      :param flat_settings: Return settings in flat format (default: ``False``)
+      :param human: Whether to return time and byte values in human-readable
           format, default ``False``
 
       :returns: resulting info

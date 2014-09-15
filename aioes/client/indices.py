@@ -264,7 +264,7 @@ class IndicesClient(NamespacedClient):
         return True
 
     @asyncio.coroutine
-    def put_mapping(self, doc_type, body, index=None, *,
+    def put_mapping(self, index, doc_type, body, *,
                     allow_no_indices=default, expand_wildcards=default,
                     ignore_conflicts=default, ignore_unavailable=default,
                     master_timeout=default, timeout=default):

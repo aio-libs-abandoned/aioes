@@ -455,9 +455,9 @@ class TestIndices(unittest.TestCase):
             }
             # PUT
             data = yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
             self.assertTrue(data['acknowledged'])
 
