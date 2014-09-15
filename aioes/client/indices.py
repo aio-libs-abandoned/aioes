@@ -264,17 +264,44 @@ class IndicesClient(NamespacedClient):
         return True
 
     @asyncio.coroutine
-    def put_mapping(self, doc_type, body, *, index=None, params=None):
+    def put_mapping(self, doc_type, body, index=None, *,
+                    allow_no_indices=default, expand_wildcards=default,
+                    ignore_conflicts=default, ignore_unavailable=default,
+                    master_timeout=default, timeout=default):
         """Register specific mapping definition for a specific type."""
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            params['expand_wildcards'] = bool(expand_wildcards)
+        if ignore_conflicts is not default:
+            params['ignore_conflicts'] = bool(ignore_conflicts)
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if master_timeout is not default:
+            params['master_timeout'] = master_timeout
+        if timeout is not default:
+            params['timeout'] = timeout
+
         _, data = yield from self.transport.perform_request(
             'PUT', _make_path(index, '_mapping', doc_type),
-            params=params, body=body
-        )
+            params=params, body=body)
         return data
 
     @asyncio.coroutine
-    def get_mapping(self, index, doc_type, params=None):
+    def get_mapping(self, index, doc_type=None, *,
+                    ignore_unavailable=default, allow_no_indices=default,
+                    expand_wildcards=default, local=default):
         """Retrieve mapping definition of index or index/type."""
+        params = {}
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            params['expand_wildcards'] = bool(expand_wildcards)
+        if local is not default:
+            params['local'] = bool(local)
         _, data = yield from self.transport.perform_request(
             'GET', _make_path(index, '_mapping', doc_type),
             params=params
@@ -282,8 +309,12 @@ class IndicesClient(NamespacedClient):
         return data
 
     @asyncio.coroutine
-    def delete_mapping(self, index, doc_type, params=None):
+    def delete_mapping(self, index, doc_type, *,
+                       master_timeout=default):
         """Delete a mapping (type) along with its data."""
+        params = {}
+        if master_timeout is not default:
+            params['master_timeout'] = master_timeout
         _, data = yield from self.transport.perform_request(
             'DELETE', _make_path(index, '_mapping', doc_type),
             params=params
