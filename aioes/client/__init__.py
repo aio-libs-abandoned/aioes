@@ -570,61 +570,60 @@ class Elasticsearch:
     #         params=params)
     #
     #     return data
-    #
-    # @asyncio.coroutine
-    # def search_template(self, index=None, doc_type=None, body=None, *,
-    #                     allow_no_indices=default,
-    #                     expand_wildcards=default,
-    #                     ignore_unavailable=default, preference=default,
-    #                     routing=default, scroll=default,
-    #                     search_type=default):
-    #     """
-    #     A query that accepts a query template and a map of key/value pairs to
-    #     fill in template parameters.
-    #     """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         if not isinstance(expand_wildcards, str):
-    #             raise TypeError("'expand_wildcards' parameter is not "
-    #                             "a string")
-    #         elif expand_wildcards.lower() in ('open', 'closed'):
-    #             params['expand_wildcards'] = expand_wildcards.lower()
-    #         else:
-    #             raise ValueError("'expand_wildcards' parameter should be"
-    #                              " one of 'open', 'closed'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if scroll is not default:
-    #         params['scroll'] = scroll
-    #     if search_type is not default:
-    #         if not isinstance(search_type, str):
-    #             raise TypeError("'search_type' parameter is not a string")
-    #         elif search_type.lower() in ('query_then_fetch',
-    #                                      'query_and_fetch',
-    #                                      'dfs_query_then_fetch',
-    #                                      'dfs_query_and_fetch',
-    #                                      'count',
-    #                                      'scan'):
-    #             params['search_type'] = search_type.lower()
-    #         else:
-    #             raise ValueError("'search_type' parameter should be one of "
-    #                              "'query_then_fetch', 'query_and_fetch', "
-    #                              "'dfs_query_then_fetch', "
-    #                              "'dfs_query_and_fetch', 'count', 'scan'")
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_search', 'template'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
+
+    @asyncio.coroutine
+    def search_template(self, index=None, doc_type=None, body=None, *,
+                        allow_no_indices=default,
+                        expand_wildcards=default,
+                        ignore_unavailable=default, preference=default,
+                        routing=default, scroll=default,
+                        search_type=default):
+        """
+        A query that accepts a query template and a map of key/value pairs to
+        fill in template parameters.
+        """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not "
+                                "a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards.lower()
+            else:
+                raise ValueError("'expand_wildcards' parameter should be"
+                                 " one of 'open', 'closed'")
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+        if scroll is not default:
+            params['scroll'] = scroll
+        if search_type is not default:
+            if not isinstance(search_type, str):
+                raise TypeError("'search_type' parameter is not a string")
+            elif search_type.lower() in ('query_then_fetch',
+                                         'query_and_fetch',
+                                         'dfs_query_then_fetch',
+                                         'dfs_query_and_fetch',
+                                         'count',
+                                         'scan'):
+                params['search_type'] = search_type.lower()
+            else:
+                raise ValueError("'search_type' parameter should be one of "
+                                 "'query_then_fetch', 'query_and_fetch', "
+                                 "'dfs_query_then_fetch', "
+                                 "'dfs_query_and_fetch', 'count', 'scan'")
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_search', 'template'),
+            params=params, body=body)
+
+        return data
 
     @asyncio.coroutine
     def explain(self, index, doc_type, id, body=None, *,
@@ -1348,40 +1347,40 @@ class Elasticsearch:
             'DELETE', _make_path('_scripts', lang, id))
         return data
 
-    # @asyncio.coroutine
-    # def put_template(self, id, body):
-    #     """
-    #     Create a search template.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
-    #
-    #     :param id: Template ID
-    #     :param body: The document
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'PUT', _make_path('_search', 'template', id))
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def get_template(self, id, body=None):
-    #     """
-    #     Retrieve a search template.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
-    #
-    #     :param id: Template ID
-    #     :param body: The document
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET', _make_path('_search', 'template', id))
-    #     return data
-    #
-    # @asyncio.coroutine
-    # def delete_template(self, id=None):
-    #     """
-    #     Delete a search template.
-    #     `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
-    #
-    #     :param id: Template ID
-    #     """
-    #     _, data = yield from self.transport.perform_request(
-    #         'DELETE', _make_path('_search', 'template', id))
-    #     return data
+    @asyncio.coroutine
+    def put_template(self, id, body):
+        """
+        Create a search template.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
+
+        :param id: Template ID
+        :param body: The document
+        """
+        _, data = yield from self.transport.perform_request(
+            'PUT', _make_path('_search', 'template', id),
+            body=body)
+        return data
+
+    @asyncio.coroutine
+    def get_template(self, id):
+        """
+        Retrieve a search template.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
+
+        :param id: Template ID
+        """
+        _, data = yield from self.transport.perform_request(
+            'GET', _make_path('_search', 'template', id))
+        return data
+
+    @asyncio.coroutine
+    def delete_template(self, id):
+        """
+        Delete a search template.
+        `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-template.html>`_
+
+        :param id: Template ID
+        """
+        _, data = yield from self.transport.perform_request(
+            'DELETE', _make_path('_search', 'template', id))
+        return data
