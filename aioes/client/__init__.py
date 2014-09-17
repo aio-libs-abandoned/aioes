@@ -531,45 +531,45 @@ class Elasticsearch:
             body=body)
 
         return data
-    #
-    # @asyncio.coroutine
-    # def search_shards(self, index=None, doc_type=None, *,
-    #                   allow_no_indices=default, expand_wildcards=default,
-    #                   ignore_unavailable=default, local=default,
-    #                   preference=default, routing=default):
-    #     """
-    #     The search shards api returns the indices and shards that a search
-    #     request would be executed against. This can give useful feedback
-    #     for working out issues or planning optimizations with routing and
-    #     shard preferences.
-    #    """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         if not isinstance(expand_wildcards, str):
-    #             raise TypeError("'expand_wildcards' parameter is not "
-    #                             "a string")
-    #         elif expand_wildcards.lower() in ('open', 'closed'):
-    #             params['expand_wildcards'] = expand_wildcards.lower()
-    #         else:
-    #             raise ValueError("'expand_wildcards' parameter should be"
-    #                              " one of 'open', 'closed'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if local is not default:
-    #         params['local'] = local
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_search_shards'),
-    #         params=params)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def search_shards(self, index=None, doc_type=None, *,
+                      allow_no_indices=default, expand_wildcards=default,
+                      ignore_unavailable=default, local=default,
+                      preference=default, routing=default):
+        """
+        The search shards api returns the indices and shards that a search
+        request would be executed against. This can give useful feedback
+        for working out issues or planning optimizations with routing and
+        shard preferences.
+       """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not "
+                                "a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards.lower()
+            else:
+                raise ValueError("'expand_wildcards' parameter should be"
+                                 " one of 'open', 'closed'")
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if local is not default:
+            params['local'] = local
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_search_shards'),
+            params=params)
+
+        return data
 
     @asyncio.coroutine
     def search_template(self, index=None, doc_type=None, body=None, *,
@@ -1110,83 +1110,82 @@ class Elasticsearch:
 
         return data
 
-    #
-    # @asyncio.coroutine
-    # def mlt(self, index, doc_type, id, body=None, *,
-    #         boost_terms=default, include=default, max_doc_freq=default,
-    #         max_query_terms=default, max_word_length=default,
-    #         min_doc_freq=default, min_term_freq=default,
-    #         min_word_length=default, mlt_fields=default,
-    #         percent_terms_to_match=default, routing=default,
-    #         search_from=default, search_indices=default,
-    #         search_query_hint=default, search_scroll=default,
-    #         search_size=default, search_source=default,
-    #         search_type=default, search_types=default, stop_words=default):
-    #     """
-    #     Get documents that are "like" a specified document.
-    #     """
-    #     params = {}
-    #     if boost_terms is not default:
-    #         params['boost_terms'] = boost_terms
-    #     if include is not default:
-    #         params['include'] = include
-    #     if max_doc_freq is not default:
-    #         params['max_doc_freq'] = max_doc_freq
-    #     if max_query_terms is not default:
-    #         params['max_query_terms'] = max_query_terms
-    #     if max_word_length is not default:
-    #         params['max_word_length'] = max_word_length
-    #     if min_doc_freq is not default:
-    #         params['min_doc_freq'] = min_doc_freq
-    #     if min_term_freq is not default:
-    #         params['min_term_freq'] = min_term_freq
-    #     if min_word_length is not default:
-    #         params['min_word_length'] = min_word_length
-    #     if mlt_fields is not default:
-    #         params['mlt_fields'] = mlt_fields
-    #     if percent_terms_to_match is not default:
-    #         params['percent_terms_to_match'] = percent_terms_to_match
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #     if search_from is not default:
-    #         params['search_from'] = search_from
-    #     if search_indices is not default:
-    #         params['search_indices'] = search_indices
-    #     if search_query_hint is not default:
-    #         params['search_query_hint'] = search_query_hint
-    #     if search_scroll is not default:
-    #         params['search_scroll'] = search_scroll
-    #     if search_size is not default:
-    #         params['search_size'] = search_size
-    #     if search_source is not default:
-    #         params['search_source'] = search_source
-    #     if search_type is not default:
-    #         if not isinstance(search_type, str):
-    #             raise TypeError("'search_type' parameter is not a string")
-    #         elif search_type.lower() in ('query_then_fetch',
-    #                                      'query_and_fetch',
-    #                                      'dfs_query_then_fetch',
-    #                                      'dfs_query_and_fetch',
-    #                                      'count',
-    #                                      'scan'):
-    #             params['search_type'] = search_type.lower()
-    #         else:
-    #             raise ValueError("'search_type' parameter should be one of "
-    #                              "'query_then_fetch', 'query_and_fetch', "
-    #                              "'dfs_query_then_fetch', "
-    #                              "'dfs_query_and_fetch', 'count', 'scan'")
-    #     if search_types is not default:
-    #         params['search_types'] = search_types
-    #     if stop_words is not default:
-    #         params['stop_words'] = stop_words
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, id, '_mlt'),
-    #         params=params, body=body)
-    #
-    #     return data
-    #
+    @asyncio.coroutine
+    def mlt(self, index, doc_type, id, body=None, *,
+            boost_terms=default, include=default, max_doc_freq=default,
+            max_query_terms=default, max_word_length=default,
+            min_doc_freq=default, min_term_freq=default,
+            min_word_length=default, mlt_fields=default,
+            percent_terms_to_match=default, routing=default,
+            search_from=default, search_indices=default,
+            search_query_hint=default, search_scroll=default,
+            search_size=default, search_source=default,
+            search_type=default, search_types=default, stop_words=default):
+        """
+        Get documents that are "like" a specified document.
+        """
+        params = {}
+        if boost_terms is not default:
+            params['boost_terms'] = boost_terms
+        if include is not default:
+            params['include'] = include
+        if max_doc_freq is not default:
+            params['max_doc_freq'] = max_doc_freq
+        if max_query_terms is not default:
+            params['max_query_terms'] = max_query_terms
+        if max_word_length is not default:
+            params['max_word_length'] = max_word_length
+        if min_doc_freq is not default:
+            params['min_doc_freq'] = min_doc_freq
+        if min_term_freq is not default:
+            params['min_term_freq'] = min_term_freq
+        if min_word_length is not default:
+            params['min_word_length'] = min_word_length
+        if mlt_fields is not default:
+            params['mlt_fields'] = mlt_fields
+        if percent_terms_to_match is not default:
+            params['percent_terms_to_match'] = percent_terms_to_match
+        if routing is not default:
+            params['routing'] = routing
+        if search_from is not default:
+            params['search_from'] = search_from
+        if search_indices is not default:
+            params['search_indices'] = search_indices
+        if search_query_hint is not default:
+            params['search_query_hint'] = search_query_hint
+        if search_scroll is not default:
+            params['search_scroll'] = search_scroll
+        if search_size is not default:
+            params['search_size'] = search_size
+        if search_source is not default:
+            params['search_source'] = search_source
+        if search_type is not default:
+            if not isinstance(search_type, str):
+                raise TypeError("'search_type' parameter is not a string")
+            elif search_type.lower() in ('query_then_fetch',
+                                         'query_and_fetch',
+                                         'dfs_query_then_fetch',
+                                         'dfs_query_and_fetch',
+                                         'count',
+                                         'scan'):
+                params['search_type'] = search_type.lower()
+            else:
+                raise ValueError("'search_type' parameter should be one of "
+                                 "'query_then_fetch', 'query_and_fetch', "
+                                 "'dfs_query_then_fetch', "
+                                 "'dfs_query_and_fetch', 'count', 'scan'")
+        if search_types is not default:
+            params['search_types'] = search_types
+        if stop_words is not default:
+            params['stop_words'] = stop_words
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, id, '_mlt'),
+            params=params, body=body)
+
+        return data
+
     @asyncio.coroutine
     def termvector(self, index, doc_type, id, body=None, *,
                    field_statistics=default, fields=default,
