@@ -1129,6 +1129,33 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_mlt(self):
+        @asyncio.coroutine
+        def go():
+            msg = MESSAGES[0].copy()
+            # mlt needs quite a lot of text to work
+            msg['message'] = '''
+            Additionally, More Like This can find documents that are "like"
+            a set of chosen documents. The syntax to specify one or more
+            documents is similar to the Multi GET API, and supports the
+            ids or docs array. If only one document is specified,
+            the query behaves the same as the More Like This API.'''
+            # and quite a lot of documents
+            for i in range(50):
+                yield from self.cl.index(
+                    self._index, 'testdoc', msg, str(i),
+                    refresh=True
+                )
+
+            data = yield from self.cl.mlt(
+                self._index, 'testdoc', '1'
+            )
+            # initial document is not included
+            self.assertEqual(data['hits']['total'], 49)
+            self.assertEqual(data['hits']['hits'][0]['_source'], msg)
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():
