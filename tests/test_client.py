@@ -1112,6 +1112,23 @@ class TestClient(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_search_shards(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[0], '1',
+                refresh=True
+            )
+            data = yield from self.cl.search_shards(
+                self._index, 'testdoc'
+            )
+            self.assertTrue('nodes' in data)
+            self.assertTrue(len(data['nodes']) > 0)
+            self.assertTrue('shards' in data)
+            self.assertTrue(len(data['shards']) > 0)
+
+        self.loop.run_until_complete(go())
+
     # def test_(self):
     #     @asyncio.coroutine
     #     def go():

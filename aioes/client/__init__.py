@@ -531,45 +531,45 @@ class Elasticsearch:
             body=body)
 
         return data
-    #
-    # @asyncio.coroutine
-    # def search_shards(self, index=None, doc_type=None, *,
-    #                   allow_no_indices=default, expand_wildcards=default,
-    #                   ignore_unavailable=default, local=default,
-    #                   preference=default, routing=default):
-    #     """
-    #     The search shards api returns the indices and shards that a search
-    #     request would be executed against. This can give useful feedback
-    #     for working out issues or planning optimizations with routing and
-    #     shard preferences.
-    #    """
-    #     params = {}
-    #     if allow_no_indices is not default:
-    #         params['allow_no_indices'] = bool(allow_no_indices)
-    #     if expand_wildcards is not default:
-    #         if not isinstance(expand_wildcards, str):
-    #             raise TypeError("'expand_wildcards' parameter is not "
-    #                             "a string")
-    #         elif expand_wildcards.lower() in ('open', 'closed'):
-    #             params['expand_wildcards'] = expand_wildcards.lower()
-    #         else:
-    #             raise ValueError("'expand_wildcards' parameter should be"
-    #                              " one of 'open', 'closed'")
-    #     if ignore_unavailable is not default:
-    #         params['ignore_unavailable'] = bool(ignore_unavailable)
-    #     if local is not default:
-    #         params['local'] = local
-    #     if preference is not default:
-    #         params['preference'] = preference
-    #     if routing is not default:
-    #         params['routing'] = routing
-    #
-    #     _, data = yield from self.transport.perform_request(
-    #         'GET',
-    #         _make_path(index, doc_type, '_search_shards'),
-    #         params=params)
-    #
-    #     return data
+
+    @asyncio.coroutine
+    def search_shards(self, index=None, doc_type=None, *,
+                      allow_no_indices=default, expand_wildcards=default,
+                      ignore_unavailable=default, local=default,
+                      preference=default, routing=default):
+        """
+        The search shards api returns the indices and shards that a search
+        request would be executed against. This can give useful feedback
+        for working out issues or planning optimizations with routing and
+        shard preferences.
+       """
+        params = {}
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not "
+                                "a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards.lower()
+            else:
+                raise ValueError("'expand_wildcards' parameter should be"
+                                 " one of 'open', 'closed'")
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+        if local is not default:
+            params['local'] = local
+        if preference is not default:
+            params['preference'] = preference
+        if routing is not default:
+            params['routing'] = routing
+
+        _, data = yield from self.transport.perform_request(
+            'GET',
+            _make_path(index, doc_type, '_search_shards'),
+            params=params)
+
+        return data
 
     @asyncio.coroutine
     def search_template(self, index=None, doc_type=None, body=None, *,
