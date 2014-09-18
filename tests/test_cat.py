@@ -22,11 +22,50 @@ class TestCat(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
+    def test_aliases(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.aliases(v=True)
+            self.assertIn('alias', ret)
+            self.assertIn('index', ret)
+
+        self.loop.run_until_complete(go())
+
     def test_allocation(self):
         @asyncio.coroutine
         def go():
             ret = yield from self.cl.cat.allocation(v=True)
             self.assertIn('disk.percent', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_count(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.count(v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('count', ret)
+
+            # testing for index
+            yield from self.cl.create(
+                self._index, 'tweet',
+                {
+                    'user': 'Bob',
+                },
+                '1'
+            )
+            ret = yield from self.cl.cat.count(self._index, v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('count', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_health(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.health(v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('node.total', ret)
 
         self.loop.run_until_complete(go())
 
@@ -60,5 +99,23 @@ class TestCat(unittest.TestCase):
         def go():
             ret = yield from self.cl.cat.help(help=True)
             self.assertEqual(pattern, ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_indices(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.indices(v=True)
+            self.assertIn('health', ret)
+            self.assertIn('index', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_master(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.master(v=True)
+            self.assertIn('host', ret)
+            self.assertIn('ip', ret)
 
         self.loop.run_until_complete(go())
