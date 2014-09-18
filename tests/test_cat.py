@@ -22,6 +22,15 @@ class TestCat(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
+    def test_aliases(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.aliases(v=True)
+            self.assertIn('alias', ret)
+            self.assertIn('index', ret)
+
+        self.loop.run_until_complete(go())
+
     def test_allocation(self):
         @asyncio.coroutine
         def go():

@@ -1657,6 +1657,27 @@ CatClient
 
    Class for retrieving elasticsearch information in human-readable way.
 
+   .. method:: aliases(*, name=default, h=default, help=default,
+               local=default, master_timeout=default, v=default):
+
+      A :ref:`coroutine <coroutine>` that returns an info about aliases.
+
+      :param name: A comma-separated list of alias names to return
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for connection to master
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-alias.html>`_
+
+
    .. method:: allocation(node_id=None, *, h=default, help=default, \
                local=default, master_timeout=default, v=default)
 
