@@ -1658,7 +1658,7 @@ CatClient
    Class for retrieving elasticsearch information in human-readable way.
 
    .. method:: aliases(*, name=default, h=default, help=default,
-               local=default, master_timeout=default, v=default):
+               local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
 
@@ -1703,7 +1703,7 @@ CatClient
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
 
    .. method:: count(index=None, *, h=default, help=default,
-               local=default, master_timeout=default, v=default):
+               local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
 
@@ -1724,7 +1724,7 @@ CatClient
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-count.html>`_
 
    .. method:: health(*, h=default, help=default, local=default,
-               master_timeout=default, ts=default, v=default):
+               master_timeout=default, ts=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns a health, which is a terse,
       one-line representation of the same information from
@@ -1756,6 +1756,50 @@ CatClient
       .. Seealso::
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html>`_
+
+   .. method:: indices(self, index=None, *, bytes=default, h=default, help=default,
+               local=default, master_timeout=default, pri=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that returns a cross-section of each index
+
+      :param index: A comma-separated list of index names to limit the returned
+          information
+      :param bytes: The unit in which to display byte values
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for connection to
+          master node
+      :param pri: Set to true to return stats only for primary shards, default
+          False
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-indices.html>`_
+
+   .. method:: master(*, h=default, help=default, local=default,
+               master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that displays the master's node ID,
+      bound IP address, and node name
+
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for connection to
+          master node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-master.html>`_
 
 NodesClient
 -----------------

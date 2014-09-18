@@ -101,3 +101,21 @@ class TestCat(unittest.TestCase):
             self.assertEqual(pattern, ret)
 
         self.loop.run_until_complete(go())
+
+    def test_indices(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.indices(v=True)
+            self.assertIn('health', ret)
+            self.assertIn('index', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_master(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.master(v=True)
+            self.assertIn('host', ret)
+            self.assertIn('ip', ret)
+
+        self.loop.run_until_complete(go())
