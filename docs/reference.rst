@@ -1702,6 +1702,49 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
 
+   .. method:: count(index=None, *, h=default, help=default,
+               local=default, master_timeout=default, v=default):
+
+      A :ref:`coroutine <coroutine>` that returns an info about aliases.
+
+      :param index: A comma-separated list of index names to limit the returned
+          information
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for connection to
+          master node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-count.html>`_
+
+   .. method:: health(*, h=default, help=default, local=default,
+               master_timeout=default, ts=default, v=default):
+
+      A :ref:`coroutine <coroutine>` that returns a health, which is a terse,
+      one-line representation of the same information from
+      :meth:`~elasticsearch.client.cluster.ClusterClient.health` API
+
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for connection to master
+          node
+      :param ts: Set to false to disable timestamping, default True
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-health.html>`_
+
    .. method:: help(*, help=default)
 
       A :ref:`coroutine <coroutine>` that returns help banner.

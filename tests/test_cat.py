@@ -39,6 +39,36 @@ class TestCat(unittest.TestCase):
 
         self.loop.run_until_complete(go())
 
+    def test_count(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.count(v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('count', ret)
+
+            # testing for index
+            yield from self.cl.create(
+                self._index, 'tweet',
+                {
+                    'user': 'Bob',
+                },
+                '1'
+            )
+            ret = yield from self.cl.cat.count(self._index, v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('count', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_health(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.cat.health(v=True)
+            self.assertIn('timestamp', ret)
+            self.assertIn('node.total', ret)
+
+        self.loop.run_until_complete(go())
+
     def test_help(self):
         pattern = textwrap.dedent("""\
                                   =^.^=
