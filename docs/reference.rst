@@ -1801,6 +1801,175 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-master.html>`_
 
+   .. method:: nodes(*, h=default, help=default, local=default,
+              master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that shows the cluster topology.
+
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-nodes.html>`_
+
+   .. method:: recovery(index=None, *, bytes=default, h=default, help=default,
+                        local=default, master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that shows the view of shard replication.
+
+      :param index: A comma-separated list of index names to limit the returned
+            information
+      :param bytes: The unit in which to display byte values
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-recovery.html>`_
+
+   .. method:: shards(index=None, *, h=default, help=default, local=default,
+                      master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that shows the detailed view of what nodes
+      contain which shards.
+
+      :param index: A comma-separated list of index names to limit the returned
+            information
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-shards.html>`_
+
+   .. method:: segments(index=None, *, h=default, help=default, local=default,
+                        master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that shows the detailed
+      view of Lucene segments per index
+
+      :param index: A comma-separated list of index names to limit the returned
+            information
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-segments.html>`_
+
+   .. method:: pending_tasks(*, h=default, help=default, local=default,
+                             master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that provides the same information as the
+      :meth:`~elasticsearch.client.cluster.ClusterClient.pending_tasks` API
+      in a convenient tabular format.
+
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-pending-tasks.html>`_
+
+   .. method:: thread_pool(*, full_id=default, h=default, help=default,
+                           local=default, master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that provides information about thread pools.
+
+      :param full_id: Enables displaying the complete node ids (default:false)
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-thread-pool.html>`_
+
+   .. method:: fielddata(*, fields=default, bytes=default, h=default,
+                         help=default, local=default, master_timeout=default,
+                         v=default)
+
+      A :ref:`coroutine <coroutine>` that provides information about
+      currently loaded fielddata on a per-node basis
+
+      :param fields: A comma-separated list of fields to return the fielddata
+          size
+      :param bytes: The unit in which to display byte values
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information (default: 'false')
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers (default: 'false')
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-fielddata.html>`_
+
+   .. method:: plugins(*, h=default, help=default, local=default,
+                       master_timeout=default, v=default)
+
+      A :ref:`coroutine <coroutine>` that provides information about plugins.
+
+      :param h: Comma-separated list of column names to display
+      :param help: Return help information, default False
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :param master_timeout: Explicit operation timeout for master connection
+          node
+      :param v: Verbose mode. Display column headers, default False
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-plugins.html>`_
+
 NodesClient
 -----------------
 
