@@ -150,7 +150,14 @@ class TestCat(unittest.TestCase):
     def test_segments(self):
         @asyncio.coroutine
         def go():
-            ret = yield from self.cl.cat.segments(v=True)
+            yield from self.cl.create(
+                self._index, 'tweet',
+                {
+                    'user': 'Bob',
+                },
+                '1'
+            )
+            ret = yield from self.cl.cat.segments(index=self._index, v=True)
             self.assertIn('index', ret)
             self.assertIn('segment', ret)
 
