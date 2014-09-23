@@ -1970,6 +1970,160 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-plugins.html>`_
 
+
+ClusterClient
+-----------------
+
+
+.. class:: aioes.client.ClusterClient
+
+   Class for retrieving elasticsearch information in human-readable way.
+
+   .. method:: health(index=None, *,
+               level=default, local=default, master_timeout=default,
+               timeout=default, wait_for_active_shards=default,
+               wait_for_nodes=default, wait_for_relocating_shards=default,
+               wait_for_status=default)
+
+      A :ref:`coroutine <coroutine>` that returns a very simple status on the health of the cluster.
+
+      :arg index: Limit the information returned to a specific index
+      :arg level: Specify the level of detail for returned information,
+           default u'cluster'
+      :arg local: Return local information, do not retrieve the state from
+           master node (default: false)
+      :arg master_timeout: Explicit operation timeout for connection to
+           master node
+      :arg timeout: Explicit operation timeout
+      :arg wait_for_active_shards: Wait until the specified number of shards
+           is active
+      :arg wait_for_nodes: Wait until the specified number of nodes is
+           available
+      :arg wait_for_relocating_shards: Wait until the specified number of
+           relocating shards is finished
+      :arg wait_for_status: Wait until cluster is in a specific state,
+           default None
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-health.html>`_
+
+   .. method:: pending_tasks(*, local=default, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that returns a list of any cluster-level
+      changes (e.g. create index, update mapping, allocate or fail shard)
+      which have not yet been executed.
+
+      :arg local: Return local information, do not retrieve the state
+            from master node (default: false)
+      :arg master_timeout: Specify timeout for connection to master
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-pending.html>`_
+
+   .. method:: state(metric=None, index=None, *, index_templates=default,
+               local=default, master_timeout=default, flat_settings=default)
+
+      A :ref:`coroutine <coroutine>` that returns a comprehensive state information of the whole cluster.
+
+      :arg metric: Limit the information returned to the specified metrics.
+          Possible values: "_all", "blocks", "index_templates", "metadata",
+          "nodes", "routing_table", "master_node", "version"
+      :arg index: A comma-separated list of index names; use `_all` or empty
+          string to perform the operation on all indices
+      :arg index_templates: A comma separated list to return specific index
+          templates when returning metadata.
+      :arg local: Return local information, do not retrieve the state
+          from master node (default: false)
+      :arg master_timeout: Specify timeout for connection to master
+      :arg flat_settings: Return settings in flat format (default: false)
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-state.html>`_
+
+   .. method:: stats(node_id=None, *, flat_settings=default, human=default)
+
+      A :ref:`coroutine <coroutine>` that returns statistics from a cluster wide
+      perspective. The API returns basic index metrics and information about
+      the current nodes that form the cluster.
+
+      :arg node_id: A comma-separated list of node IDs or names to limit the
+          returned information; use `_local` to return information from the
+          node you're connecting to, leave empty to get information from
+          all nodes
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg human: Whether to return time and byte values in
+          human-readable format.
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-stats.html>`_
+
+   .. method:: reroute(body=None, *, dry_run=default, explain=default,
+               filter_metadata=default, master_timeout=default,
+               timeout=default)
+
+      A :ref:`coroutine <coroutine>` that executes a cluster reroute
+      allocation command including specific commands.
+
+      :arg body: The definition of `commands` to perform
+          (`move`, `cancel`, `allocate`)
+      :arg dry_run: Simulate the operation only and return
+          the resulting state
+      :arg explain: Return an explanation of why the commands can or
+          cannot be executed
+      :arg filter_metadata: Don't return cluster state metadata
+          (default: false)
+      :arg master_timeout: Explicit operation timeout for connection
+          to master node
+      :arg timeout: Explicit operation timeout
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-reroute.html>`_
+
+   .. method:: get_settings(*, flat_settings=default, master_timeout=default,
+               timeout=default)
+
+      A :ref:`coroutine <coroutine>` that returns cluster settings.
+
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg master_timeout: Explicit operation timeout for connection
+          to master node
+      :arg timeout: Explicit operation timeout
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-update-settings.html>`_
+
+   .. method:: put_settings(body, *, flat_settings=default)
+
+      A :ref:`coroutine <coroutine>` that updates cluster settings.
+
+      :arg body: The settings to be updated. Can be either `transient` or
+          `persistent` (survives cluster restart).
+      :arg flat_settings: Return settings in flat format (default: false)
+
+      :returns: resulting text
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-update-settings.html>`_
+
 NodesClient
 -----------------
 
