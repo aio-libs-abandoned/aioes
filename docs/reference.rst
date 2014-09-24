@@ -2157,6 +2157,89 @@ NodesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>`_
 
+   .. method:: shutdown(node_id=None, *, delay=default, exit=default)
+
+      A :ref:`coroutine <coroutine>` that shutdowns one or more (or all) nodes in
+        the cluster.
+
+      :arg node_id: A comma-separated list of node IDs or names to perform
+          the operation on; use `_local` to perform the operation on
+          the node you're connected to, leave empty to perform the operation
+          on all nodes
+      :arg delay: Set the delay for the operation (default: 1s)
+      :arg exit: Exit the JVM as well (default: true)
+
+      :returns: resulting info
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-shutdown.html>`_
+
+   .. method:: stats(node_id=None, metric=None, index_metric=None, *,
+                     completion_fields=default, fielddata_fields=default,
+                     fields=default, groups=default, human=default, level=default,
+                     types=default)
+
+      A :ref:`coroutine <coroutine>` that allows to retrieve one or more (or all) of
+        the cluster nodes statistics.
+
+      :arg node_id: A comma-separated list of node IDs or names to limit the
+          returned information; use `_local` to return information from the
+          node you're connecting to, leave empty to get information from all
+          nodes
+      :arg metric: Limit the information returned to the specified metrics.
+          Possible options are: "_all", "breaker", "fs", "http", "indices",
+          "jvm", "network", "os", "process", "thread_pool", "transport"
+      :arg index_metric: Limit the information returned for `indices` metric
+          to the specific index metrics. Isn't used if `indices` (or `all`)
+          metric isn't specified. Possible options are: "_all", "completion",
+          "docs", "fielddata", "filter_cache", "flush", "get", "id_cache",
+          "indexing", "merge", "percolate", "refresh", "search", "segments",
+          "store", "warmer"
+      :arg completion_fields: A comma-separated list of fields
+          for `fielddata` and `suggest` index metric (supports wildcards)
+      :arg fielddata_fields: A comma-separated list of fields for `fielddata`
+          index metric (supports wildcards)
+      :arg fields: A comma-separated list of fields for `fielddata` and
+          `completion` index metric (supports wildcards)
+      :arg groups: A comma-separated list of search groups for `search` index
+          metric
+      :arg human: Whether to return time and byte values in human-readable
+          format., default False
+      :arg level: Return indices stats aggregated at node, index or shard
+          level, default 'node'
+      :arg types: A comma-separated list of document types for the `indexing`
+          index metric
+
+      :returns: resulting info
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html>`_
+
+   .. method:: hot_threads(node_id=None, *, type_=default, interval=default,
+                           snapshots=default, threads=default)
+
+      A :ref:`coroutine <coroutine>` that allows to get the current hot threads on each node
+        in the cluster.
+
+      :arg node_id: A comma-separated list of node IDs or names to limit the
+          returned information; use `_local` to return information from the
+          node you're connecting to, leave empty to get information from all
+          nodes
+      :arg type_: The type to sample (default: cpu)
+      :arg interval: The interval for the second sampling of threads
+      :arg snapshots: Number of samples of thread stacktrace (default: 10)
+      :arg threads: Specify the number of threads to provide information for
+          (default: 3)
+
+      :returns: resulting info
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-hot-threads.html>`_
+
+
 
 SnapshotClient
 -----------------
