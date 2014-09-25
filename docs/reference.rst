@@ -2249,6 +2249,124 @@ SnapshotClient
 
    Class for manipulating elasticsearch snapshots.
 
+   .. method:: create(repository, snapshot, body=None, *,
+               master_timeout=default, wait_for_completion=default)
+
+      A :ref:`coroutine <coroutine>` that creates a snapshot in repository
+
+      :param repository: A repository name
+      :param snapshot: A snapshot name
+      :param body: The snapshot definition
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+      :param wait_for_completion: Should this request wait until
+          the operation has completed before returning, default False
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: delete(repository, snapshot, *, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that deletes a snapshot in repository
+
+      :param repository: A repository name
+      :param snapshot: A snapshot name
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: get(repository, snapshot, *, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves information about a snapshot.
+
+      :param repository: A comma-separated list of repository names
+      :param snapshot: A comma-separated list of snapshot names
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: delete_repository(repository, *, master_timeout=default,
+                                 timeout=default)
+
+      A :ref:`coroutine <coroutine>` that removes a shared file system repository.
+
+      :param repository: A comma-separated list of repository names
+      :param snapshot: A comma-separated list of snapshot names
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: get_repository(repository=None, *, local=default,
+                              master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that returns information about registered repositories.
+
+      :param repository: A comma-separated list of repository names
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+      :param local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: create_repository(repository, body, *, master_timeout=default,
+                                 timeout=default)
+
+      A :ref:`coroutine <coroutine>` that registers a shared file system repository.
+
+      :param repository: A repository name
+      :param body: The repository definition
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+      :param timeout: Explicit operation timeout
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
+   .. method:: restore(repository, snapshot, body=None, *,
+                       master_timeout=default, wait_for_completion=default)
+
+      A :ref:`coroutine <coroutine>` that restores a snapshot.
+
+      :param repository: A repository name
+      :param snapshot: A snapshot name
+      :param body: Details of what to restore
+      :param master_timeout: Explicit operation timeout for connection
+          to master node
+      :param wait_for_completion: Should this request wait until the operation
+          has completed before returning, default False
+
+      :returns: resulting info.
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
+
    .. method:: status(repository=None, snapshot=None, *, \
                master_timeout=default)
 
