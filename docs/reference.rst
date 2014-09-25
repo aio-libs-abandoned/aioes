@@ -1987,21 +1987,21 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns a very simple status on the health of the cluster.
 
-      :arg index: Limit the information returned to a specific index
-      :arg level: Specify the level of detail for returned information,
+      :param index: Limit the information returned to a specific index
+      :param level: Specify the level of detail for returned information,
            default u'cluster'
-      :arg local: Return local information, do not retrieve the state from
+      :param local: Return local information, do not retrieve the state from
            master node (default: false)
-      :arg master_timeout: Explicit operation timeout for connection to
+      :param master_timeout: Explicit operation timeout for connection to
            master node
-      :arg timeout: Explicit operation timeout
-      :arg wait_for_active_shards: Wait until the specified number of shards
+      :param timeout: Explicit operation timeout
+      :param wait_for_active_shards: Wait until the specified number of shards
            is active
-      :arg wait_for_nodes: Wait until the specified number of nodes is
+      :param wait_for_nodes: Wait until the specified number of nodes is
            available
-      :arg wait_for_relocating_shards: Wait until the specified number of
+      :param wait_for_relocating_shards: Wait until the specified number of
            relocating shards is finished
-      :arg wait_for_status: Wait until cluster is in a specific state,
+      :param wait_for_status: Wait until cluster is in a specific state,
            default None
 
       :returns: resulting text
@@ -2016,9 +2016,9 @@ ClusterClient
       changes (e.g. create index, update mapping, allocate or fail shard)
       which have not yet been executed.
 
-      :arg local: Return local information, do not retrieve the state
+      :param local: Return local information, do not retrieve the state
             from master node (default: false)
-      :arg master_timeout: Specify timeout for connection to master
+      :param master_timeout: Specify timeout for connection to master
 
       :returns: resulting text
 
@@ -2031,17 +2031,17 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns a comprehensive state information of the whole cluster.
 
-      :arg metric: Limit the information returned to the specified metrics.
+      :param metric: Limit the information returned to the specified metrics.
           Possible values: "_all", "blocks", "index_templates", "metadata",
           "nodes", "routing_table", "master_node", "version"
-      :arg index: A comma-separated list of index names; use `_all` or empty
+      :param index: A comma-separated list of index names; use `_all` or empty
           string to perform the operation on all indices
-      :arg index_templates: A comma separated list to return specific index
+      :param index_templates: A comma separated list to return specific index
           templates when returning metadata.
-      :arg local: Return local information, do not retrieve the state
+      :param local: Return local information, do not retrieve the state
           from master node (default: false)
-      :arg master_timeout: Specify timeout for connection to master
-      :arg flat_settings: Return settings in flat format (default: false)
+      :param master_timeout: Specify timeout for connection to master
+      :param flat_settings: Return settings in flat format (default: false)
 
       :returns: resulting text
 
@@ -2055,12 +2055,12 @@ ClusterClient
       perspective. The API returns basic index metrics and information about
       the current nodes that form the cluster.
 
-      :arg node_id: A comma-separated list of node IDs or names to limit the
+      :param node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from
           all nodes
-      :arg flat_settings: Return settings in flat format (default: false)
-      :arg human: Whether to return time and byte values in
+      :param flat_settings: Return settings in flat format (default: false)
+      :param human: Whether to return time and byte values in
           human-readable format.
 
       :returns: resulting text
@@ -2076,17 +2076,17 @@ ClusterClient
       A :ref:`coroutine <coroutine>` that executes a cluster reroute
       allocation command including specific commands.
 
-      :arg body: The definition of `commands` to perform
+      :param body: The definition of `commands` to perform
           (`move`, `cancel`, `allocate`)
-      :arg dry_run: Simulate the operation only and return
+      :param dry_run: Simulate the operation only and return
           the resulting state
-      :arg explain: Return an explanation of why the commands can or
+      :param explain: Return an explanation of why the commands can or
           cannot be executed
-      :arg filter_metadata: Don't return cluster state metadata
+      :param filter_metadata: Don't return cluster state metadata
           (default: false)
-      :arg master_timeout: Explicit operation timeout for connection
+      :param master_timeout: Explicit operation timeout for connection
           to master node
-      :arg timeout: Explicit operation timeout
+      :param timeout: Explicit operation timeout
 
       :returns: resulting text
 
@@ -2099,10 +2099,10 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns cluster settings.
 
-      :arg flat_settings: Return settings in flat format (default: false)
-      :arg master_timeout: Explicit operation timeout for connection
+      :param flat_settings: Return settings in flat format (default: false)
+      :param master_timeout: Explicit operation timeout for connection
           to master node
-      :arg timeout: Explicit operation timeout
+      :param timeout: Explicit operation timeout
 
       :returns: resulting text
 
@@ -2114,9 +2114,9 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that updates cluster settings.
 
-      :arg body: The settings to be updated. Can be either `transient` or
+      :param body: The settings to be updated. Can be either `transient` or
           `persistent` (survives cluster restart).
-      :arg flat_settings: Return settings in flat format (default: false)
+      :param flat_settings: Return settings in flat format (default: false)
 
       :returns: resulting text
 
@@ -2162,12 +2162,12 @@ NodesClient
       A :ref:`coroutine <coroutine>` that shutdowns one or more (or all) nodes in
         the cluster.
 
-      :arg node_id: A comma-separated list of node IDs or names to perform
+      :param node_id: A comma-separated list of node IDs or names to perform
           the operation on; use `_local` to perform the operation on
           the node you're connected to, leave empty to perform the operation
           on all nodes
-      :arg delay: Set the delay for the operation (default: 1s)
-      :arg exit: Exit the JVM as well (default: true)
+      :param delay: Set the delay for the operation (default: 1s)
+      :param exit: Exit the JVM as well (default: true)
 
       :returns: resulting info
 
@@ -2183,32 +2183,32 @@ NodesClient
       A :ref:`coroutine <coroutine>` that allows to retrieve one or more (or all) of
         the cluster nodes statistics.
 
-      :arg node_id: A comma-separated list of node IDs or names to limit the
+      :param node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :arg metric: Limit the information returned to the specified metrics.
+      :param metric: Limit the information returned to the specified metrics.
           Possible options are: "_all", "breaker", "fs", "http", "indices",
           "jvm", "network", "os", "process", "thread_pool", "transport"
-      :arg index_metric: Limit the information returned for `indices` metric
+      :param index_metric: Limit the information returned for `indices` metric
           to the specific index metrics. Isn't used if `indices` (or `all`)
           metric isn't specified. Possible options are: "_all", "completion",
           "docs", "fielddata", "filter_cache", "flush", "get", "id_cache",
           "indexing", "merge", "percolate", "refresh", "search", "segments",
           "store", "warmer"
-      :arg completion_fields: A comma-separated list of fields
+      :param completion_fields: A comma-separated list of fields
           for `fielddata` and `suggest` index metric (supports wildcards)
-      :arg fielddata_fields: A comma-separated list of fields for `fielddata`
+      :param fielddata_fields: A comma-separated list of fields for `fielddata`
           index metric (supports wildcards)
-      :arg fields: A comma-separated list of fields for `fielddata` and
+      :param fields: A comma-separated list of fields for `fielddata` and
           `completion` index metric (supports wildcards)
-      :arg groups: A comma-separated list of search groups for `search` index
+      :param groups: A comma-separated list of search groups for `search` index
           metric
-      :arg human: Whether to return time and byte values in human-readable
+      :param human: Whether to return time and byte values in human-readable
           format., default False
-      :arg level: Return indices stats aggregated at node, index or shard
+      :param level: Return indices stats aggregated at node, index or shard
           level, default 'node'
-      :arg types: A comma-separated list of document types for the `indexing`
+      :param types: A comma-separated list of document types for the `indexing`
           index metric
 
       :returns: resulting info
@@ -2223,14 +2223,14 @@ NodesClient
       A :ref:`coroutine <coroutine>` that allows to get the current hot threads on each node
         in the cluster.
 
-      :arg node_id: A comma-separated list of node IDs or names to limit the
+      :param node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :arg type_: The type to sample (default: cpu)
-      :arg interval: The interval for the second sampling of threads
-      :arg snapshots: Number of samples of thread stacktrace (default: 10)
-      :arg threads: Specify the number of threads to provide information for
+      :param type_: The type to sample (default: cpu)
+      :param interval: The interval for the second sampling of threads
+      :param snapshots: Number of samples of thread stacktrace (default: 10)
+      :param threads: Specify the number of threads to provide information for
           (default: 3)
 
       :returns: resulting info
