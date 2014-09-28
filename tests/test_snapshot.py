@@ -1,5 +1,5 @@
-import os
 import asyncio
+import tempfile
 import unittest
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
@@ -10,7 +10,8 @@ class TestSnapshot(unittest.TestCase):
     def setUp(self):
         self._index = 'elastic_search'
         self.repo_name = 'test_repo'
-        self.repo_path = os.path.dirname(os.path.realpath(__file__)) + '/repo'
+        self.repo_temp_dir = tempfile.TemporaryDirectory()
+        self.repo_path = self.repo_temp_dir.name
         self.snapshot_name = 'test_snapshot'
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(None)
@@ -23,6 +24,7 @@ class TestSnapshot(unittest.TestCase):
             pass
 
     def tearDown(self):
+        self.repo_temp_dir.cleanup()
         # cleaning up just in case
         try:
             self.loop.run_until_complete(
