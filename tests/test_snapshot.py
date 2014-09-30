@@ -138,6 +138,10 @@ class TestSnapshot(unittest.TestCase):
                 ret['snapshots'][0]['snapshot'],
                 self.snapshot_name
             )
+            self.assertEqual(
+                ret['snapshots'][0]['state'],
+                'SUCCESS'
+            )
 
             # restoring snapshot
             restore_body = {
