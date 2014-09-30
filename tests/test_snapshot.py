@@ -1,4 +1,6 @@
 import os
+import shutil
+import random
 import asyncio
 import tempfile
 import unittest
@@ -8,12 +10,38 @@ from aioes.exception import NotFoundError
 
 class TestSnapshot(unittest.TestCase):
 
+    def _create_temp_dir(self):
+        '''
+        Sice elasticsearch may be launched under the other user,
+        tempfile.TemporaryDirectory can't be used, because python
+        can't cleanup it after elasticsearch user.
+        So we are just leaving it there.
+        '''
+        characters = "abcdefghijklmnopqrstuvwxyz0123456789_"
+        temp_dir = tempfile.gettempdir()
+        temp_prefix = '/' + tempfile.gettempprefix()
+        temp_name = temp_prefix + ''.join(
+            [random.choice(characters) for _ in range(8)]
+        )
+
+        dir_path = os.path.join(temp_dir + temp_name)
+        os.makedirs(dir_path)
+        return dir_path
+
+    def _cleanup_dirs(self, dir_path):
+        try:
+            shutil.rmtree(dir_path)
+        except PermissionError:
+            # if subdirs were created by other user
+            pass
+
     def setUp(self):
         self._index = 'elastic_search'
         self.repo_name = 'test_repo'
-        self.repo_temp_dir = tempfile.TemporaryDirectory()
-        self.repo_path = self.repo_temp_dir.name
+        self.repo_path = self._create_temp_dir()
+        # otherwise elasticsearch can't access it
         os.chmod(self.repo_path, 0o777)
+
         self.snapshot_name = 'test_snapshot'
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(None)
@@ -26,7 +54,7 @@ class TestSnapshot(unittest.TestCase):
             pass
 
     def tearDown(self):
-        self.repo_temp_dir.cleanup()
+        self._cleanup_dirs(self.repo_path)
         # cleaning up just in case
         try:
             self.loop.run_until_complete(
