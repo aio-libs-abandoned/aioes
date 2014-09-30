@@ -1,3 +1,4 @@
+import os
 import asyncio
 import tempfile
 import unittest
@@ -12,6 +13,7 @@ class TestSnapshot(unittest.TestCase):
         self.repo_name = 'test_repo'
         self.repo_temp_dir = tempfile.TemporaryDirectory()
         self.repo_path = self.repo_temp_dir.name
+        os.chmod(self.repo_path, 0o777)
         self.snapshot_name = 'test_snapshot'
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(None)
