@@ -38,21 +38,21 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that adds or updates a typed JSON
       document in a specific index, making it searchable.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param body: The document
-      :param id: Document ID
-      :param consistency: Explicit write consistency setting for the operation
-      :param op_type: Explicit operation type (default: index)
-      :param parent: ID of the parent document
-      :param refresh: Refresh the index after performing the operation
-      :param replication: Specific replication type (default: sync)
-      :param routing: Specific routing value
-      :param timeout: Explicit operation timeout
-      :param timestamp: Explicit timestamp for the document
-      :param ttl: Expiration time for the document
-      :param version: Explicit version number for concurrency control
-      :param version_type: Specific version type
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg body: The document
+      :arg id: Document ID
+      :arg consistency: Explicit write consistency setting for the operation
+      :arg op_type: Explicit operation type (default: index)
+      :arg parent: ID of the parent document
+      :arg refresh: Refresh the index after performing the operation
+      :arg replication: Specific replication type (default: sync)
+      :arg routing: Specific routing value
+      :arg timeout: Explicit operation timeout
+      :arg timestamp: Explicit timestamp for the document
+      :arg ttl: Expiration time for the document
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Specific version type
 
       :returns: resulting JSON
 
@@ -71,22 +71,22 @@ Elasticsearch
       specific index, making it searchable.
       Behind the scenes this method calls index(..., op_type='create')
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param id: Document ID
-      :param body: The document
-      :param consistency: Explicit write consistency setting for the operation
-      :param id: Specific document ID (when the POST method is used)
-      :param parent: ID of the parent document
-      :param percolate: Percolator queries to execute while indexing the document
-      :param refresh: Refresh the index after performing the operation
-      :param replication: Specific replication type (default: sync)
-      :param routing: Specific routing value
-      :param timeout: Explicit operation timeout
-      :param timestamp: Explicit timestamp for the document
-      :param ttl: Expiration time for the document
-      :param version: Explicit version number for concurrency control
-      :param version_type: Specific version type
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg id: Document ID
+      :arg body: The document
+      :arg consistency: Explicit write consistency setting for the operation
+      :arg id: Specific document ID (when the POST method is used)
+      :arg parent: ID of the parent document
+      :arg percolate: Percolator queries to execute while indexing the document
+      :arg refresh: Refresh the index after performing the operation
+      :arg replication: Specific replication type (default: sync)
+      :arg routing: Specific routing value
+      :arg timeout: Explicit operation timeout
+      :arg timestamp: Explicit timestamp for the document
+      :arg ttl: Expiration time for the document
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Specific version type
 
       :returns: resulting JSON
 
@@ -102,18 +102,18 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that returns a boolean indicating
       whether or not given document exists in Elasticsearch.
 
-      :param index: The name of the index
-      :param id: The document ID
-      :param doc_type: The type of the document (uses `_all` by default to
+      :arg index: The name of the index
+      :arg id: The document ID
+      :arg doc_type: The type of the document (uses `_all` by default to
              fetch the first document matching the ID across all types)
-      :param parent: The ID of the parent document
-      :param preference: Specify the node or shard the operation should be
+      :arg parent: The ID of the parent document
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param realtime: Specify whether to perform the operation in realtime or
+      :arg realtime: Specify whether to perform the operation in realtime or
              search mode
-      :param refresh: Refresh the shard containing the document before
+      :arg refresh: Refresh the shard containing the document before
              performing the operation
-      :param routing: Specific routing value
+      :arg routing: Specific routing value
 
       :returns: bool
 
@@ -131,27 +131,27 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that get a typed JSON document from the
       index based on its id.
 
-      :param index: The name of the index
-      :param id: The document ID
-      :param doc_type: The type of the document (uses `_all` by default to
+      :arg index: The name of the index
+      :arg id: The document ID
+      :arg doc_type: The type of the document (uses `_all` by default to
              fetch the first document matching the ID across all types)
-      :param _source: True or false to return the _source field or not, or a
+      :arg _source: True or false to return the _source field or not, or a
              list of fields to return
-      :param _source_exclude: A list of fields to exclude from the returned
+      :arg _source_exclude: A list of fields to exclude from the returned
              _source field
-      :param _source_include: A list of fields to extract and return from the
+      :arg _source_include: A list of fields to extract and return from the
              _source field
-      :param fields: A comma-separated list of fields to return in the response
-      :param parent: The ID of the parent document
-      :param preference: Specify the node or shard the operation should be
+      :arg fields: A comma-separated list of fields to return in the response
+      :arg parent: The ID of the parent document
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param realtime: Specify whether to perform the operation in realtime or
+      :arg realtime: Specify whether to perform the operation in realtime or
              search mode
-      :param refresh: Refresh the shard containing the document before
+      :arg refresh: Refresh the shard containing the document before
              performing the operation
-      :param routing: Specific routing value
-      :param version: Explicit version number for concurrency control
-      :param version_type: Explicit version number for concurrency control
+      :arg routing: Specific routing value
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Explicit version number for concurrency control
 
       :returns: resulting JSON
 
@@ -168,25 +168,25 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that get multiple documents based on an index,
       type (optional) and ids.
 
-      :param body: Document identifiers; can be either `docs` (containing full
+      :arg body: Document identifiers; can be either `docs` (containing full
              document information) or `ids` (when index and type is provided in the URL.
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param _source: True or false to return the _source field or not, or a
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg _source: True or false to return the _source field or not, or a
              list of fields to return
-      :param _source_exclude: A list of fields to exclude from the returned
+      :arg _source_exclude: A list of fields to exclude from the returned
              _source field
-      :param _source_include: A list of fields to extract and return from the
+      :arg _source_include: A list of fields to extract and return from the
              _source field
-      :param fields: A comma-separated list of fields to return in the response
-      :param parent: The ID of the parent document
-      :param preference: Specify the node or shard the operation should be
+      :arg fields: A comma-separated list of fields to return in the response
+      :arg parent: The ID of the parent document
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param realtime: Specify whether to perform the operation in realtime or
+      :arg realtime: Specify whether to perform the operation in realtime or
              search mode
-      :param refresh: Refresh the shard containing the document before
+      :arg refresh: Refresh the shard containing the document before
              performing the operation
-      :param routing: Specific routing value
+      :arg routing: Specific routing value
 
       :returns: resulting JSON
 
@@ -204,26 +204,26 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that get the source of a document by it's
       index, type and id.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document (uses `_all` by default to
+      :arg index: The name of the index
+      :arg doc_type: The type of the document (uses `_all` by default to
              fetch the first document matching the ID across all types)
-      :param id: The document ID
-      :param _source: True or false to return the _source field or not, or a
+      :arg id: The document ID
+      :arg _source: True or false to return the _source field or not, or a
              list of fields to return
-      :param _source_exclude: A list of fields to exclude from the returned
+      :arg _source_exclude: A list of fields to exclude from the returned
              _source field
-      :param _source_include: A list of fields to extract and return from the
+      :arg _source_include: A list of fields to extract and return from the
              _source field
-      :param parent: The ID of the parent document
-      :param preference: Specify the node or shard the operation should be
+      :arg parent: The ID of the parent document
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param realtime: Specify whether to perform the operation in realtime
+      :arg realtime: Specify whether to perform the operation in realtime
              or search mode
-      :param refresh: Refresh the shard containing the document before
+      :arg refresh: Refresh the shard containing the document before
              performing the operation
-      :param routing: Specific routing value
-      :param version: Explicit version number for concurrency control
-      :param version_type: Explicit version number for concurrency control
+      :arg routing: Specific routing value
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Explicit version number for concurrency control
 
       :returns: resulting JSON
 
@@ -242,25 +242,25 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that update a document based on a script or partial data provided.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param id: Document ID
-      :param body: The request definition using either `script` or partial `doc`
-      :param consistency: Explicit write consistency setting for the operation
-      :param fields: A comma-separated list of fields to return in the response
-      :param lang: The script language (default: mvel)
-      :param parent: ID of the parent document
-      :param refresh: Refresh the index after performing the operation
-      :param replication: Specific replication type (default: sync)
-      :param retry_on_conflict: Specify how many times should the operation be
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg id: Document ID
+      :arg body: The request definition using either `script` or partial `doc`
+      :arg consistency: Explicit write consistency setting for the operation
+      :arg fields: A comma-separated list of fields to return in the response
+      :arg lang: The script language (default: mvel)
+      :arg parent: ID of the parent document
+      :arg refresh: Refresh the index after performing the operation
+      :arg replication: Specific replication type (default: sync)
+      :arg retry_on_conflict: Specify how many times should the operation be
              retried when a conflict occurs (default: 0)
-      :param routing: Specific routing value
-      :param script: The URL-encoded script definition (instead of using request body)
-      :param timeout: Explicit operation timeout
-      :param timestamp: Explicit timestamp for the document
-      :param ttl: Expiration time for the document
-      :param version: Explicit version number for concurrency control
-      :param version_type: Explicit version number for concurrency control
+      :arg routing: Specific routing value
+      :arg script: The URL-encoded script definition (instead of using request body)
+      :arg timeout: Explicit operation timeout
+      :arg timestamp: Explicit timestamp for the document
+      :arg ttl: Expiration time for the document
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Explicit version number for concurrency control
 
       :returns: resulting JSON
 
@@ -287,57 +287,57 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that execute a search query and get back
       search hits that match the query.
 
-      :param index: A comma-separated list of index names to search; use `_all`
+      :arg index: A comma-separated list of index names to search; use `_all`
             or empty string to perform the operation on all indices
-      :param doc_type: A comma-separated list of document types to search;
+      :arg doc_type: A comma-separated list of document types to search;
             leave empty to perform the operation on all types
-      :param body: The search definition using the Query DSL
-      :param _source: True or false to return the _source field or not, or a
+      :arg body: The search definition using the Query DSL
+      :arg _source: True or false to return the _source field or not, or a
             list of fields to return
-      :param _source_exclude: A list of fields to exclude from the returned
+      :arg _source_exclude: A list of fields to exclude from the returned
             _source field
-      :param _source_include: A list of fields to extract and return from the
+      :arg _source_include: A list of fields to extract and return from the
             _source field
-      :param analyze_wildcard: Specify whether wildcard and prefix queries
+      :arg analyze_wildcard: Specify whether wildcard and prefix queries
             should be analyzed (default: false)
-      :param analyzer: The analyzer to use for the query string
-      :param default_operator: The default operator for query string query (AND
+      :arg analyzer: The analyzer to use for the query string
+      :arg default_operator: The default operator for query string query (AND
             or OR) (default: OR)
-      :param df: The field to use as default where no field prefix is given in
+      :arg df: The field to use as default where no field prefix is given in
             the query string
-      :param explain: Specify whether to return detailed information about
+      :arg explain: Specify whether to return detailed information about
             score computation as part of a hit
-      :param fields: A comma-separated list of fields to return as part of a hit
-      :param indices_boost: Comma-separated list of index boosts
-      :param lenient: Specify whether format-based query failures (such as
+      :arg fields: A comma-separated list of fields to return as part of a hit
+      :arg indices_boost: Comma-separated list of index boosts
+      :arg lenient: Specify whether format-based query failures (such as
             providing text to a numeric field) should be ignored
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
             expression resolves into no concrete indices. (This includes `_all`
             string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
             indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
             ignored when unavailable (missing or closed)
-      :param lowercase_expanded_terms: Specify whether query terms should be lowercased
-      :param from\_: Starting offset (default: 0)
-      :param preference: Specify the node or shard the operation should be
+      :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
+      :arg from\_: Starting offset (default: 0)
+      :arg preference: Specify the node or shard the operation should be
             performed on (default: random)
-      :param q: Query in the Lucene query string syntax
-      :param routing: A comma-separated list of specific routing values
-      :param scroll: Specify how long a consistent view of the index should be
+      :arg q: Query in the Lucene query string syntax
+      :arg routing: A comma-separated list of specific routing values
+      :arg scroll: Specify how long a consistent view of the index should be
             maintained for scrolled search
-      :param search_type: Search operation type
-      :param size: Number of hits to return (default: 10)
-      :param sort: A comma-separated list of <field>:<direction> pairs
-      :param source: The URL-encoded request definition using the Query DSL
+      :arg search_type: Search operation type
+      :arg size: Number of hits to return (default: 10)
+      :arg sort: A comma-separated list of <field>:<direction> pairs
+      :arg source: The URL-encoded request definition using the Query DSL
             (instead of using request body)
-      :param stats: Specific 'tag' of the request for logging and statistical purposes
-      :param suggest_field: Specify which field to use for suggestions
-      :param suggest_mode: Specify suggest mode (default: missing)
-      :param suggest_size: How many suggestions to return in response
-      :param suggest_text: The source text for which the suggestions should be returned
-      :param timeout: Explicit operation timeout
-      :param version: Specify whether to return document version as part of a hit
+      :arg stats: Specific 'tag' of the request for logging and statistical purposes
+      :arg suggest_field: Specify which field to use for suggestions
+      :arg suggest_mode: Specify suggest mode (default: missing)
+      :arg suggest_size: How many suggestions to return in response
+      :arg suggest_text: The source text for which the suggestions should be returned
+      :arg timeout: Explicit operation timeout
+      :arg version: Specify whether to return document version as part of a hit
 
       :returns: resulting JSON
 
@@ -358,20 +358,20 @@ Elasticsearch
       out issues or planning optimizations with routing and shard preferences
       execute a search query and get back search hits that match the query.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both. (default: '"open"')
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
              master node (default: false)
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param routing: Specific routing value
+      :arg routing: Specific routing value
 
       :returns: resulting JSON
 
@@ -390,24 +390,24 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that accepts a body with a query template and
       a map of key/value pairs to fill in template parameters.
 
-      :param index: A comma-separated list of index names to search; use `_all`
+      :arg index: A comma-separated list of index names to search; use `_all`
              or empty string to perform the operation on all indices
-      :param doc_type: A comma-separated list of document types to search; leave
+      :arg doc_type: A comma-separated list of document types to search; leave
              empty to perform the operation on all types
-      :param body: The search definition template and its params
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg body: The search definition template and its params
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param routing: A comma-separated list of specific routing values
-      :param scroll: Specify how long a consistent view of the index should be
+      :arg routing: A comma-separated list of specific routing values
+      :arg scroll: Specify how long a consistent view of the index should be
              maintained for scrolled search
-      :param search_type: Search operation type
+      :arg search_type: Search operation type
 
       :returns: resulting JSON
 
@@ -429,32 +429,32 @@ Elasticsearch
       query and a specific document. This can give useful feedback whether a
       document matches or didn't match a specific query.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param id: The document ID
-      :param body: The query definition using the Query DSL
-      :param _source: True or false to return the _source field or not, or a
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg id: The document ID
+      :arg body: The query definition using the Query DSL
+      :arg _source: True or false to return the _source field or not, or a
              list of fields to return
-      :param _source_exclude: A list of fields to exclude from the returned
+      :arg _source_exclude: A list of fields to exclude from the returned
              _source field
-      :param _source_include: A list of fields to extract and return from the
+      :arg _source_include: A list of fields to extract and return from the
              _source field
-      :param analyze_wildcard: Specify whether wildcards and prefix queries in
+      :arg analyze_wildcard: Specify whether wildcards and prefix queries in
              the query string query should be analyzed (default: false)
-      :param analyzer: The analyzer for the query string query
-      :param default_operator: The default operator for query string query (AND
+      :arg analyzer: The analyzer for the query string query
+      :arg default_operator: The default operator for query string query (AND
              or OR), (default: OR)
-      :param df: The default field for query string query (default: _all)
-      :param fields: A comma-separated list of fields to return in the response
-      :param lenient: Specify whether format-based query failures (such as
+      :arg df: The default field for query string query (default: _all)
+      :arg fields: A comma-separated list of fields to return in the response
+      :arg lenient: Specify whether format-based query failures (such as
              providing text to a numeric field) should be ignored
-      :param lowercase_expanded_terms: Specify whether query terms should be lowercased
-      :param parent: The ID of the parent document
-      :param preference: Specify the node or shard the operation should be
+      :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
+      :arg parent: The ID of the parent document
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param q: Query in the Lucene query string syntax
-      :param routing: Specific routing value
-      :param source: The URL-encoded query definition (instead of using the
+      :arg q: Query in the Lucene query string syntax
+      :arg routing: Specific routing value
+      :arg source: The URL-encoded query definition (instead of using the
              request body)
 
       :returns: resulting JSON
@@ -469,8 +469,8 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that scroll a search request created by
       specifying the scroll parameter
 
-      :param scroll_id: The scroll ID
-      :param scroll: Specify how long a consistent view of the index should be
+      :arg scroll_id: The scroll ID
+      :arg scroll: Specify how long a consistent view of the index should be
              maintained for scrolled search
 
       :returns: resulting JSON
@@ -485,8 +485,8 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that clear the scroll request created
       by specifying the scroll parameter to search.
 
-      :param scroll_id: The scroll ID or a list of scroll IDs
-      :param body: A comma-separated list of scroll IDs to clear if none was
+      :arg scroll_id: The scroll ID or a list of scroll IDs
+      :arg body: A comma-separated list of scroll IDs to clear if none was
              specified via the scroll_id parameter
 
       :returns: resulting JSON
@@ -505,17 +505,17 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that delete a typed JSON document from
       a specific index based on its id.
 
-      :param index: The name of the index
-      :param doc_type: The type of the document
-      :param id: The document ID
-      :param consistency: Specific write consistency setting for the operation
-      :param parent: ID of parent document
-      :param refresh: Refresh the index after performing the operation
-      :param replication: Specific replication type (default: sync)
-      :param routing: Specific routing value
-      :param timeout: Explicit operation timeout
-      :param version: Explicit version number for concurrency control
-      :param version_type: Specific version type
+      :arg index: The name of the index
+      :arg doc_type: The type of the document
+      :arg id: The document ID
+      :arg consistency: Specific write consistency setting for the operation
+      :arg parent: ID of parent document
+      :arg refresh: Refresh the index after performing the operation
+      :arg replication: Specific replication type (default: sync)
+      :arg routing: Specific routing value
+      :arg timeout: Explicit operation timeout
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Specific version type
 
       :returns: resulting JSON
 
@@ -533,23 +533,23 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that execute a query and get the
       number of matches for that query.
 
-      :param index: A comma-separated list of indices to restrict the results
-      :param doc_type: A comma-separated list of types to restrict the results
-      :param body: A query to restrict the results (optional)
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg index: A comma-separated list of indices to restrict the results
+      :arg doc_type: A comma-separated list of types to restrict the results
+      :arg body: A query to restrict the results (optional)
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param min_score: Include only documents with a specific `_score` value
+      :arg min_score: Include only documents with a specific `_score` value
              in the result
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param q: Query in the Lucene query string syntax
-      :param routing: Specific routing value
-      :param source: The URL-encoded query definition (instead of using the request body)
+      :arg q: Query in the Lucene query string syntax
+      :arg routing: Specific routing value
+      :arg source: The URL-encoded query definition (instead of using the request body)
 
       :returns: resulting JSON
 
@@ -565,16 +565,16 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that perform many index/delete
       operations in a single API call.
 
-      :param body: The operation definition and data (action-data pairs), as
+      :arg body: The operation definition and data (action-data pairs), as
              either a newline separated string, or a sequence of dicts to
              serialize (one per row).
-      :param index: Default index for items which don't provide one
-      :param doc_type: Default document type for items which don't provide one
-      :param consistency: Explicit write consistency setting for the operation
-      :param refresh: Refresh the index after performing the operation
-      :param routing: Specific routing value
-      :param replication: Explicitly set the replication type (default: sync)
-      :param timeout: Explicit operation timeout
+      :arg index: Default index for items which don't provide one
+      :arg doc_type: Default document type for items which don't provide one
+      :arg consistency: Explicit write consistency setting for the operation
+      :arg refresh: Refresh the index after performing the operation
+      :arg routing: Specific routing value
+      :arg replication: Explicitly set the replication type (default: sync)
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -589,12 +589,12 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that executes several search requests
       within the same API.
 
-      :param body: The request definitions (metadata-search request definition
+      :arg body: The request definitions (metadata-search request definition
              pairs), as either a newline separated string, or a sequence of
              dicts to serialize (one per row).
-      :param index: A comma-separated list of index names to use as default
-      :param doc_type: A comma-separated list of document types to use as default
-      :param search_type: Search operation type
+      :arg index: A comma-separated list of index names to use as default
+      :arg doc_type: A comma-separated list of document types to use as default
+      :arg search_type: Search operation type
 
       :returns: resulting JSON
 
@@ -614,30 +614,30 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that delete documents from one or more
       indices and one or more types based on a query.
 
-      :param index: A comma-separated list of indices to restrict the operation;
+      :arg index: A comma-separated list of indices to restrict the operation;
              use `_all` to perform the operation on all indices
-      :param doc_type: A comma-separated list of types to restrict the operation
-      :param body: A query to restrict the operation specified with the Query
+      :arg doc_type: A comma-separated list of types to restrict the operation
+      :arg body: A query to restrict the operation specified with the Query
              DSL
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param analyzer: The analyzer to use for the query string
-      :param consistency: Specific write consistency setting for the operation
-      :param default_operator: The default operator for query string query (AND
+      :arg analyzer: The analyzer to use for the query string
+      :arg consistency: Specific write consistency setting for the operation
+      :arg default_operator: The default operator for query string query (AND
              or OR), default u'OR'
-      :param df: The field to use as default where no field prefix is given in
+      :arg df: The field to use as default where no field prefix is given in
              the query string
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default u'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param q: Query in the Lucene query string syntax
-      :param replication: Specific replication type, default u'sync'
-      :param routing: Specific routing value
-      :param source: The URL-encoded query definition (instead of using the
+      :arg q: Query in the Lucene query string syntax
+      :arg replication: Specific replication type, default u'sync'
+      :arg routing: Specific routing value
+      :arg source: The URL-encoded query definition (instead of using the
              request body)
-      :param timeout: Explicit operation timeout
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -654,20 +654,20 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that suggests similar looking terms based on a provided
       text by using a suggester.
 
-      :param index: A comma-separated list of index names to restrict the operation;
+      :arg index: A comma-separated list of index names to restrict the operation;
              use `_all` or empty string to perform the operation on all indices
-      :param body: The request definition
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg body: The request definition
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param routing: Specific routing value
-      :param source: The URL-encoded request definition (instead of using request body)
+      :arg routing: Specific routing value
+      :arg source: The URL-encoded request definition (instead of using request body)
 
       :returns: resulting JSON
 
@@ -687,31 +687,31 @@ Elasticsearch
       an index, and then send percolate requests which include a doc, and getting
       back the queries that match on that doc out of the set of registered queries.
 
-      :param index: The index of the document being percolated.
-      :param doc_type: The type of the document being percolated.
-      :param id: Substitute the document in the request body with a document
+      :arg index: The index of the document being percolated.
+      :arg doc_type: The type of the document being percolated.
+      :arg id: Substitute the document in the request body with a document
              that is known by the specified id. On top of the id, the index and
              type parameter will be used to retrieve the document from within the
              cluster.
-      :param body: The percolator request definition using the percolate DSL
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg body: The percolator request definition using the percolate DSL
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param percolate_format: Return an array of matching query IDs instead of
+      :arg percolate_format: Return an array of matching query IDs instead of
              objects
-      :param percolate_index: The index to percolate the document into. Defaults
+      :arg percolate_index: The index to percolate the document into. Defaults
              to index.
-      :param percolate_type: The type to percolate document into. Defaults to
+      :arg percolate_type: The type to percolate document into. Defaults to
              type.
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param routing: A comma-separated list of specific routing values
-      :param version: Explicit version number for concurrency control
-      :param version_type: Specific version type
+      :arg routing: A comma-separated list of specific routing values
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Specific version type
 
       :returns: resulting JSON
 
@@ -728,18 +728,18 @@ Elasticsearch
       an index, and then send percolate requests which include a doc, and getting
       back the queries that match on that doc out of the set of registered queries.
 
-      :param index: The index of the document being count percolated to use as
+      :arg index: The index of the document being count percolated to use as
              default
-      :param doc_type: The type of the document being percolated to use as
+      :arg doc_type: The type of the document being percolated to use as
              default.
-      :param body: The percolate request definitions (header & body pair),
+      :arg body: The percolate request definitions (header & body pair),
              separated by newlines
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
 
       :returns: resulting JSON
@@ -762,29 +762,29 @@ Elasticsearch
       index, and then send percolate requests which include a doc, and getting back
       the queries that match on that doc out of the set of registered queries.
 
-      :param index: The index of the document being count percolated.
-      :param doc_type: The type of the document being count percolated.
-      :param id: Substitute the document in the request body with a document
+      :arg index: The index of the document being count percolated.
+      :arg doc_type: The type of the document being count percolated.
+      :arg id: Substitute the document in the request body with a document
              that is known by the specified id. On top of the id, the index and
              type parameter will be used to retrieve the document from within the
              cluster.
-      :param body: The count percolator request definition using the percolate DSL
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg body: The count percolator request definition using the percolate DSL
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all`
              string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default 'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param percolate_index: The index to count percolate the document into.
+      :arg percolate_index: The index to count percolate the document into.
              Defaults to index.
-      :param percolate_type: The type to count percolate document into. Defaults
+      :arg percolate_type: The type to count percolate document into. Defaults
              to type.
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random)
-      :param routing: A comma-separated list of specific routing values
-      :param version: Explicit version number for concurrency control
-      :param version_type: Specific version type
+      :arg routing: A comma-separated list of specific routing values
+      :arg version: Explicit version number for concurrency control
+      :arg version_type: Specific version type
 
       :returns: resulting JSON
 
@@ -806,38 +806,38 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` which get documents that are "like" a specified document
 
-      :param index: The name of the index
-      :param doc_type: The type of the document (use `_all` to fetch the first
+      :arg index: The name of the index
+      :arg doc_type: The type of the document (use `_all` to fetch the first
              document matching the ID across all types)
-      :param id: The document ID
-      :param body: A specific search request definition
-      :param boost_terms: The boost factor
-      :param include: Whether to include the queried document from the response
-      :param max_doc_freq: The word occurrence frequency as count: words with
+      :arg id: The document ID
+      :arg body: A specific search request definition
+      :arg boost_terms: The boost factor
+      :arg include: Whether to include the queried document from the response
+      :arg max_doc_freq: The word occurrence frequency as count: words with
              higher occurrence in the corpus will be ignored
-      :param max_query_terms: The maximum query terms to be included in the generated query
-      :param max_word_length: The minimum length of the word: longer words will be ignored
-      :param min_doc_freq: The word occurrence frequency as count: words with
+      :arg max_query_terms: The maximum query terms to be included in the generated query
+      :arg max_word_length: The minimum length of the word: longer words will be ignored
+      :arg min_doc_freq: The word occurrence frequency as count: words with
              lower occurrence in the corpus will be ignored
-      :param min_term_freq: The term frequency as percent: terms with lower
+      :arg min_term_freq: The term frequency as percent: terms with lower
              occurence in the source document will be ignored
-      :param min_word_length: The minimum length of the word: shorter words will be ignored
-      :param mlt_fields: Specific fields to perform the query against
-      :param percent_terms_to_match: How many terms have to match in order to
+      :arg min_word_length: The minimum length of the word: shorter words will be ignored
+      :arg mlt_fields: Specific fields to perform the query against
+      :arg percent_terms_to_match: How many terms have to match in order to
              consider the document a match (default: 0.3)
-      :param routing: Specific routing value
-      :param search_from: The offset from which to return results
-      :param search_indices: A comma-separated list of indices to perform the
+      :arg routing: Specific routing value
+      :arg search_from: The offset from which to return results
+      :arg search_indices: A comma-separated list of indices to perform the
              query against (default: the index containing the document)
-      :param search_query_hint: The search query hint
-      :param search_scroll: A scroll search request definition
-      :param search_size: The number of documents to return (default: 10)
-      :param search_source: A specific search request definition (instead of
+      :arg search_query_hint: The search query hint
+      :arg search_scroll: A scroll search request definition
+      :arg search_size: The number of documents to return (default: 10)
+      :arg search_source: A specific search request definition (instead of
              using the request body)
-      :param search_type: Specific search type (eg. `dfs_then_fetch`, `count`, etc)
-      :param search_types: A comma-separated list of types to perform the query
+      :arg search_type: Specific search type (eg. `dfs_then_fetch`, `count`, etc)
+      :arg search_types: A comma-separated list of types to perform the query
              against (default: the same type as the document)
-      :param stop_words: A list of stop words to be ignored
+      :arg stop_words: A list of stop words to be ignored
 
       :returns: resulting JSON
 
@@ -855,22 +855,22 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that returns information and statistics on
       terms in the fields of a particular document as stored in the index.
 
-      :param index: The index in which the document resides.
-      :param doc_type: The type of the document.
-      :param id: The id of the document.
-      :param body: Define parameters. See documentation.
-      :param field_statistics: Specifies if document count, sum of document
+      :arg index: The index in which the document resides.
+      :arg doc_type: The type of the document.
+      :arg id: The id of the document.
+      :arg body: Define parameters. See documentation.
+      :arg field_statistics: Specifies if document count, sum of document
              frequencies and sum of total term frequencies should be returned.
              (default True)
-      :param fields: A comma-separated list of fields to return.
-      :param offsets: Specifies if term offsets should be returned. (default True)
-      :param parent: Parent id of documents.
-      :param payloads: Specifies if term payloads should be returned. (default True)
-      :param positions: Specifies if term positions should be returned. (default True)
-      :param preference: Specify the node or shard the operation should be
+      :arg fields: A comma-separated list of fields to return.
+      :arg offsets: Specifies if term offsets should be returned. (default True)
+      :arg parent: Parent id of documents.
+      :arg payloads: Specifies if term payloads should be returned. (default True)
+      :arg positions: Specifies if term positions should be returned. (default True)
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random).
-      :param routing: Specific routing value.
-      :param term_statistics: Specifies if total term frequency and document
+      :arg routing: Specific routing value.
+      :arg term_statistics: Specifies if total term frequency and document
              frequency should be returned., default False
 
       :returns: resulting JSON
@@ -890,37 +890,37 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on
       an index, type and id.
 
-      :param index: The index in which the document resides.
-      :param doc_type: The type of the document.
-      :param body: Define ids, parameters or a list of parameters per document
+      :arg index: The index in which the document resides.
+      :arg doc_type: The type of the document.
+      :arg body: Define ids, parameters or a list of parameters per document
              here. You must at least provide a list of document ids. See
              documentation.
-      :param field_statistics: Specifies if document count, sum of document
+      :arg field_statistics: Specifies if document count, sum of document
              frequencies and sum of total term frequencies should be returned.
              Applies to all returned documents unless otherwise specified in body
              "params" or "docs". (default True)
-      :param fields: A comma-separated list of fields to return. Applies to all
+      :arg fields: A comma-separated list of fields to return. Applies to all
              returned documents unless otherwise specified in body "params" or
              "docs".
-      :param ids: A comma-separated list of documents ids. You must define ids
+      :arg ids: A comma-separated list of documents ids. You must define ids
              as parameter or set "ids" or "docs" in the request body
-      :param offsets: Specifies if term offsets should be returned. Applies to
+      :arg offsets: Specifies if term offsets should be returned. Applies to
              all returned documents unless otherwise specified in body "params"
              or "docs". (default True)
-      :param parent: Parent id of documents. Applies to all returned documents
+      :arg parent: Parent id of documents. Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
-      :param payloads: Specifies if term payloads should be returned. Applies to
+      :arg payloads: Specifies if term payloads should be returned. Applies to
              all returned documents unless otherwise specified in body "params"
              or "docs". (default True)
-      :param positions: Specifies if term positions should be returned. Applies
+      :arg positions: Specifies if term positions should be returned. Applies
              to all returned documents unless otherwise specified in body
              "params" or "docs". (default True)
-      :param preference: Specify the node or shard the operation should be
+      :arg preference: Specify the node or shard the operation should be
              performed on (default: random) .Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
-      :param routing: Specific routing value. Applies to all returned documents
+      :arg routing: Specific routing value. Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
-      :param term_statistics: Specifies if total term frequency and document
+      :arg term_statistics: Specifies if total term frequency and document
              frequency should be returned. Applies to all returned documents
              unless otherwise specified in body "params" or "docs". (default
              False)
@@ -938,11 +938,11 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that provides a standard mechanism for
       submitting queries and measuring their performance relative to one another.
 
-      :param index: A comma-separated list of index names; use `_all` or empty
+      :arg index: A comma-separated list of index names; use `_all` or empty
              string to perform the operation on all indices
-      :param doc_type: The name of the document type
-      :param body: The search definition using the Query DSL
-      :param verbose: Specify whether to return verbose statistics about each
+      :arg doc_type: The name of the document type
+      :arg body: The search definition using the Query DSL
+      :arg verbose: Specify whether to return verbose statistics about each
              iteration (default: false)
 
       :returns: resulting JSON
@@ -956,9 +956,9 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that creates a script in given language with specified ID.
 
-      :param lang: Script language
-      :param id: Script ID
-      :param body: The document
+      :arg lang: Script language
+      :arg id: Script ID
+      :arg body: The document
 
       :returns: resulting JSON
 
@@ -971,8 +971,8 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that retrieves a script from the API.
 
-      :param lang: Script language
-      :param id: Script ID
+      :arg lang: Script language
+      :arg id: Script ID
 
       :returns: resulting JSON
 
@@ -985,8 +985,8 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that removes a script from the API.
 
-      :param lang: Script language
-      :param id: Script ID
+      :arg lang: Script language
+      :arg id: Script ID
 
       :returns: resulting JSON
 
@@ -999,8 +999,8 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that creates a search template with specified ID.
 
-      :param id: Template ID
-      :param body: The document
+      :arg id: Template ID
+      :arg body: The document
 
       :returns: resulting JSON
 
@@ -1013,7 +1013,7 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that retrieves a search template with specified ID.
 
-      :param id: Template ID
+      :arg id: Template ID
 
       :returns: resulting JSON
 
@@ -1026,7 +1026,7 @@ Elasticsearch
 
       A :ref:`coroutine <coroutine>` that removes a search template with specified ID.
 
-      :param id: Template ID
+      :arg id: Template ID
 
       :returns: resulting JSON
 
@@ -1050,19 +1050,19 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that make analysis process on a text
       and return the tokens breakdown of the text.
 
-      :param index: The name of the index
-      :param body: The text on which the analysis should be performed
-      :param analyzer: The name of the analyzer to use
-      :param char_filters: A comma-separated list of character filters to use
+      :arg index: The name of the index
+      :arg body: The text on which the analysis should be performed
+      :arg analyzer: The name of the analyzer to use
+      :arg char_filters: A comma-separated list of character filters to use
              for the analysis
-      :param field: Use the analyzer configured for this field (instead of
+      :arg field: Use the analyzer configured for this field (instead of
              passing the analyzer name)
-      :param filters: A comma-separated list of filters to use for the analysis
-      :param prefer_local: With `true`, specify that a local shard should be
+      :arg filters: A comma-separated list of filters to use for the analysis
+      :arg prefer_local: With `true`, specify that a local shard should be
              used if available, with `false`, use a random shard (default: true)
-      :param text: The text on which the analysis should be performed (when
+      :arg text: The text on which the analysis should be performed (when
              request body is not used)
-      :param tokenizer: The name of the tokenizer to use for the analysis
+      :arg tokenizer: The name of the tokenizer to use for the analysis
 
       :returns: resulting JSON
 
@@ -1076,10 +1076,10 @@ IndicesClient
 
       A :ref:`coroutine <coroutine>` that creates an index in Elasticsearch
 
-      :param index: The name of the index
-      :param body: The configuration for the index (`settings` and `mappings`)
-      :param master_timeout: Specify timeout for connection to master
-      :param timeout: Explicit operation timeout
+      :arg index: The name of the index
+      :arg body: The configuration for the index (`settings` and `mappings`)
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -1095,15 +1095,15 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that open a closed index to make it
       available for search.
 
-      :param index: The name of the index
-      :param master_timeout: Specify timeout for connection to master
-      :param timeout: Explicit operation timeout
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg index: The name of the index
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all` string or
              when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete indices
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete indices
              that are open, closed or both.
-      :param ignore_unavailable: Whether specified concrete indices should be ignored
+      :arg ignore_unavailable: Whether specified concrete indices should be ignored
              when unavailable (missing or closed)
 
       :returns: resulting JSON
@@ -1120,15 +1120,15 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that close an index to remove it's overhead from
       the cluster. Closed index is blocked for read/write operations.
 
-      :param index: The name of the index
-      :param master_timeout: Specify timeout for connection to master
-      :param timeout: Explicit operation timeout
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg index: The name of the index
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes `_all` string or
              when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
              indices that are open, closed or both., default u'open'
-      :param ignore_unavailable: Whether specified concrete indices should be ignored
+      :arg ignore_unavailable: Whether specified concrete indices should be ignored
              when unavailable (missing or closed)
 
       :returns: resulting JSON
@@ -1141,10 +1141,10 @@ IndicesClient
 
       A :ref:`coroutine <coroutine>` that deletes an index.
 
-      :param index: A comma-separated list of indices to delete; use ``'_all'``
+      :arg index: A comma-separated list of indices to delete; use ``'_all'``
                     or ``'*'`` to delete all indices
-      :param master_timeout: Specify timeout for connection to master
-      :param timeout: Explicit operation timeout
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -1161,18 +1161,18 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that refresh one or more index, making all
       operations performed.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
                concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
                ignore `missing` ones, default u'none'
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
                be ignored when unavailable (missing or closed)
-      :param force: Force a refresh even if not required
+      :arg force: Force a refresh even if not required
 
       :returns: resulting JSON
 
@@ -1187,22 +1187,22 @@ IndicesClient
 
       A :ref:`coroutine <coroutine>` that flush one or more indices.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param force: Whether a flush should be forced even if it is not
+      :arg force: Whether a flush should be forced even if it is not
              necessarily needed ie. if no changes will be committed to
              the index.
-      :param full: If set to true a new index writer is created and settings
+      :arg full: If set to true a new index writer is created and settings
              that have been changed related to the index writer will be
              refreshed.
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones (default: none)
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
 
       :returns: resulting JSON
@@ -1218,15 +1218,15 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that return a boolean indicating
       whether given index exists.
 
-      :param index: A list of indices to check
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg index: A list of indices to check
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both., default u'open'
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
              master node (default: false)
 
       :returns: resulting bool
@@ -1243,19 +1243,19 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that check if a type/types exists
       in an index/indices.
 
-      :param index: A comma-separated list of index names; use `_all` to
+      :arg index: A comma-separated list of index names; use `_all` to
                check the types across all indices
-      :param doc_type: A comma-separated list of document types to check
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg doc_type: A comma-separated list of document types to check
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones (default: none)
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
                be ignored when unavailable (missing or closed)
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
                master node (default: false)
 
       :returns: resulting bool
@@ -1272,17 +1272,17 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that retrieve settings for one or
       more (or all) indices.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param name: The name of the settings that should be included
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg name: The name of the settings that should be included
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones, default u'none'
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param flat_settings: Return settings in flat format (default: false)
-      :param local: Return local information, do not retrieve the state from
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg local: Return local information, do not retrieve the state from
              master node (default: false)
 
       :returns: resulting JSON
@@ -1301,19 +1301,19 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that change specific index level
       settings in real time.
 
-      :param body: The index settings to be updated
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg body: The index settings to be updated
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both., default
              u'open'
-      :param flat_settings: Return settings in flat format (default: false)
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param master_timeout: Specify timeout for connection to master
+      :arg master_timeout: Specify timeout for connection to master
 
       :returns: resulting JSON
 
@@ -1330,21 +1330,21 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that get a comprehensive status
       information of one or more indices.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows
+      :arg ignore_indices: When performed on multiple indices, allows
              to ignore `missing` ones, default u'none'
-      :param ignore_unavailable: Whether specified concrete indices
+      :arg ignore_unavailable: Whether specified concrete indices
              should be ignored when unavailable (missing or closed)
-      :param operation_threading: TODO: ?
-      :param recovery: Return information about shard recovery
-      :param snapshot: For snapshot status set it to true
-      :param human: Whether to return time and byte values in human-readable
+      :arg operation_threading: TODO: ?
+      :arg recovery: Return information about shard recovery
+      :arg snapshot: For snapshot status set it to true
+      :arg human: Whether to return time and byte values in human-readable
              format.
 
       :returns: resulting JSON
@@ -1364,36 +1364,36 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that retrieve statistics on different
       operations happening on an index.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param metric: A comma-separated list of metrics to display. Possible
+      :arg metric: A comma-separated list of metrics to display. Possible
              values: "_all", "completion", "docs", "fielddata",
              "filter_cache", "flush", "get", "id_cache", "indexing", "merge",
              "percolate", "refresh", "search", "segments", "store", "warmer"
-      :param completion_fields: A comma-separated list of fields for
+      :arg completion_fields: A comma-separated list of fields for
              `completion` metric (supports wildcards)
-      :param docs: the number of docs / deleted docs (docs not yet merged
+      :arg docs: the number of docs / deleted docs (docs not yet merged
              out). Note, affected by refreshing the index
-      :param fielddata_fields: A comma-separated list of fields for
+      :arg fielddata_fields: A comma-separated list of fields for
              `fielddata` metric (supports wildcards)
-      :param fields: A comma-separated list of fields for `fielddata` and
+      :arg fields: A comma-separated list of fields for `fielddata` and
              `completion` metric (supports wildcards)
-      :param groups: A comma-separated list of search groups for `search`
+      :arg groups: A comma-separated list of search groups for `search`
              statistics
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows
+      :arg ignore_indices: When performed on multiple indices, allows
              to ignore `missing` ones (default: none)
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param human: Whether to return time and byte values in human-readable
+      :arg human: Whether to return time and byte values in human-readable
              format.
-      :param level: Return stats aggregated at cluster, index or shard level.
+      :arg level: Return stats aggregated at cluster, index or shard level.
              ("cluster", "indices" or "shards", default: "indices")
-      :param types: A comma-separated list of document types for the
+      :arg types: A comma-separated list of document types for the
                `indexing` index metric
 
       :returns: resulting JSON
@@ -1410,18 +1410,18 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that provide low level segments
       information that a Lucene index (shard level) is built with.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones, default u'none'
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param human: Whether to return time and byte values in human-readable
+      :arg human: Whether to return time and byte values in human-readable
              format (default: false)
 
       :returns: resulting JSON
@@ -1440,25 +1440,25 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that explicitly optimize one or more
       indices through an API.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param flush: Specify whether the index should be flushed after
+      :arg flush: Specify whether the index should be flushed after
               performing the operation (default: true)
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones, default u'none'
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param max_num_segments: The number of segments the index should be
+      :arg max_num_segments: The number of segments the index should be
              merged into (default: dynamic)
-      :param only_expunge_deletes: Specify whether the operation should only
+      :arg only_expunge_deletes: Specify whether the operation should only
              expunge deleted documents
-      :param operation_threading: TODO: ?
-      :param wait_for_merge: Specify whether the request should block until
+      :arg operation_threading: TODO: ?
+      :arg wait_for_merge: Specify whether the request should block until
              the merge process is finished (default: true)
 
       :returns: resulting JSON
@@ -1474,13 +1474,13 @@ IndicesClient
       recoveries. Recovery status may be reported for specific indices, or
       cluster-wide..
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
-      :param active_only: Display only those recoveries that are currently
+      :arg active_only: Display only those recoveries that are currently
              on-going (default: 'false')
-      :param detailed: Whether to display detailed information about shard
+      :arg detailed: Whether to display detailed information about shard
              recovery (default: 'false')
-      :param human: Whether to return time and byte values in human-readable
+      :arg human: Whether to return time and byte values in human-readable
              format. (default: 'false')
 
       :returns: resulting JSON
@@ -1501,30 +1501,30 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that clear either all caches or
       specific cached associated with one or more indices.
 
-      :param index: A comma-separated list of index name to limit the
+      :arg index: A comma-separated list of index name to limit the
              operation
-      :param field_data: Clear field data
-      :param fielddata: Clear field data
-      :param fields: A comma-separated list of fields to clear when using the
+      :arg field_data: Clear field data
+      :arg fielddata: Clear field data
+      :arg fields: A comma-separated list of fields to clear when using the
              `field_data` parameter (default: all)
-      :param filter: Clear filter caches
-      :param filter_cache: Clear filter caches
-      :param filter_keys: A comma-separated list of keys to clear when using
+      :arg filter: Clear filter caches
+      :arg filter_cache: Clear filter caches
+      :arg filter_keys: A comma-separated list of keys to clear when using
              the `filter_cache` parameter (default: all)
-      :param id: Clear ID caches for parent/child
-      :param id_cache: Clear ID caches for parent/child
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg id: Clear ID caches for parent/child
+      :arg id_cache: Clear ID caches for parent/child
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones (default: none)
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :param index: A comma-separated list of index name to limit the
+      :arg index: A comma-separated list of index name to limit the
              operation
-      :param recycler: Clear the recycler cache
+      :arg recycler: Clear the recycler cache
 
       :returns: resulting JSON
 
@@ -1542,25 +1542,25 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that validate a potentially expensive
       query without executing it.
 
-      :param index: A comma-separated list of index names to restrict the
+      :arg index: A comma-separated list of index names to restrict the
              operation; use `_all` or empty string to perform the operation
              on all indices
-      :param doc_type: A comma-separated list of document types to restrict
+      :arg doc_type: A comma-separated list of document types to restrict
              the operation; leave empty to perform the operation on all types
-      :param body: The query definition
-      :param explain: Return detailed information about the error
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg body: The query definition
+      :arg explain: Return detailed information about the error
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
-      :param ignore_indices: When performed on multiple indices, allows to
+      :arg ignore_indices: When performed on multiple indices, allows to
              ignore `missing` ones (default: none)
-      :param ignore_unavailable: Whether specified concrete indices should
+      :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :param operation_threading: TODO: ?
-      :param q: Query in the Lucene query string syntax
-      :param source: The URL-encoded query definition (instead of using the
+      :arg operation_threading: TODO: ?
+      :arg q: Query in the Lucene query string syntax
+      :arg source: The URL-encoded query definition (instead of using the
              request body)
 
       :returns: resulting JSON
@@ -1578,22 +1578,22 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that registers specific mapping
       definition for a specific type.
 
-      :param index: A comma-separated list of index names the alias should
+      :arg index: A comma-separated list of index names the alias should
           point to (supports wildcards); use `_all` or omit to perform the
           operation on all indices.
-      :param doc_type: The name of the document type
-      :param body: The mapping definition
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg doc_type: The name of the document type
+      :arg body: The mapping definition
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
           expression resolves into no concrete indices. (This includes `_all`
           string or when no indices have been specified)
-      :param expand_wildcards: Whether to expand wildcard expression to concrete
+      :arg expand_wildcards: Whether to expand wildcard expression to concrete
           indices that are open, closed or both., default u'open'
-      :param ignore_conflicts: Specify whether to ignore conflicts while
+      :arg ignore_conflicts: Specify whether to ignore conflicts while
           updating the mapping (default: false)
-      :param ignore_unavailable: Whether specified concrete indices should be
+      :arg ignore_unavailable: Whether specified concrete indices should be
           ignored when unavailable (missing or closed)
-      :param master_timeout: Specify timeout for connection to master
-      :param timeout: Explicit operation timeout
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
 
@@ -1609,18 +1609,18 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that retrieves mapping
       definition of index or index/type.
 
-      :param index: A comma-separated list of index names; use `_all` or
+      :arg index: A comma-separated list of index names; use `_all` or
             empty string for all indices
-      :param doc_type: A comma-separated list of document types
-      :param allow_no_indices: Whether to ignore if a wildcard indices
+      :arg doc_type: A comma-separated list of document types
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
             expression resolves into no concrete indices. (This
             includes `_all` string or when no indices have been
             specified)
-      :param expand_wildcards: Whether to expand wildcard expression to
+      :arg expand_wildcards: Whether to expand wildcard expression to
             concrete indices that are open, closed or both.
-      :param ignore_unavailable: Whether specified concrete indices
+      :arg ignore_unavailable: Whether specified concrete indices
             should be ignored when unavailable (missing or closed)
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
             master node (default: false)
 
       :returns: resulting JSON
@@ -1635,12 +1635,12 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that deletes a mapping (type)
       along with its data
 
-      :param index: A comma-separated list of index names (supports wildcard);
+      :arg index: A comma-separated list of index names (supports wildcard);
             use `_all` for all indices
-      :param doc_type: A comma-separated list of document types to delete
+      :arg doc_type: A comma-separated list of document types to delete
             (supports wildcards); use `_all` to delete all document types in the
             specified indices.
-      :param master_timeout: Specify timeout for connection to master
+      :arg master_timeout: Specify timeout for connection to master
 
       :returns: resulting JSON
 
@@ -1648,6 +1648,306 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
 
+   .. method:: get_field_mapping(field, index=None, doc_type=None, *,
+                                 include_defaults=default, ignore_unavailable=default,
+                                 allow_no_indices=default, expand_wildcards=default,
+                                 local=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves mapping definition of a specific field
+
+      :arg index: A comma-separated list of index names; use `_all` or empty
+          string for all indices
+      :arg doc_type: A comma-separated list of document types
+      :arg field: A comma-separated list of fields to retrieve the
+          mapping for
+      :arg include_defaults: A boolean indicating whether to return
+          default values
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices. (This includes
+          `_all` string or when no indices have been specified)
+      :arg expand_wildcards: Whether to expand wildcard expression to
+          concrete indices that are open, closed or both.
+      :arg ignore_unavailable: Whether specified concrete indices should
+          be ignored when unavailable (missing or closed)
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html>`_
+
+   .. method:: put_alias(name, index=None, body=None, *,
+                         timeout=default, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that creates an alias for a specific index/indices
+
+      :arg index: A comma-separated list of index names the alias should
+          point to (supports wildcards); use `_all` or omit to perform the
+          operation on all indices.
+      :arg name: The name of the alias to be created or updated
+      :arg body: The settings for the alias, such as `routing` or `filter`
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit timestamp for the document
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: exists_alias(name, index=None, *, allow_no_indices=default,
+                            expand_wildcards=default, ignore_indices=default,
+                            ignore_unavailable=default, local=default)
+
+      A :ref:`coroutine <coroutine>` that returns a boolean indicating whether given alias exists
+
+      :arg name: A comma-separated list of alias names to return
+      :arg index: A comma-separated list of index names to filter aliases
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices. (This includes
+          `_all` string or when no indices have been specified)
+      :arg expand_wildcards: Whether to expand wildcard expression
+          to concrete indices that are open, closed or both.
+      :arg ignore_indices: When performed on multiple indices, allows to
+          ignore `missing` ones (default: none)
+      :arg ignore_unavailable: Whether specified concrete indices should
+          be ignored when unavailable (missing or closed)
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting boolean
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: get_alias(index=None, name=None, *, allow_no_indices=default,
+                         expand_wildcards=default, ignore_indices=default,
+                         ignore_unavailable=default, local=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves a specified alias.
+
+      :arg name: A comma-separated list of alias names to return
+      :arg index: A comma-separated list of index names to filter aliases
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices. (This includes
+          `_all` string or when no indices have been specified)
+      :arg expand_wildcards: Whether to expand wildcard expression
+          to concrete indices that are open, closed or both.
+      :arg ignore_indices: When performed on multiple indices, allows to
+          ignore `missing` ones, default u'none'
+      :arg ignore_unavailable: Whether specified concrete indices should
+          be ignored when unavailable (missing or closed)
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: get_aliases(index=None, name=None, *, local=default,
+                           timeout=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves a specified aliases.
+
+      :arg index: A comma-separated list of index names to filter aliases
+      :arg name: A comma-separated list of alias names to filter
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+      :arg timeout: Explicit operation timeout
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: update_aliases(body, *, timeout=default,
+                              master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that updates a specified aliases.
+
+      :arg body: The definition of `actions` to perform
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Request timeout
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: delete_alias(index, name, *, timeout=default,
+                            master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that deletes a specified aliases.
+
+      :arg index: A comma-separated list of index names (supports wildcards);
+          use `_all` for all indices
+      :arg name: A comma-separated list of aliases to delete (supports
+          wildcards); use `_all` to delete all aliases for the
+          specified indices.
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit timestamp for the document
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
+
+   .. method:: put_template(name, body, *, create=default, order=default,
+                            timeout=default, master_timeout=default,
+                            flat_settings=default)
+
+      A :ref:`coroutine <coroutine>` that creates an index template that will
+        be automatically applied to new indices created.
+
+      :arg name: The name of the template
+      :arg body: The template definition
+      :arg create: Whether the index template should only be added if new or
+          can also replace an existing one
+      :arg order: The order for this template when merging multiple matching
+          ones (higher numbers are merged later, overriding the
+          lower numbers)
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
+      :arg flat_settings: Return settings in flat format (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
+
+   .. method:: exists_template(name, *, local=default)
+
+      A :ref:`coroutine <coroutine>` that returns a boolean indicating whether
+        given template exists.
+
+      :arg name: The name of the template
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
+
+   .. method:: get_template(name=None, *, flat_settings=default,
+                            local=default)
+
+      A :ref:`coroutine <coroutine>` that retrieves an index template by its name.
+
+      :arg name: The name of the template
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
+
+   .. method:: delete_template(name, *, timeout=default,
+                               master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that deletes an index template by its name.
+
+      :arg name: The name of the template
+      :arg master_timeout: Specify timeout for connection to master
+      :arg timeout: Explicit operation timeout
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
+
+   .. method:: put_warmer(name, body, index=None, doc_type=None, *,
+                          allow_no_indices=default, expand_wildcards=default,
+                          ignore_unavailable=default, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that create an index warmer to run
+        registered search requests to warm up the index before it is available for search.
+
+      :arg name: The name of the warmer
+      :arg body: The search request definition for the warmer
+          (query, filters, facets, sorting, etc)
+      :arg index: A comma-separated list of index names to register
+          the warmer for; use `_all` or omit to perform the operation
+          on all indices
+      :arg doc_type: A comma-separated list of document types to register the
+          warmer for; leave empty to perform the operation on all types
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices in the search request
+          to warm. (This includes `_all` string or when no indices have been
+          specified)
+      :arg expand_wildcards: Whether to expand wildcard expression
+          to concrete indices that are open, closed or both, in the
+          search request to warm., default u'open'
+      :arg ignore_unavailable: Whether specified concrete indices should be
+          ignored when unavailable (missing or closed) in the search request
+          to warm
+      :arg master_timeout: Specify timeout for connection to master
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html>`_
+
+   .. method:: get_warmer(index=None, doc_type=None, name=None, *,
+                          allow_no_indices=default, expand_wildcards=default,
+                          ignore_unavailable=default, local=default)
+
+      A :ref:`coroutine <coroutine>` that retreieves an index warmer.
+
+      :arg index: A comma-separated list of index names to restrict the
+          operation; use `_all` to perform the operation on all indices
+      :arg doc_type: A comma-separated list of document types to restrict the
+          operation; leave empty to perform the operation on all types
+      :arg name: The name of the warmer (supports wildcards); leave empty to
+          get all warmers
+      :arg allow_no_indices: Whether to ignore if a wildcard indices
+          expression resolves into no concrete indices. (This includes `_all`
+          string or when no indices have been specified)
+      :arg expand_wildcards: Whether to expand wildcard expression
+          to concrete indices that are open, closed or both. default u'open'
+      :arg ignore_unavailable: Whether specified concrete indices should be
+          ignored when unavailable (missing or closed)
+      :arg local: Return local information, do not retrieve the state from
+          master node (default: false)
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html>`_
+
+   .. method:: delete_warmer(index, name, *, master_timeout=default)
+
+      A :ref:`coroutine <coroutine>` that deletes an index warmer.
+
+      :arg index: A comma-separated list of index names to delete
+          warmers from (supports wildcards); use `_all` to perform
+          the operation on all indices.
+      :arg name: A comma-separated list of warmer names to delete (supports
+          wildcards); use `_all` to delete all warmers in the
+          specified indices.
+      :arg master_timeout: Specify timeout for connection to master
+
+      :returns: resulting JSON
+
+      .. Seealso::
+
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html>`_
 
 CatClient
 -----------------
@@ -1662,14 +1962,14 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
 
-      :param name: A comma-separated list of alias names to return
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      {" name: A comma-separated list of alias names to return
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to master
+      :arg master_timeout: Explicit operation timeout for connection to master
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1685,16 +1985,16 @@ CatClient
         shards have located around the cluster and the state of disk
         usage.
 
-      :param node_id: A comma-separated list of node IDs or names to limit the
+      :arg node_id: A comma-separated list of node IDs or names to limit the
             returned information
-      :param bytes: The unit in which to display byte values
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default ``False``
-      :param local: Return local information, do not retrieve the state from
+      :arg bytes: The unit in which to display byte values
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default ``False``
+      :arg local: Return local information, do not retrieve the state from
             master node (default: ``False``)
-      :param master_timeout: Explicit operation timeout for connection
+      :arg master_timeout: Explicit operation timeout for connection
             to master node
-      :param v: Verbose mode. Display column headers, default ``False``
+      :arg v: Verbose mode. Display column headers, default ``False``
 
       :returns: resulting text
 
@@ -1707,15 +2007,15 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
 
-      :param index: A comma-separated list of index names to limit the returned
+      :arg index: A comma-separated list of index names to limit the returned
           information
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to
+      :arg master_timeout: Explicit operation timeout for connection to
           master node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1730,14 +2030,14 @@ CatClient
       one-line representation of the same information from
       :meth:`~elasticsearch.client.cluster.ClusterClient.health` API
 
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to master
+      :arg master_timeout: Explicit operation timeout for connection to master
           node
-      :param ts: Set to false to disable timestamping, default True
-      :param v: Verbose mode. Display column headers, default False
+      :arg ts: Set to false to disable timestamping, default True
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1749,7 +2049,7 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that returns help banner.
 
-      :param help: Return help information, default ``False``.
+      :arg help: Return help information, default ``False``.
 
       :returns: help text
 
@@ -1762,18 +2062,18 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that returns a cross-section of each index
 
-      :param index: A comma-separated list of index names to limit the returned
+      :arg index: A comma-separated list of index names to limit the returned
           information
-      :param bytes: The unit in which to display byte values
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg bytes: The unit in which to display byte values
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to
+      :arg master_timeout: Explicit operation timeout for connection to
           master node
-      :param pri: Set to true to return stats only for primary shards, default
+      :arg pri: Set to true to return stats only for primary shards, default
           False
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1787,13 +2087,13 @@ CatClient
       A :ref:`coroutine <coroutine>` that displays the master's node ID,
       bound IP address, and node name
 
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to
+      :arg master_timeout: Explicit operation timeout for connection to
           master node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1806,13 +2106,13 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that shows the cluster topology.
 
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1825,16 +2125,16 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that shows the view of shard replication.
 
-      :param index: A comma-separated list of index names to limit the returned
+      :arg index: A comma-separated list of index names to limit the returned
             information
-      :param bytes: The unit in which to display byte values
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg bytes: The unit in which to display byte values
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1848,15 +2148,15 @@ CatClient
       A :ref:`coroutine <coroutine>` that shows the detailed view of what nodes
       contain which shards.
 
-      :param index: A comma-separated list of index names to limit the returned
+      :arg index: A comma-separated list of index names to limit the returned
             information
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1870,15 +2170,15 @@ CatClient
       A :ref:`coroutine <coroutine>` that shows the detailed
       view of Lucene segments per index
 
-      :param index: A comma-separated list of index names to limit the returned
+      :arg index: A comma-separated list of index names to limit the returned
             information
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1893,13 +2193,13 @@ CatClient
       :meth:`~elasticsearch.client.cluster.ClusterClient.pending_tasks` API
       in a convenient tabular format.
 
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1912,14 +2212,14 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that provides information about thread pools.
 
-      :param full_id: Enables displaying the complete node ids (default:false)
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg full_id: Enables displaying the complete node ids (default:false)
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1934,16 +2234,16 @@ CatClient
       A :ref:`coroutine <coroutine>` that provides information about
       currently loaded fielddata on a per-node basis
 
-      :param fields: A comma-separated list of fields to return the fielddata
+      :arg fields: A comma-separated list of fields to return the fielddata
           size
-      :param bytes: The unit in which to display byte values
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information (default: 'false')
-      :param local: Return local information, do not retrieve the state from
+      :arg bytes: The unit in which to display byte values
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information (default: 'false')
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers (default: 'false')
+      :arg v: Verbose mode. Display column headers (default: 'false')
 
       :returns: resulting text
 
@@ -1956,13 +2256,13 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that provides information about plugins.
 
-      :param h: Comma-separated list of column names to display
-      :param help: Return help information, default False
-      :param local: Return local information, do not retrieve the state from
+      :arg h: Comma-separated list of column names to display
+      :arg help: Return help information, default False
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
-      :param master_timeout: Explicit operation timeout for master connection
+      :arg master_timeout: Explicit operation timeout for master connection
           node
-      :param v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default False
 
       :returns: resulting text
 
@@ -1987,21 +2287,21 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns a very simple status on the health of the cluster.
 
-      :param index: Limit the information returned to a specific index
-      :param level: Specify the level of detail for returned information,
+      :arg index: Limit the information returned to a specific index
+      :arg level: Specify the level of detail for returned information,
            default u'cluster'
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
            master node (default: false)
-      :param master_timeout: Explicit operation timeout for connection to
+      :arg master_timeout: Explicit operation timeout for connection to
            master node
-      :param timeout: Explicit operation timeout
-      :param wait_for_active_shards: Wait until the specified number of shards
+      :arg timeout: Explicit operation timeout
+      :arg wait_for_active_shards: Wait until the specified number of shards
            is active
-      :param wait_for_nodes: Wait until the specified number of nodes is
+      :arg wait_for_nodes: Wait until the specified number of nodes is
            available
-      :param wait_for_relocating_shards: Wait until the specified number of
+      :arg wait_for_relocating_shards: Wait until the specified number of
            relocating shards is finished
-      :param wait_for_status: Wait until cluster is in a specific state,
+      :arg wait_for_status: Wait until cluster is in a specific state,
            default None
 
       :returns: resulting text
@@ -2016,9 +2316,9 @@ ClusterClient
       changes (e.g. create index, update mapping, allocate or fail shard)
       which have not yet been executed.
 
-      :param local: Return local information, do not retrieve the state
+      :arg local: Return local information, do not retrieve the state
             from master node (default: false)
-      :param master_timeout: Specify timeout for connection to master
+      :arg master_timeout: Specify timeout for connection to master
 
       :returns: resulting text
 
@@ -2031,17 +2331,17 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns a comprehensive state information of the whole cluster.
 
-      :param metric: Limit the information returned to the specified metrics.
+      :arg metric: Limit the information returned to the specified metrics.
           Possible values: "_all", "blocks", "index_templates", "metadata",
           "nodes", "routing_table", "master_node", "version"
-      :param index: A comma-separated list of index names; use `_all` or empty
+      :arg index: A comma-separated list of index names; use `_all` or empty
           string to perform the operation on all indices
-      :param index_templates: A comma separated list to return specific index
+      :arg index_templates: A comma separated list to return specific index
           templates when returning metadata.
-      :param local: Return local information, do not retrieve the state
+      :arg local: Return local information, do not retrieve the state
           from master node (default: false)
-      :param master_timeout: Specify timeout for connection to master
-      :param flat_settings: Return settings in flat format (default: false)
+      :arg master_timeout: Specify timeout for connection to master
+      :arg flat_settings: Return settings in flat format (default: false)
 
       :returns: resulting text
 
@@ -2055,12 +2355,12 @@ ClusterClient
       perspective. The API returns basic index metrics and information about
       the current nodes that form the cluster.
 
-      :param node_id: A comma-separated list of node IDs or names to limit the
+      :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from
           all nodes
-      :param flat_settings: Return settings in flat format (default: false)
-      :param human: Whether to return time and byte values in
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg human: Whether to return time and byte values in
           human-readable format.
 
       :returns: resulting text
@@ -2076,17 +2376,17 @@ ClusterClient
       A :ref:`coroutine <coroutine>` that executes a cluster reroute
       allocation command including specific commands.
 
-      :param body: The definition of `commands` to perform
+      :arg body: The definition of `commands` to perform
           (`move`, `cancel`, `allocate`)
-      :param dry_run: Simulate the operation only and return
+      :arg dry_run: Simulate the operation only and return
           the resulting state
-      :param explain: Return an explanation of why the commands can or
+      :arg explain: Return an explanation of why the commands can or
           cannot be executed
-      :param filter_metadata: Don't return cluster state metadata
+      :arg filter_metadata: Don't return cluster state metadata
           (default: false)
-      :param master_timeout: Explicit operation timeout for connection
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param timeout: Explicit operation timeout
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting text
 
@@ -2099,10 +2399,10 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns cluster settings.
 
-      :param flat_settings: Return settings in flat format (default: false)
-      :param master_timeout: Explicit operation timeout for connection
+      :arg flat_settings: Return settings in flat format (default: false)
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param timeout: Explicit operation timeout
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting text
 
@@ -2114,9 +2414,9 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that updates cluster settings.
 
-      :param body: The settings to be updated. Can be either `transient` or
+      :arg body: The settings to be updated. Can be either `transient` or
           `persistent` (survives cluster restart).
-      :param flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: false)
 
       :returns: resulting text
 
@@ -2138,17 +2438,17 @@ NodesClient
       A :ref:`coroutine <coroutine>` that retrieves one or more (or all)
         of the cluster nodes information.
 
-      :param node_id: A comma-separated list of node IDs or names to limit the
+      :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use ``"_local"`` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :param metric: A comma-separated list of metrics you wish
+      :arg metric: A comma-separated list of metrics you wish
           returned. Leave empty to return all. Choices are
           ``"settings"``, ``"os"``, ``"process"``, ``"jvm"``,
           ``"thread_pool"``, ``"network"``, ``"transport"``,
           ``"http"``, ``"plugin"``
-      :param flat_settings: Return settings in flat format (default: ``False``)
-      :param human: Whether to return time and byte values in human-readable
+      :arg flat_settings: Return settings in flat format (default: ``False``)
+      :arg human: Whether to return time and byte values in human-readable
           format, default ``False``
 
       :returns: resulting info
@@ -2162,12 +2462,12 @@ NodesClient
       A :ref:`coroutine <coroutine>` that shutdowns one or more (or all) nodes in
         the cluster.
 
-      :param node_id: A comma-separated list of node IDs or names to perform
+      :arg node_id: A comma-separated list of node IDs or names to perform
           the operation on; use `_local` to perform the operation on
           the node you're connected to, leave empty to perform the operation
           on all nodes
-      :param delay: Set the delay for the operation (default: 1s)
-      :param exit: Exit the JVM as well (default: true)
+      :arg delay: Set the delay for the operation (default: 1s)
+      :arg exit: Exit the JVM as well (default: true)
 
       :returns: resulting info
 
@@ -2183,32 +2483,32 @@ NodesClient
       A :ref:`coroutine <coroutine>` that allows to retrieve one or more (or all) of
         the cluster nodes statistics.
 
-      :param node_id: A comma-separated list of node IDs or names to limit the
+      :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :param metric: Limit the information returned to the specified metrics.
+      :arg metric: Limit the information returned to the specified metrics.
           Possible options are: "_all", "breaker", "fs", "http", "indices",
           "jvm", "network", "os", "process", "thread_pool", "transport"
-      :param index_metric: Limit the information returned for `indices` metric
+      :arg index_metric: Limit the information returned for `indices` metric
           to the specific index metrics. Isn't used if `indices` (or `all`)
           metric isn't specified. Possible options are: "_all", "completion",
           "docs", "fielddata", "filter_cache", "flush", "get", "id_cache",
           "indexing", "merge", "percolate", "refresh", "search", "segments",
           "store", "warmer"
-      :param completion_fields: A comma-separated list of fields
+      :arg completion_fields: A comma-separated list of fields
           for `fielddata` and `suggest` index metric (supports wildcards)
-      :param fielddata_fields: A comma-separated list of fields for `fielddata`
+      :arg fielddata_fields: A comma-separated list of fields for `fielddata`
           index metric (supports wildcards)
-      :param fields: A comma-separated list of fields for `fielddata` and
+      :arg fields: A comma-separated list of fields for `fielddata` and
           `completion` index metric (supports wildcards)
-      :param groups: A comma-separated list of search groups for `search` index
+      :arg groups: A comma-separated list of search groups for `search` index
           metric
-      :param human: Whether to return time and byte values in human-readable
+      :arg human: Whether to return time and byte values in human-readable
           format., default False
-      :param level: Return indices stats aggregated at node, index or shard
+      :arg level: Return indices stats aggregated at node, index or shard
           level, default 'node'
-      :param types: A comma-separated list of document types for the `indexing`
+      :arg types: A comma-separated list of document types for the `indexing`
           index metric
 
       :returns: resulting info
@@ -2223,14 +2523,14 @@ NodesClient
       A :ref:`coroutine <coroutine>` that allows to get the current hot threads on each node
         in the cluster.
 
-      :param node_id: A comma-separated list of node IDs or names to limit the
+      :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :param type_: The type to sample (default: cpu)
-      :param interval: The interval for the second sampling of threads
-      :param snapshots: Number of samples of thread stacktrace (default: 10)
-      :param threads: Specify the number of threads to provide information for
+      :arg type_: The type to sample (default: cpu)
+      :arg interval: The interval for the second sampling of threads
+      :arg snapshots: Number of samples of thread stacktrace (default: 10)
+      :arg threads: Specify the number of threads to provide information for
           (default: 3)
 
       :returns: resulting info
@@ -2254,12 +2554,12 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that creates a snapshot in repository
 
-      :param repository: A repository name
-      :param snapshot: A snapshot name
-      :param body: The snapshot definition
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A repository name
+      :arg snapshot: A snapshot name
+      :arg body: The snapshot definition
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param wait_for_completion: Should this request wait until
+      :arg wait_for_completion: Should this request wait until
           the operation has completed before returning, default False
 
       :returns: resulting info.
@@ -2272,9 +2572,9 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that deletes a snapshot in repository
 
-      :param repository: A repository name
-      :param snapshot: A snapshot name
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A repository name
+      :arg snapshot: A snapshot name
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
 
       :returns: resulting info.
@@ -2287,9 +2587,9 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that retrieves information about a snapshot.
 
-      :param repository: A comma-separated list of repository names
-      :param snapshot: A comma-separated list of snapshot names
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A comma-separated list of repository names
+      :arg snapshot: A comma-separated list of snapshot names
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
 
       :returns: resulting info.
@@ -2303,9 +2603,9 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that removes a shared file system repository.
 
-      :param repository: A comma-separated list of repository names
-      :param snapshot: A comma-separated list of snapshot names
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A comma-separated list of repository names
+      :arg snapshot: A comma-separated list of snapshot names
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
 
       :returns: resulting info.
@@ -2319,10 +2619,10 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that returns information about registered repositories.
 
-      :param repository: A comma-separated list of repository names
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A comma-separated list of repository names
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param local: Return local information, do not retrieve the state from
+      :arg local: Return local information, do not retrieve the state from
           master node (default: false)
 
       :returns: resulting info.
@@ -2336,11 +2636,11 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that registers a shared file system repository.
 
-      :param repository: A repository name
-      :param body: The repository definition
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A repository name
+      :arg body: The repository definition
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param timeout: Explicit operation timeout
+      :arg timeout: Explicit operation timeout
 
       :returns: resulting info.
 
@@ -2353,12 +2653,12 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that restores a snapshot.
 
-      :param repository: A repository name
-      :param snapshot: A snapshot name
-      :param body: Details of what to restore
-      :param master_timeout: Explicit operation timeout for connection
+      :arg repository: A repository name
+      :arg snapshot: A snapshot name
+      :arg body: Details of what to restore
+      :arg master_timeout: Explicit operation timeout for connection
           to master node
-      :param wait_for_completion: Should this request wait until the operation
+      :arg wait_for_completion: Should this request wait until the operation
           has completed before returning, default False
 
       :returns: resulting info.
@@ -2372,9 +2672,9 @@ SnapshotClient
 
       A :ref:`coroutine <coroutine>` that returns snapshot status info.
 
-      :param repository: A repository name
-      :param snapshot: A comma-separated list of snapshot names
-      :param master_timeout: Explicit operation timeout for connection to master
+      :arg repository: A repository name
+      :arg snapshot: A comma-separated list of snapshot names
+      :arg master_timeout: Explicit operation timeout for connection to master
             node
 
       :returns: resulting snapshot info.
