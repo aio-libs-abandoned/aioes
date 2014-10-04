@@ -761,9 +761,9 @@ class TestClient(unittest.TestCase):
 
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
             yield from self.cl.index(self._index, 'testdoc',
                                      MESSAGES[0], '1',
@@ -804,9 +804,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             percolator = {
@@ -864,9 +864,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             percolator = {
@@ -927,9 +927,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             doc = {
@@ -969,9 +969,9 @@ class TestClient(unittest.TestCase):
             }
             yield from self.cl.indices.create(self._index)
             yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
 
             doc = {
@@ -996,6 +996,163 @@ class TestClient(unittest.TestCase):
             self.assertEqual(len(data['docs']), 2)
             self.assertTrue('term_vectors' in data['docs'][0])
             self.assertTrue('term_vectors' in data['docs'][1])
+
+        self.loop.run_until_complete(go())
+
+    def test_scripts_management(self):
+        @asyncio.coroutine
+        def go():
+            script = {'script': 'log(_score * 2)'}
+
+            # adding
+            yield from self.cl.put_script('groovy', 'test_script', script)
+
+            # getting and checking
+            got_script = yield from self.cl.get_script('groovy', 'test_script')
+            self.assertEqual(script, got_script)
+
+            # deleting
+            yield from self.cl.delete_script('groovy', 'test_script')
+            with self.assertRaises(NotFoundError):
+                got_script = yield from self.cl.get_script(
+                    'groovy', 'test_script'
+                )
+
+        self.loop.run_until_complete(go())
+
+    def test_scripts_execution(self):
+        @asyncio.coroutine
+        def go():
+            script = {
+                'script': '2*val',
+            }
+            query = {
+                "query": {
+                    "match": {
+                        "user": "Johny Mnemonic"
+                    }
+                },
+                "script_fields": {
+                    "test1": {
+                        "lang": "groovy",
+                        "script_id": "calculate-score",
+                        "params": {
+                            "val": 2,
+                        }
+                    }
+                }
+            }
+
+            yield from self.cl.index(self._index, 'testdoc',
+                                     MESSAGES[0], '1',
+                                     refresh=True)
+
+            yield from self.cl.put_script('groovy', 'calculate-score', script)
+            data = yield from self.cl.search(self._index, 'testdoc', query)
+            res = data['hits']['hits'][0]['fields']['test1'][0]
+            self.assertEqual(res, 4)  # 2*2
+
+        self.loop.run_until_complete(go())
+
+    def test_templates_management(self):
+        @asyncio.coroutine
+        def go():
+            template = {
+                "template": {
+                    "query": {
+                        "match": {
+                            "user": "{{query_string}}"
+                        }
+                    }
+                }
+            }
+
+            yield from self.cl.put_template('test_template', template)
+
+            data = yield from self.cl.get_template('test_template')
+            self.assertTrue(template, data)
+
+            yield from self.cl.delete_template('test_template')
+            with self.assertRaises(NotFoundError):
+                yield from self.cl.get_template('test_template')
+
+        self.loop.run_until_complete(go())
+
+    def test_template_search(self):
+        @asyncio.coroutine
+        def go():
+            template = {
+                "template": {
+                    "query": {
+                        "match": {
+                            "user": "{{query_string}}"
+                        }
+                    }
+                }
+            }
+            search_body = {
+                "template": {
+                    "id": "test_template"
+                },
+                "params": {
+                    "query_string": "Johny Mnemonic"
+                }
+            }
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[0], '1',
+                refresh=True
+            )
+
+            yield from self.cl.put_template('test_template', template)
+
+            data = yield from self.cl.search_template(
+                self._index, 'testdoc', body=search_body
+            )
+            self.assertEqual(data['hits']['total'], 1)
+
+        self.loop.run_until_complete(go())
+
+    def test_search_shards(self):
+        @asyncio.coroutine
+        def go():
+            yield from self.cl.index(
+                self._index, 'testdoc', MESSAGES[0], '1',
+                refresh=True
+            )
+            data = yield from self.cl.search_shards(
+                self._index, 'testdoc'
+            )
+            self.assertTrue('nodes' in data)
+            self.assertTrue(len(data['nodes']) > 0)
+            self.assertTrue('shards' in data)
+            self.assertTrue(len(data['shards']) > 0)
+
+        self.loop.run_until_complete(go())
+
+    def test_mlt(self):
+        @asyncio.coroutine
+        def go():
+            msg = MESSAGES[0].copy()
+            # mlt needs quite a lot of text to work
+            msg['message'] = '''
+            Additionally, More Like This can find documents that are "like"
+            a set of chosen documents. The syntax to specify one or more
+            documents is similar to the Multi GET API, and supports the
+            ids or docs array. If only one document is specified,
+            the query behaves the same as the More Like This API.'''
+            # and quite a lot of documents
+            for i in range(50):
+                yield from self.cl.index(
+                    self._index, 'testdoc', msg, str(i),
+                    refresh=True
+                )
+
+            data = yield from self.cl.mlt(
+                self._index, 'testdoc', '1'
+            )
+            # initial document is not included
+            self.assertEqual(data['hits']['total'], 49)
+            self.assertEqual(data['hits']['hits'][0]['_source'], msg)
 
         self.loop.run_until_complete(go())
 

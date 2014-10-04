@@ -193,8 +193,7 @@ class TestIndices(unittest.TestCase):
         def go():
             yield from self.cl.index(self._index, 'type', MESSAGE, '1')
             yield from self.cl.cluster.health(
-                self._index,
-                wait_for_status='green')
+                self._index)
             data = yield from self.cl.indices.exists_type(
                 self._index, 'type', allow_no_indices=False)
             self.assertTrue(data)
@@ -420,26 +419,6 @@ class TestIndices(unittest.TestCase):
                 human=True)
         self.loop.run_until_complete(go())
 
-    # ************************
-    #
-    # def test_put_warmer(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.put_warmer()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_get_warmer(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_warmer()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_delete_warmer(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.delete_warmer()
-    #     self.loop.run_until_complete(go())
-
     def test_mapping(self):
         @asyncio.coroutine
         def go():
@@ -455,9 +434,9 @@ class TestIndices(unittest.TestCase):
             }
             # PUT
             data = yield from self.cl.indices.put_mapping(
+                self._index,
                 'testdoc',
                 mapping,
-                index=self._index,
             )
             self.assertTrue(data['acknowledged'])
 
@@ -480,75 +459,107 @@ class TestIndices(unittest.TestCase):
             self.assertFalse(data)
 
         self.loop.run_until_complete(go())
-    #
-    # def test_get_field_mapping(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_field_mapping()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_delete_mapping(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.delete_mapping()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_put_alias(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.put_alias()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_exists_alias(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.exists_alias()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_get_alias(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_alias()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_get_aliases(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_aliases()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_update_aliases(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.update_aliases()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_delete_alias(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.delete_alias()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_put_template(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.put_template()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_exists_template(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.exists_template()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_get_template(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.get_template()
-    #     self.loop.run_until_complete(go())
-    #
-    # def test_delete_template(self):
-    #     @asyncio.coroutine
-    #     def go():
-    #         yield from self.cl.indices.delete_template()
-    #     self.loop.run_until_complete(go())
+
+    def test_get_field_mapping(self):
+        @asyncio.coroutine
+        def go():
+            # create index
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+            rt = yield from self.cl.indices.get_field_mapping(
+                'message', index=self._index
+            )
+            self.assertEqual(
+                # dude, you are so deep
+                rt[self._index]['mappings']['type']['message']['mapping'],
+                {'message': {'type': 'string'}}
+            )
+        self.loop.run_until_complete(go())
+
+    def test_warmers(self):
+        @asyncio.coroutine
+        def go():
+            # create index
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+
+            a = yield from self.cl.indices.get_warmer(name='warmer')
+            self.assertFalse(a)
+
+            b = {
+                "query": {
+                    "match_all": {}
+                },
+                "aggs": {
+                    "aggs_1": {
+                        "terms": {
+                            "field": "message"
+                        }
+                    }
+                }
+            }
+            yield from self.cl.indices.put_warmer(
+                index=self._index, name='warmer', body=b
+            )
+
+            a = yield from self.cl.indices.get_warmer(name='warmer')
+            self.assertIn('warmer', a[self._index]['warmers'].keys())
+
+            yield from self.cl.indices.delete_warmer(
+                name='warmer', index=self._index
+            )
+            a = yield from self.cl.indices.get_warmer(name='warmer')
+            self.assertFalse(a)
+
+        self.loop.run_until_complete(go())
+
+    def test_aliases(self):
+        @asyncio.coroutine
+        def go():
+            # create index
+            yield from self.cl.index(self._index, 'type', MESSAGE, '1')
+
+            al = yield from self.cl.indices.exists_alias('alias')
+            self.assertFalse(al)
+            with self.assertRaises(NotFoundError):
+                yield from self.cl.indices.get_alias('alias')
+            al = yield from self.cl.indices.get_aliases('alias')
+            self.assertFalse(al)
+
+            yield from self.cl.indices.put_alias('alias', self._index)
+            al = yield from self.cl.indices.exists_alias('alias')
+            self.assertTrue(al)
+            yield from self.cl.indices.update_aliases(body={
+                "actions": [
+                    {"remove": {"index": self._index, "alias": "alias"}},
+                    {"add": {"index": self._index, "alias": "alias2"}}
+                ]
+            })
+            al = yield from self.cl.indices.exists_alias('alias2')
+            self.assertTrue(al)
+            yield from self.cl.indices.delete_alias(self._index, 'alias2')
+            al = yield from self.cl.indices.get_aliases('alias')
+            self.assertFalse(al)
+        self.loop.run_until_complete(go())
+
+    def test_templates(self):
+        @asyncio.coroutine
+        def go():
+            b = {
+                "template": self._index,
+                "settings": {
+                    "number_of_shards": '1'
+                },
+            }
+            t = yield from self.cl.indices.exists_template('template')
+            self.assertFalse(t)
+            yield from self.cl.indices.put_template('template', b)
+            t = yield from self.cl.indices.exists_template('template')
+            self.assertTrue(t)
+            t = yield from self.cl.indices.get_template('template')
+            self.assertEqual(
+                t['template']['settings']['index.number_of_shards'],
+                b['settings']['number_of_shards']
+            )
+            yield from self.cl.indices.delete_template('template')
+            t = yield from self.cl.indices.exists_template('template')
+            self.assertFalse(t)
+        self.loop.run_until_complete(go())

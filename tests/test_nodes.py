@@ -21,10 +21,27 @@ class TestNodes(unittest.TestCase):
     def tearDown(self):
         self.loop.close()
 
-    def test_allocation(self):
+    def test_info(self):
         @asyncio.coroutine
         def go():
             ret = yield from self.cl.nodes.info()
             self.assertIn('cluster_name', ret)
+
+        self.loop.run_until_complete(go())
+
+    def test_stats(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.nodes.stats()
+            self.assertIn('nodes', ret)
+            self.assertTrue(len(ret['nodes']) > 0)
+
+        self.loop.run_until_complete(go())
+
+    def test_hot_threads(self):
+        @asyncio.coroutine
+        def go():
+            ret = yield from self.cl.nodes.hot_threads()
+            self.assertIn('cpu usage by thread', ret)
 
         self.loop.run_until_complete(go())
