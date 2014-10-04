@@ -28,7 +28,7 @@ Example
         answer = yield from es.get(index="my-index",
                                    doc_type="test-type",
                                    id=42)
-        assert ret['_source'] == {'str': 'data', 'int': 1}
+        assert answer['_source'] == {'str': 'data', 'int': 1}
 
 
 Requirements
