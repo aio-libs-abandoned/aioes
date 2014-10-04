@@ -6,7 +6,7 @@ asyncio client library for elasticsearch
 Example
 -------
 
-:: code-block:: python
+.. code-block:: python
 
     import asyncio
     from aioes import Elasticsearch
