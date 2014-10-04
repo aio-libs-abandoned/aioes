@@ -30,6 +30,9 @@ Example
                                    id=42)
         assert answer['_source'] == {'str': 'data', 'int': 1}
 
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(go())
+
 
 Requirements
 ------------
