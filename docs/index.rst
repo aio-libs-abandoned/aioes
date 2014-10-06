@@ -10,7 +10,7 @@ aioes
 .. _asyncio: http://docs.python.org/3.4/library/asyncio.html
 
 **aioes** is a libarary for working with an :term:`ElasticSearch` from
- :term:`asyncio` framework.
+:term:`asyncio` framework.
 
 Features
 --------
