@@ -47,6 +47,28 @@ Requirements
 * aiohttp_ 0.9.1+
 
 
+Tests
+-----
+
+Make sure you have an instance of elastic-search running on port 9200
+before executing the tests.
+
+In order for all tests to work you need to add the following lines in the
+`config/elasticsearch.yml` configuration file:
+
+Enable groovy scripts::
+
+  script.groovy.sandbox.enabled: true
+
+Set a repository path::
+
+  path.repo: ["/tmp"]
+
+
+The test suite uses `nose`, to execute::
+
+  nosetests tests
+
 
 License
 -------
