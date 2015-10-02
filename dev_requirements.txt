@@ -1,0 +1,4 @@
+pyflakes
+nose
+# for compare script
+elasticsearch
