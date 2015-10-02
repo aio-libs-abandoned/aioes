@@ -6,7 +6,8 @@ from .utils import _make_path
 default = object()
 
 
-_decode_text = lambda s: s
+def _decode_text(s):
+    return s
 
 
 class NodesClient(NamespacedClient):
