@@ -1009,7 +1009,7 @@ class TestClient(unittest.TestCase):
 
             # getting and checking
             got_script = yield from self.cl.get_script('groovy', 'test_script')
-            self.assertEqual(script, got_script)
+            self.assertEqual(script['script'], got_script['script'])
 
             # deleting
             yield from self.cl.delete_script('groovy', 'test_script')

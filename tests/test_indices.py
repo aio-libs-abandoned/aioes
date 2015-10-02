@@ -240,11 +240,11 @@ class TestIndices(unittest.TestCase):
             yield from self.cl.index(self._index, 'type', MESSAGE, '1')
             yield from self.cl.indices.refresh(self._index)
             data = yield from self.cl.indices.put_settings(
-                {"persistent": {}}, self._index)
+                {"index": {"number_of_replicas": 2}}, self._index)
             self.assertTrue(data['acknowledged'], data)
             with self.assertRaises(RequestError):
                 yield from self.cl.indices.put_settings(
-                    {"persistent": {}},
+                    {"index": {"number_of_replicas": 2}},
                     allow_no_indices=True,
                     expand_wildcards='open',
                     flat_settings=False,
@@ -519,10 +519,10 @@ class TestIndices(unittest.TestCase):
 
             al = yield from self.cl.indices.exists_alias('alias')
             self.assertFalse(al)
-            with self.assertRaises(NotFoundError):
-                yield from self.cl.indices.get_alias('alias')
+            al = yield from self.cl.indices.get_alias('alias')
+            self.assertEqual({}, al)
             al = yield from self.cl.indices.get_aliases('alias')
-            self.assertFalse(al)
+            self.assertEqual({}, al)
 
             yield from self.cl.indices.put_alias('alias', self._index)
             al = yield from self.cl.indices.exists_alias('alias')
