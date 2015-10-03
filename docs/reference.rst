@@ -1150,7 +1150,7 @@ IndicesClient
 
       .. Seealso::
 
-         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-index.html>_
+         `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-index.html>`_
 
 
    .. method:: refresh(index=None, *,\
@@ -1648,9 +1648,9 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-delete-mapping.html>`_
 
-   .. method:: get_field_mapping(field, index=None, doc_type=None, *,
-                                 include_defaults=default, ignore_unavailable=default,
-                                 allow_no_indices=default, expand_wildcards=default,
+   .. method:: get_field_mapping(field, index=None, doc_type=None, *, \
+                                 include_defaults=default, ignore_unavailable=default, \
+                                 allow_no_indices=default, expand_wildcards=default, \
                                  local=default)
 
       A :ref:`coroutine <coroutine>` that retrieves mapping definition of a specific field
@@ -1678,7 +1678,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html>`_
 
-   .. method:: put_alias(name, index=None, body=None, *,
+   .. method:: put_alias(name, index=None, body=None, *, \
                          timeout=default, master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that creates an alias for a specific index/indices
@@ -1697,8 +1697,8 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: exists_alias(name, index=None, *, allow_no_indices=default,
-                            expand_wildcards=default, ignore_indices=default,
+   .. method:: exists_alias(name, index=None, *, allow_no_indices=default, \
+                            expand_wildcards=default, ignore_indices=default, \
                             ignore_unavailable=default, local=default)
 
       A :ref:`coroutine <coroutine>` that returns a boolean indicating whether given alias exists
@@ -1723,8 +1723,8 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: get_alias(index=None, name=None, *, allow_no_indices=default,
-                         expand_wildcards=default, ignore_indices=default,
+   .. method:: get_alias(index=None, name=None, *, allow_no_indices=default, \
+                         expand_wildcards=default, ignore_indices=default, \
                          ignore_unavailable=default, local=default)
 
       A :ref:`coroutine <coroutine>` that retrieves a specified alias.
@@ -1749,7 +1749,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: get_aliases(index=None, name=None, *, local=default,
+   .. method:: get_aliases(index=None, name=None, *, local=default, \
                            timeout=default)
 
       A :ref:`coroutine <coroutine>` that retrieves a specified aliases.
@@ -1766,7 +1766,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: update_aliases(body, *, timeout=default,
+   .. method:: update_aliases(body, *, timeout=default, \
                               master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that updates a specified aliases.
@@ -1781,7 +1781,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: delete_alias(index, name, *, timeout=default,
+   .. method:: delete_alias(index, name, *, timeout=default, \
                             master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that deletes a specified aliases.
@@ -1800,12 +1800,12 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html>`_
 
-   .. method:: put_template(name, body, *, create=default, order=default,
-                            timeout=default, master_timeout=default,
+   .. method:: put_template(name, body, *, create=default, order=default, \
+                            timeout=default, master_timeout=default, \
                             flat_settings=default)
 
       A :ref:`coroutine <coroutine>` that creates an index template that will
-        be automatically applied to new indices created.
+      be automatically applied to new indices created.
 
       :arg name: The name of the template
       :arg body: The template definition
@@ -1827,7 +1827,7 @@ IndicesClient
    .. method:: exists_template(name, *, local=default)
 
       A :ref:`coroutine <coroutine>` that returns a boolean indicating whether
-        given template exists.
+      given template exists.
 
       :arg name: The name of the template
       :arg local: Return local information, do not retrieve the state from
@@ -1839,7 +1839,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
 
-   .. method:: get_template(name=None, *, flat_settings=default,
+   .. method:: get_template(name=None, *, flat_settings=default, \
                             local=default)
 
       A :ref:`coroutine <coroutine>` that retrieves an index template by its name.
@@ -1855,7 +1855,7 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
 
-   .. method:: delete_template(name, *, timeout=default,
+   .. method:: delete_template(name, *, timeout=default, \
                                master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that deletes an index template by its name.
@@ -1870,12 +1870,12 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html>`_
 
-   .. method:: put_warmer(name, body, index=None, doc_type=None, *,
-                          allow_no_indices=default, expand_wildcards=default,
+   .. method:: put_warmer(name, body, index=None, doc_type=None, *, \
+                          allow_no_indices=default, expand_wildcards=default, \
                           ignore_unavailable=default, master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that create an index warmer to run
-        registered search requests to warm up the index before it is available for search.
+      registered search requests to warm up the index before it is available for search.
 
       :arg name: The name of the warmer
       :arg body: The search request definition for the warmer
@@ -1903,8 +1903,8 @@ IndicesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html>`_
 
-   .. method:: get_warmer(index=None, doc_type=None, name=None, *,
-                          allow_no_indices=default, expand_wildcards=default,
+   .. method:: get_warmer(index=None, doc_type=None, name=None, *, \
+                          allow_no_indices=default, expand_wildcards=default, \
                           ignore_unavailable=default, local=default)
 
       A :ref:`coroutine <coroutine>` that retreieves an index warmer.
@@ -1957,12 +1957,12 @@ CatClient
 
    Class for retrieving elasticsearch information in human-readable way.
 
-   .. method:: aliases(*, name=default, h=default, help=default,
+   .. method:: aliases(*, name=default, h=default, help=default, \
                local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
 
-      {" name: A comma-separated list of alias names to return
+      :arg name: A comma-separated list of alias names to return
       :arg h: Comma-separated list of column names to display
       :arg help: Return help information, default False
       :arg local: Return local information, do not retrieve the state from
@@ -1982,8 +1982,8 @@ CatClient
                local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns a snapshot of how
-        shards have located around the cluster and the state of disk
-        usage.
+      shards have located around the cluster and the state of disk
+      usage.
 
       :arg node_id: A comma-separated list of node IDs or names to limit the
             returned information
@@ -2002,7 +2002,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-allocation.html>`_
 
-   .. method:: count(index=None, *, h=default, help=default,
+   .. method:: count(index=None, *, h=default, help=default, \
                local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns an info about aliases.
@@ -2023,7 +2023,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-count.html>`_
 
-   .. method:: health(*, h=default, help=default, local=default,
+   .. method:: health(*, h=default, help=default, local=default, \
                master_timeout=default, ts=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns a health, which is a terse,
@@ -2057,7 +2057,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html>`_
 
-   .. method:: indices(self, index=None, *, bytes=default, h=default, help=default,
+   .. method:: indices(self, index=None, *, bytes=default, h=default, help=default, \
                local=default, master_timeout=default, pri=default, v=default)
 
       A :ref:`coroutine <coroutine>` that returns a cross-section of each index
@@ -2081,7 +2081,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-indices.html>`_
 
-   .. method:: master(*, h=default, help=default, local=default,
+   .. method:: master(*, h=default, help=default, local=default, \
                master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that displays the master's node ID,
@@ -2101,7 +2101,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-master.html>`_
 
-   .. method:: nodes(*, h=default, help=default, local=default,
+   .. method:: nodes(*, h=default, help=default, local=default, \
               master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that shows the cluster topology.
@@ -2120,7 +2120,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-nodes.html>`_
 
-   .. method:: recovery(index=None, *, bytes=default, h=default, help=default,
+   .. method:: recovery(index=None, *, bytes=default, h=default, help=default, \
                         local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that shows the view of shard replication.
@@ -2142,7 +2142,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-recovery.html>`_
 
-   .. method:: shards(index=None, *, h=default, help=default, local=default,
+   .. method:: shards(index=None, *, h=default, help=default, local=default, \
                       master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that shows the detailed view of what nodes
@@ -2164,7 +2164,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-shards.html>`_
 
-   .. method:: segments(index=None, *, h=default, help=default, local=default,
+   .. method:: segments(index=None, *, h=default, help=default, local=default, \
                         master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that shows the detailed
@@ -2186,7 +2186,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-segments.html>`_
 
-   .. method:: pending_tasks(*, h=default, help=default, local=default,
+   .. method:: pending_tasks(*, h=default, help=default, local=default, \
                              master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that provides the same information as the
@@ -2207,7 +2207,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-pending-tasks.html>`_
 
-   .. method:: thread_pool(*, full_id=default, h=default, help=default,
+   .. method:: thread_pool(*, full_id=default, h=default, help=default, \
                            local=default, master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that provides information about thread pools.
@@ -2227,8 +2227,8 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-thread-pool.html>`_
 
-   .. method:: fielddata(*, fields=default, bytes=default, h=default,
-                         help=default, local=default, master_timeout=default,
+   .. method:: fielddata(*, fields=default, bytes=default, h=default, \
+                         help=default, local=default, master_timeout=default, \
                          v=default)
 
       A :ref:`coroutine <coroutine>` that provides information about
@@ -2251,7 +2251,7 @@ CatClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cat-fielddata.html>`_
 
-   .. method:: plugins(*, h=default, help=default, local=default,
+   .. method:: plugins(*, h=default, help=default, local=default, \
                        master_timeout=default, v=default)
 
       A :ref:`coroutine <coroutine>` that provides information about plugins.
@@ -2279,10 +2279,10 @@ ClusterClient
 
    Class for retrieving elasticsearch information in human-readable way.
 
-   .. method:: health(index=None, *,
-               level=default, local=default, master_timeout=default,
-               timeout=default, wait_for_active_shards=default,
-               wait_for_nodes=default, wait_for_relocating_shards=default,
+   .. method:: health(index=None, *, \
+               level=default, local=default, master_timeout=default, \
+               timeout=default, wait_for_active_shards=default, \
+               wait_for_nodes=default, wait_for_relocating_shards=default, \
                wait_for_status=default)
 
       A :ref:`coroutine <coroutine>` that returns a very simple status on the health of the cluster.
@@ -2326,7 +2326,7 @@ ClusterClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-pending.html>`_
 
-   .. method:: state(metric=None, index=None, *, index_templates=default,
+   .. method:: state(metric=None, index=None, *, index_templates=default, \
                local=default, master_timeout=default, flat_settings=default)
 
       A :ref:`coroutine <coroutine>` that returns a comprehensive state information of the whole cluster.
@@ -2369,8 +2369,8 @@ ClusterClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-stats.html>`_
 
-   .. method:: reroute(body=None, *, dry_run=default, explain=default,
-               filter_metadata=default, master_timeout=default,
+   .. method:: reroute(body=None, *, dry_run=default, explain=default, \
+               filter_metadata=default, master_timeout=default, \
                timeout=default)
 
       A :ref:`coroutine <coroutine>` that executes a cluster reroute
@@ -2394,7 +2394,7 @@ ClusterClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-reroute.html>`_
 
-   .. method:: get_settings(*, flat_settings=default, master_timeout=default,
+   .. method:: get_settings(*, flat_settings=default, master_timeout=default, \
                timeout=default)
 
       A :ref:`coroutine <coroutine>` that returns cluster settings.
@@ -2436,7 +2436,7 @@ NodesClient
                     flat_settings=default, human=default)
 
       A :ref:`coroutine <coroutine>` that retrieves one or more (or all)
-        of the cluster nodes information.
+      of the cluster nodes information.
 
       :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use ``"_local"`` to return information from the
@@ -2460,7 +2460,7 @@ NodesClient
    .. method:: shutdown(node_id=None, *, delay=default, exit=default)
 
       A :ref:`coroutine <coroutine>` that shutdowns one or more (or all) nodes in
-        the cluster.
+      the cluster.
 
       :arg node_id: A comma-separated list of node IDs or names to perform
           the operation on; use `_local` to perform the operation on
@@ -2475,13 +2475,13 @@ NodesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-shutdown.html>`_
 
-   .. method:: stats(node_id=None, metric=None, index_metric=None, *,
-                     completion_fields=default, fielddata_fields=default,
-                     fields=default, groups=default, human=default, level=default,
+   .. method:: stats(node_id=None, metric=None, index_metric=None, *, \
+                     completion_fields=default, fielddata_fields=default, \
+                     fields=default, groups=default, human=default, level=default, \
                      types=default)
 
       A :ref:`coroutine <coroutine>` that allows to retrieve one or more (or all) of
-        the cluster nodes statistics.
+      the cluster nodes statistics.
 
       :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
@@ -2517,11 +2517,11 @@ NodesClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html>`_
 
-   .. method:: hot_threads(node_id=None, *, type_=default, interval=default,
+   .. method:: hot_threads(node_id=None, *, type_=default, interval=default, \
                            snapshots=default, threads=default)
 
       A :ref:`coroutine <coroutine>` that allows to get the current hot threads on each node
-        in the cluster.
+      in the cluster.
 
       :arg node_id: A comma-separated list of node IDs or names to limit the
           returned information; use `_local` to return information from the
@@ -2549,7 +2549,7 @@ SnapshotClient
 
    Class for manipulating elasticsearch snapshots.
 
-   .. method:: create(repository, snapshot, body=None, *,
+   .. method:: create(repository, snapshot, body=None, *, \
                master_timeout=default, wait_for_completion=default)
 
       A :ref:`coroutine <coroutine>` that creates a snapshot in repository
@@ -2598,7 +2598,7 @@ SnapshotClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
-   .. method:: delete_repository(repository, *, master_timeout=default,
+   .. method:: delete_repository(repository, *, master_timeout=default, \
                                  timeout=default)
 
       A :ref:`coroutine <coroutine>` that removes a shared file system repository.
@@ -2614,7 +2614,7 @@ SnapshotClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
-   .. method:: get_repository(repository=None, *, local=default,
+   .. method:: get_repository(repository=None, *, local=default, \
                               master_timeout=default)
 
       A :ref:`coroutine <coroutine>` that returns information about registered repositories.
@@ -2631,7 +2631,7 @@ SnapshotClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
-   .. method:: create_repository(repository, body, *, master_timeout=default,
+   .. method:: create_repository(repository, body, *, master_timeout=default, \
                                  timeout=default)
 
       A :ref:`coroutine <coroutine>` that registers a shared file system repository.
@@ -2648,7 +2648,7 @@ SnapshotClient
 
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/modules-snapshots.html>`_
 
-   .. method:: restore(repository, snapshot, body=None, *,
+   .. method:: restore(repository, snapshot, body=None, *, \
                        master_timeout=default, wait_for_completion=default)
 
       A :ref:`coroutine <coroutine>` that restores a snapshot.
