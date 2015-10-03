@@ -2,4 +2,5 @@ Acknowledgements
 ----------------
 
 Anton Kasyanov
+Eduardo Naufel Schettino
 Mike Nemkov
