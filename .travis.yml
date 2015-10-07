@@ -30,4 +30,4 @@ cache: apt
 env:
   matrix:
     - PYTHONASYNCIODEBUG=1
-    - PYTHONASYNCIODEBUG=0
+    - PYTHONASYNCIODEBUG=
