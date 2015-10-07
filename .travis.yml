@@ -23,7 +23,7 @@ script:
   - pyflakes .
   - nosetests -v
   - python setup.py check -rms
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
 
 after_success:
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then make cover; coveralls; fi
