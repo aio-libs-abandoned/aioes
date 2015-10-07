@@ -5,25 +5,28 @@ python:
   - "3.4"
   - "3.5"
 
+sudo: false
+
 services:
   - elasticsearch
-  
+
 install:
   - python setup.py install
   - pip install pyflakes
   - pip install pep8
   - pip install docutils
   - pip install nose
-  - pip install coveralls
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch coverage coveralls; fi
 
 script:
   - pep8 aioes tests
   - pyflakes .
   - nosetests -v
   - python setup.py check -rms
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
 
 after_success:
-  - coveralls
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then make cover; coveralls; fi
 
 cache: apt
 
