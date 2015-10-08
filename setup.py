@@ -4,16 +4,14 @@ import sys
 from setuptools import setup, find_packages
 
 
-install_requires = ['aiohttp>=0.9.1']
+install_requires = ['aiohttp>=0.17.0']
 
 PY_VER = sys.version_info
 
 if PY_VER >= (3, 4):
     pass
 elif PY_VER >= (3, 3):
-    install_requires.append('asyncio')
-else:
-    raise RuntimeError("aioes doesn't suppport Python earllier than 3.3")
+    raise RuntimeError("aioes doesn't suppport Python earllier than 3.4")
 
 
 def read(f):
@@ -35,7 +33,6 @@ classifiers = [
     'License :: OSI Approved :: BSD License',
     'Intended Audience :: Developers',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.3',
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Operating System :: POSIX',
@@ -57,7 +54,7 @@ setup(name='aioes',
       author_email='andrew.svetlov@gmail.com',
       url='http://aioes.readthedocs.org',
       download_url='https://pypi.python.org/pypi/aioes',
-      license='BSD',
+      license='Apache 2',
       packages=find_packages(),
       install_requires=install_requires,
       include_package_data=True)

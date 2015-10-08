@@ -65,7 +65,7 @@ Dependencies
 Authors and License
 -------------------
 
-The ``aiopg`` package is written by Andrew Svetlov.  It's BSD
+The ``aioes`` package is written by Andrew Svetlov.  It's BSD
 licensed and freely available.
 
 Feel free to improve this package and send a pull request to GitHub_.

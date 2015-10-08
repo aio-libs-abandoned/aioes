@@ -1,6 +1,17 @@
 CHANGES
 -------
 
+0.2.0 (2015-10-08)
+^^^^^^^^^^^^^^^^^^
+
+* Make compatible with Elasticsearch 1.7
+
+* Support Python 3.5
+
+* Drop Python 3.3 support
+
+* Relicense under Apache 2
+
 
 0.1.0 (2014-10-04)
 ^^^^^^^^^^^^^^^^^^
