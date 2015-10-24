@@ -192,8 +192,7 @@ class TestIndices(unittest.TestCase):
         @asyncio.coroutine
         def go():
             yield from self.cl.index(self._index, 'type', MESSAGE, '1')
-            yield from self.cl.cluster.health(
-                self._index)
+            yield from self.cl.indices.refresh(self._index)
             data = yield from self.cl.indices.exists_type(
                 self._index, 'type', allow_no_indices=False)
             self.assertTrue(data)
