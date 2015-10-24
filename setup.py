@@ -11,7 +11,7 @@ PY_VER = sys.version_info
 if PY_VER >= (3, 4):
     pass
 elif PY_VER >= (3, 3):
-    raise RuntimeError("aioes doesn't suppport Python earllier than 3.4")
+    raise RuntimeError("aioes doesn't suppport Python earlier than 3.4")
 
 
 def read(f):
