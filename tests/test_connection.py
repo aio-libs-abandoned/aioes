@@ -17,7 +17,6 @@ class TestConnection(unittest.TestCase):
 
     def test_ctor(self):
         c = Connection(Endpoint('host', 9999), loop=self.loop)
-        self.assertIs(self.loop, c._loop)
         self.assertEqual(Endpoint('host', 9999), c.endpoint)
 
     def test_bad_status_common(self):
@@ -32,7 +31,7 @@ class TestConnection(unittest.TestCase):
             resp.text.return_value = r2
             fut = asyncio.Future(loop=self.loop)
             fut.set_result(resp)
-            conn._request = mock.Mock(return_value=fut)
+            conn._session.request = mock.Mock(return_value=fut)
 
             with self.assertRaises(TransportError) as ctx:
                 yield from conn.perform_request('GET', '/data', None, None)
@@ -54,7 +53,7 @@ class TestConnection(unittest.TestCase):
             resp.text.return_value = r2
             fut = asyncio.Future(loop=self.loop)
             fut.set_result(resp)
-            conn._request = mock.Mock(return_value=fut)
+            conn._session.request = mock.Mock(return_value=fut)
 
             with self.assertRaises(TransportError) as ctx:
                 yield from conn.perform_request('GET', '/data', None, None)
@@ -76,7 +75,7 @@ class TestConnection(unittest.TestCase):
             resp.text.return_value = r2
             fut = asyncio.Future(loop=self.loop)
             fut.set_result(resp)
-            conn._request = mock.Mock(return_value=fut)
+            conn._session.request = mock.Mock(return_value=fut)
 
             with self.assertRaises(RequestError) as ctx:
                 yield from conn.perform_request('GET', '/data', None, None)
@@ -98,7 +97,7 @@ class TestConnection(unittest.TestCase):
             resp.text.return_value = r2
             fut = asyncio.Future(loop=self.loop)
             fut.set_result(resp)
-            conn._request = mock.Mock(return_value=fut)
+            conn._session.request = mock.Mock(return_value=fut)
 
             with self.assertRaises(NotFoundError) as ctx:
                 yield from conn.perform_request('GET', '/data', None, None)
@@ -120,7 +119,7 @@ class TestConnection(unittest.TestCase):
             resp.text.return_value = r2
             fut = asyncio.Future(loop=self.loop)
             fut.set_result(resp)
-            conn._request = mock.Mock(return_value=fut)
+            conn._session.request = mock.Mock(return_value=fut)
 
             with self.assertRaises(ConflictError) as ctx:
                 yield from conn.perform_request('GET', '/data', None, None)
