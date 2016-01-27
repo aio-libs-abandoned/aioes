@@ -33,3 +33,14 @@ env:
   matrix:
     - PYTHONASYNCIODEBUG=1
     - PYTHONASYNCIODEBUG=
+
+deploy:
+  provider: pypi
+  user: andrew.svetlov
+  password:
+    secure: DoeWNoPsOJzD9MheKAAnBiycRs6bnsro0PNmfe5Rj0N3tS0ocm6oyOOUtmLqGX41C97neremBUxTokp6lE9awmmJbTxUacOa6yleoPAr0VTphWx4vMuQSLNON8pUhjnHJbY3+1/34/BV3b4XL+jegiikh3tpeOvCVDfXh4JORRI=
+  distributions: "sdist bdist_wheel"
+  on:
+    tags: true
+    all_branches: true
+    python: 3.5
