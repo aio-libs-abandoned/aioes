@@ -25,7 +25,7 @@ class Transport:
     """
 
     # get ip/port from "inet[wind/127.0.0.1:9200]"
-    ADDRESS_RE = re.compile(r'/(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
+    ADDRESS_RE = re.compile(r'(?:^|/)(?P<host>[\.:0-9a-f]*):(?P<port>[0-9]+)\]?$')
 
     def __init__(self, endpoints, *,
                  sniffer_interval=None, sniffer_timeout=0.1, max_retries=3,
