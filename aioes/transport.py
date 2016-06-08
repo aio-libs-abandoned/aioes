@@ -22,6 +22,11 @@ def validate_endpoint(endpoint):
     if not isinstance(endpoint.host, str) or not endpoint.host:
         raise ValueError('bad host {}'.format(endpoint.host))
 
+
+def get_default_port(scheme):
+    return 443 if scheme == 'https' else 9200
+
+
 DEFAULT_SCHEME = 'http'
 
 
@@ -90,8 +95,10 @@ class Transport:
                     host = e['host']
                 except KeyError:
                     raise RuntimeError("Bad endpoint {}".format(e))
-                port = e.get('port', 9200)
+                port = e.get('port')
                 scheme = e.get('scheme', DEFAULT_SCHEME)
+                if port is None:
+                    port = get_default_port(scheme)
                 endpoint = Endpoint(scheme, host, port)
             elif isinstance(e, str):
                 if not re.match(r'^(\w*\:?)//.*', e):
@@ -102,9 +109,11 @@ class Transport:
                 else:
                     scheme = DEFAULT_SCHEME
                 try:
-                    port = parts.port if parts.port is not None else 9200
+                    port = parts.port
                 except ValueError:
                     raise RuntimeError("Bad endpoint {}".format(e))
+                if port is None:
+                    port = get_default_port(scheme)
                 if parts.hostname:
                     auth = ':'.join(
                         [x for x in (parts.username, parts.password) if x]

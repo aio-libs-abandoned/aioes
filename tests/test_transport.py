@@ -130,6 +130,16 @@ class TestTransport(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.make_transport(endpoints=['s3://john:doe@localhost:9200'])
 
+    def test_default_port_https(self):
+        tr = self.make_transport(endpoints=['https://localhost'])
+        self.assertEqual([Endpoint('https', 'localhost', 443)],
+                         tr.endpoints)
+
+    def test_default_port_http(self):
+        tr = self.make_transport(endpoints=['http://localhost'])
+        self.assertEqual([Endpoint('http', 'localhost', 9200)],
+                         tr.endpoints)
+
     def test_sniff(self):
         tr = self.make_transport(sniffer_interval=0.001)
 
