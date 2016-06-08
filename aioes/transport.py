@@ -20,7 +20,7 @@ def validate_endpoint(endpoint):
     if endpoint.scheme not in ('http', 'https'):
         raise ValueError('bad scheme {}'.format(endpoint.scheme))
     if not isinstance(endpoint.host, str) or not endpoint.host:
-        raise ValueError('bad host {}'.format(endpoint.scheme))
+        raise ValueError('bad host {}'.format(endpoint.host))
 
 DEFAULT_SCHEME = 'http'
 
