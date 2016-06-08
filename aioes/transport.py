@@ -5,13 +5,15 @@ import json
 import random
 import re
 import time
-
+import urllib.parse
 
 from .connection import Connection
 from .exception import ConnectionError, TransportError
 from .pool import ConnectionPool
 
-Endpoint = collections.namedtuple('TCPEndpoint', 'host port')
+Endpoint = collections.namedtuple('TCPEndpoint', 'scheme host port')
+
+DEFAULT_SCHEME = 'http'
 
 
 class Transport:
@@ -80,17 +82,31 @@ class Transport:
                 except KeyError:
                     raise RuntimeError("Bad endpoint {}".format(e))
                 port = e.get('port', 9200)
-                ret.append(Endpoint(host, port))
+                scheme = e.get('scheme', DEFAULT_SCHEME)
+                ret.append(Endpoint(scheme, host, port))
             elif isinstance(e, str):
-                host, sep, port = e.partition(':')
-                if port:
-                    try:
-                        port = int(port)
-                    except ValueError:
-                        raise RuntimeError("Bad endpoint {}".format(e))
+                if not e.startswith('http'):
+                    e = '{}://{}'.format(DEFAULT_SCHEME, e)
+                parts = urllib.parse.urlparse(e)
+                if parts.scheme:
+                    if parts.scheme not in ('http', 'https'):
+                        raise ValueError("Bad scheme {}".format(e))
+                    scheme = parts.scheme
                 else:
-                    port = 9200
-                ret.append(Endpoint(host, port))
+                    scheme = DEFAULT_SCHEME
+                try:
+                    port = parts.port if parts.port is not None else 9200
+                except ValueError:
+                    raise RuntimeError("Bad endpoint {}".format(e))
+                if parts.hostname:
+                    auth = ':'.join(
+                        [x for x in (parts.username, parts.password) if x]
+                    )
+                    if auth:
+                        host = '{}@{}'.format(auth, parts.hostname)
+                    else:
+                        host = parts.hostname
+                ret.append(Endpoint(scheme, host, port))
             else:
                 raise RuntimeError("Bad endpoint {}".format(e))
         return ret
@@ -176,11 +192,12 @@ class Transport:
                 port = int(dct['port'])
             else:
                 port = 9200
+            scheme = dct.get('scheme') or DEFAULT_SCHEME
             attrs = n.get('attributes', {})
             if not (attrs.get('data', 'true') == 'false' and
                     attrs.get('client', 'false') == 'false' and
                     attrs.get('master', 'true') == 'true'):
-                endpoints.append(Endpoint(host, port))
+                endpoints.append(Endpoint(scheme, host, port))
 
         # we weren't able to get any nodes, maybe using an incompatible
         # transport_schema or host_info_callback blocked all - raise error.

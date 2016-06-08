@@ -16,14 +16,14 @@ class TestConnection(unittest.TestCase):
         self.loop = TestLoop()
 
     def test_ctor(self):
-        c = Connection(Endpoint('host', 9999), loop=self.loop)
-        self.assertEqual(Endpoint('host', 9999), c.endpoint)
+        c = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
+        self.assertEqual(Endpoint('http', 'host', 9999), c.endpoint)
 
     def test_bad_status_common(self):
 
         @asyncio.coroutine
         def go():
-            conn = Connection(Endpoint('host', 9999), loop=self.loop)
+            conn = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
             resp = mock.Mock()
             resp.status = 401
             r2 = asyncio.Future(loop=self.loop)
@@ -45,7 +45,7 @@ class TestConnection(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            conn = Connection(Endpoint('host', 9999), loop=self.loop)
+            conn = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
             resp = mock.Mock()
             resp.status = 401
             r2 = asyncio.Future(loop=self.loop)
@@ -67,7 +67,7 @@ class TestConnection(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            conn = Connection(Endpoint('host', 9999), loop=self.loop)
+            conn = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
             resp = mock.Mock()
             resp.status = 400
             r2 = asyncio.Future(loop=self.loop)
@@ -89,7 +89,7 @@ class TestConnection(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            conn = Connection(Endpoint('host', 9999), loop=self.loop)
+            conn = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
             resp = mock.Mock()
             resp.status = 404
             r2 = asyncio.Future(loop=self.loop)
@@ -111,7 +111,7 @@ class TestConnection(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            conn = Connection(Endpoint('host', 9999), loop=self.loop)
+            conn = Connection(Endpoint('http', 'host', 9999), loop=self.loop)
             resp = mock.Mock()
             resp.status = 409
             r2 = asyncio.Future(loop=self.loop)
