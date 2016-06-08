@@ -13,6 +13,15 @@ from .pool import ConnectionPool
 
 Endpoint = collections.namedtuple('TCPEndpoint', 'scheme host port')
 
+
+def validate_endpoint(endpoint):
+    if not isinstance(endpoint.port, int):
+        raise ValueError('bad port {}'.format(endpoint.port))
+    if endpoint.scheme not in ('http', 'https'):
+        raise ValueError('bad scheme {}'.format(endpoint.scheme))
+    if not isinstance(endpoint.host, str) or not endpoint.host:
+        raise ValueError('bad host {}'.format(endpoint.scheme))
+
 DEFAULT_SCHEME = 'http'
 
 
@@ -75,7 +84,7 @@ class Transport:
         ret = []
         for e in endpoints:
             if isinstance(e, Endpoint):
-                ret.append(e)
+                endpoint = e
             elif isinstance(e, dict):
                 try:
                     host = e['host']
@@ -83,14 +92,12 @@ class Transport:
                     raise RuntimeError("Bad endpoint {}".format(e))
                 port = e.get('port', 9200)
                 scheme = e.get('scheme', DEFAULT_SCHEME)
-                ret.append(Endpoint(scheme, host, port))
+                endpoint = Endpoint(scheme, host, port)
             elif isinstance(e, str):
-                if not e.startswith('http'):
+                if not re.match(r'^(\w*\:?)//.*', e):
                     e = '{}://{}'.format(DEFAULT_SCHEME, e)
                 parts = urllib.parse.urlparse(e)
                 if parts.scheme:
-                    if parts.scheme not in ('http', 'https'):
-                        raise ValueError("Bad scheme {}".format(e))
                     scheme = parts.scheme
                 else:
                     scheme = DEFAULT_SCHEME
@@ -106,9 +113,14 @@ class Transport:
                         host = '{}@{}'.format(auth, parts.hostname)
                     else:
                         host = parts.hostname
-                ret.append(Endpoint(scheme, host, port))
+                endpoint = Endpoint(scheme, host, port)
             else:
                 raise RuntimeError("Bad endpoint {}".format(e))
+            try:
+                validate_endpoint(endpoint)
+            except ValueError:
+                raise RuntimeError("Bad endpoint {}".format(endpoint))
+            ret.append(endpoint)
         return ret
 
     def _reinitialize_endpoints(self):

@@ -1,7 +1,7 @@
 import asyncio
 import time
 import unittest
-
+import urllib.parse
 
 from aioes.transport import Endpoint, Transport
 
@@ -121,11 +121,14 @@ class TestTransport(unittest.TestCase):
         tr = self.make_transport(endpoints=['https://john:doe@localhost:9200'])
         self.assertEqual([Endpoint('https', 'john:doe@localhost', 9200)],
                          tr.endpoints)
+        self.assertEqual(
+            ('https', 'john:doe@localhost:9200', '/', '', '', ''),
+            tuple(urllib.parse.urlparse(tr._pool.connections[0]._base_url))
+        )
 
-    def test_username_password_endpoints_without_port_https(self):
-        tr = self.make_transport(endpoints=['https://john:doe@localhost'])
-        self.assertEqual([Endpoint('https', 'john:doe@localhost', 9200)],
-                         tr.endpoints)
+    def test_bad_schema(self):
+        with self.assertRaises(RuntimeError):
+            self.make_transport(endpoints=['s3://john:doe@localhost:9200'])
 
     def test_sniff(self):
         tr = self.make_transport(sniffer_interval=0.001)
