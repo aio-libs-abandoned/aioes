@@ -171,7 +171,8 @@ class TestConnectionPool(unittest.TestCase):
         @asyncio.coroutine
         def go():
             pool = self.make_pool(connections=[])
-            conn = Connection(Endpoint('http', 'localhost', 9200), loop=self.loop)
+            conn = Connection(Endpoint('http', 'localhost', 9200),
+                              loop=self.loop)
 
             yield from pool.mark_live(conn)
             self.assertNotIn(conn, pool._dead_count)
@@ -183,7 +184,8 @@ class TestConnectionPool(unittest.TestCase):
         @asyncio.coroutine
         def go():
             pool = self.make_pool(connections=[])
-            conn = Connection(Endpoint('http', 'localhost', 9200), loop=self.loop)
+            conn = Connection(Endpoint('http', 'localhost', 9200),
+                              loop=self.loop)
             pool._dead_count[conn] = 1
 
             yield from pool.mark_live(conn)
