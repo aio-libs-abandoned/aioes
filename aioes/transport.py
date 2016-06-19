@@ -5,13 +5,29 @@ import json
 import random
 import re
 import time
-
+import urllib.parse
 
 from .connection import Connection
 from .exception import ConnectionError, TransportError
 from .pool import ConnectionPool
 
-Endpoint = collections.namedtuple('TCPEndpoint', 'host port')
+Endpoint = collections.namedtuple('TCPEndpoint', 'scheme host port')
+
+
+def validate_endpoint(endpoint):
+    if not isinstance(endpoint.port, int):
+        raise ValueError('bad port {}'.format(endpoint.port))
+    if endpoint.scheme not in ('http', 'https'):
+        raise ValueError('bad scheme {}'.format(endpoint.scheme))
+    if not isinstance(endpoint.host, str) or not endpoint.host:
+        raise ValueError('bad host {}'.format(endpoint.host))
+
+
+def get_default_port(scheme):
+    return 443 if scheme == 'https' else 9200
+
+
+DEFAULT_SCHEME = 'http'
 
 
 class Transport:
@@ -73,26 +89,47 @@ class Transport:
         ret = []
         for e in endpoints:
             if isinstance(e, Endpoint):
-                ret.append(e)
+                endpoint = e
             elif isinstance(e, dict):
                 try:
                     host = e['host']
                 except KeyError:
                     raise RuntimeError("Bad endpoint {}".format(e))
-                port = e.get('port', 9200)
-                ret.append(Endpoint(host, port))
+                port = e.get('port')
+                scheme = e.get('scheme', DEFAULT_SCHEME)
+                if port is None:
+                    port = get_default_port(scheme)
+                endpoint = Endpoint(scheme, host, port)
             elif isinstance(e, str):
-                host, sep, port = e.partition(':')
-                if port:
-                    try:
-                        port = int(port)
-                    except ValueError:
-                        raise RuntimeError("Bad endpoint {}".format(e))
+                if not re.match(r'^(\w*\:?)//.*', e):
+                    e = '{}://{}'.format(DEFAULT_SCHEME, e)
+                parts = urllib.parse.urlparse(e)
+                if parts.scheme:
+                    scheme = parts.scheme
                 else:
-                    port = 9200
-                ret.append(Endpoint(host, port))
+                    scheme = DEFAULT_SCHEME
+                try:
+                    port = parts.port
+                except ValueError:
+                    raise RuntimeError("Bad endpoint {}".format(e))
+                if port is None:
+                    port = get_default_port(scheme)
+                if parts.hostname:
+                    auth = ':'.join(
+                        [x for x in (parts.username, parts.password) if x]
+                    )
+                    if auth:
+                        host = '{}@{}'.format(auth, parts.hostname)
+                    else:
+                        host = parts.hostname
+                endpoint = Endpoint(scheme, host, port)
             else:
                 raise RuntimeError("Bad endpoint {}".format(e))
+            try:
+                validate_endpoint(endpoint)
+            except ValueError:
+                raise RuntimeError("Bad endpoint {}".format(endpoint))
+            ret.append(endpoint)
         return ret
 
     def _reinitialize_endpoints(self):
@@ -176,11 +213,12 @@ class Transport:
                 port = int(dct['port'])
             else:
                 port = 9200
+            scheme = dct.get('scheme') or DEFAULT_SCHEME
             attrs = n.get('attributes', {})
             if not (attrs.get('data', 'true') == 'false' and
                     attrs.get('client', 'false') == 'false' and
                     attrs.get('master', 'true') == 'true'):
-                endpoints.append(Endpoint(host, port))
+                endpoints.append(Endpoint(scheme, host, port))
 
         # we weren't able to get any nodes, maybe using an incompatible
         # transport_schema or host_info_callback blocked all - raise error.

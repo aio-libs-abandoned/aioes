@@ -1,7 +1,7 @@
 import asyncio
 import time
 import unittest
-
+import urllib.parse
 
 from aioes.transport import Endpoint, Transport
 
@@ -27,7 +27,7 @@ class TestTransport(unittest.TestCase):
         self.assertGreaterEqual(time.monotonic(), tr.last_sniff)
         self.assertIsNone(tr.sniffer_interval)
         self.assertAlmostEqual(0.1, tr.sniffer_timeout)
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_simple(self):
@@ -57,55 +57,88 @@ class TestTransport(unittest.TestCase):
         tr = self.make_transport([])
         self.assertEqual([], tr.endpoints)
         tr.endpoints = [{'host': 'localhost'}]
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_set_endpoints_Endpoint(self):
         tr = self.make_transport([])
         self.assertEqual([], tr.endpoints)
-        tr.endpoints = [Endpoint('localhost', 9200)]
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        tr.endpoints = [Endpoint('http', 'localhost', 9200)]
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_dont_recreate_existing_connections(self):
         tr = self.make_transport()
         connections = tr._pool.connections
         tr.endpoints = [{'host': 'localhost'}]
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(connections, tr._pool.connections)
 
     def test_set_malformed_endpoints(self):
         tr = self.make_transport()
         with self.assertRaises(RuntimeError):
             tr.endpoints = [123]
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_set_host_only_string(self):
         tr = self.make_transport()
         tr.endpoints = ['host']
-        self.assertEqual([Endpoint('host', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'host', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_set_host_port_string(self):
         tr = self.make_transport()
         tr.endpoints = ['host:123']
-        self.assertEqual([Endpoint('host', 123)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'host', 123)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_set_host_port_string_invalid(self):
         tr = self.make_transport()
         with self.assertRaises(RuntimeError):
             tr.endpoints = ['host:123:abc']
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
 
     def test_set_host_dict_invalid(self):
         tr = self.make_transport()
         with self.assertRaises(RuntimeError):
             tr.endpoints = [{'a': 'b'}]
-        self.assertEqual([Endpoint('localhost', 9200)], tr.endpoints)
+        self.assertEqual([Endpoint('http', 'localhost', 9200)], tr.endpoints)
         self.assertEqual(1, len(tr._pool.connections))
+
+    def test_username_password_endpoints_with_port(self):
+        tr = self.make_transport(endpoints=['john:doe@localhost:9200'])
+        self.assertEqual([Endpoint('http', 'john:doe@localhost', 9200)],
+                         tr.endpoints)
+
+    def test_username_password_endpoints_without_port(self):
+        tr = self.make_transport(endpoints=['john:doe@localhost'])
+        self.assertEqual([Endpoint('http', 'john:doe@localhost', 9200)],
+                         tr.endpoints)
+
+    def test_username_password_endpoints_with_port_https(self):
+        tr = self.make_transport(endpoints=['https://john:doe@localhost:9200'])
+        self.assertEqual([Endpoint('https', 'john:doe@localhost', 9200)],
+                         tr.endpoints)
+        self.assertEqual(
+            ('https', 'john:doe@localhost:9200', '/', '', '', ''),
+            tuple(urllib.parse.urlparse(tr._pool.connections[0]._base_url))
+        )
+
+    def test_bad_schema(self):
+        with self.assertRaises(RuntimeError):
+            self.make_transport(endpoints=['s3://john:doe@localhost:9200'])
+
+    def test_default_port_https(self):
+        tr = self.make_transport(endpoints=['https://localhost'])
+        self.assertEqual([Endpoint('https', 'localhost', 443)],
+                         tr.endpoints)
+
+    def test_default_port_http(self):
+        tr = self.make_transport(endpoints=['http://localhost'])
+        self.assertEqual([Endpoint('http', 'localhost', 9200)],
+                         tr.endpoints)
 
     def test_sniff(self):
         tr = self.make_transport(sniffer_interval=0.001)

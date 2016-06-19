@@ -132,7 +132,7 @@ class ConnectionPool:
         no connections are availible and passes the list of live connections to
         the selector instance to choose from.
 
-        Returns a connection instance and it's current fail count.
+        Returns a connection instance
         """
         yield from self.resurrect()
 

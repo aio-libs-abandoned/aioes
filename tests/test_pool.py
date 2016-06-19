@@ -50,7 +50,7 @@ class TestConnectionPool(unittest.TestCase):
 
     def make_pool(self, connections=default):
         if connections is default:
-            connections = [Connection(Endpoint('localhost', 9200),
+            connections = [Connection(Endpoint('http', 'localhost', 9200),
                                       loop=self.loop)]
         pool = ConnectionPool(connections, loop=self.loop)
         self.addCleanup(pool.close)
@@ -171,7 +171,8 @@ class TestConnectionPool(unittest.TestCase):
         @asyncio.coroutine
         def go():
             pool = self.make_pool(connections=[])
-            conn = Connection(Endpoint('localhost', 9200), loop=self.loop)
+            conn = Connection(Endpoint('http', 'localhost', 9200),
+                              loop=self.loop)
 
             yield from pool.mark_live(conn)
             self.assertNotIn(conn, pool._dead_count)
@@ -183,7 +184,8 @@ class TestConnectionPool(unittest.TestCase):
         @asyncio.coroutine
         def go():
             pool = self.make_pool(connections=[])
-            conn = Connection(Endpoint('localhost', 9200), loop=self.loop)
+            conn = Connection(Endpoint('http', 'localhost', 9200),
+                              loop=self.loop)
             pool._dead_count[conn] = 1
 
             yield from pool.mark_live(conn)
@@ -195,8 +197,8 @@ class TestConnectionPool(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            c1 = Connection(Endpoint('h1', 1), loop=self.loop)
-            c2 = Connection(Endpoint('h2', 2), loop=self.loop)
+            c1 = Connection(Endpoint('http', 'h1', 1), loop=self.loop)
+            c2 = Connection(Endpoint('http', 'h2', 2), loop=self.loop)
             pool = self.make_pool(connections=[c1, c2])
 
             yield from pool.mark_dead(c1)
@@ -213,8 +215,8 @@ class TestConnectionPool(unittest.TestCase):
 
         @asyncio.coroutine
         def go():
-            c1 = Connection(Endpoint('h1', 1), loop=self.loop)
-            c2 = Connection(Endpoint('h2', 2), loop=self.loop)
+            c1 = Connection(Endpoint('http', 'h1', 1), loop=self.loop)
+            c2 = Connection(Endpoint('http', 'h2', 2), loop=self.loop)
             pool = self.make_pool(connections=[c1, c2])
 
             yield from pool.mark_dead(c1)
