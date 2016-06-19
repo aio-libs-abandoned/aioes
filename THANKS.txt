@@ -3,4 +3,6 @@ Acknowledgements
 
 Anton Kasyanov
 Eduardo Naufel Schettino
+Marco Paolini
 Mike Nemkov
+Taras Voinarovskyi
