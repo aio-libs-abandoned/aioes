@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-0.5.0 (2016-06-19)
+0.5.0 (2016-07-16)
 ^^^^^^^^^^^^^^^^^^
 
 * Allow scheme, username and password in connections #40
