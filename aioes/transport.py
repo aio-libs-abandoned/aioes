@@ -271,7 +271,9 @@ class Transport:
         if body is not None:
             if not isinstance(body, (str, bytes)):
                 body = json.dumps(body)
-            body = body.encode('utf-8')
+
+            if not isinstance(body, bytes):
+                body = body.encode('utf-8')
 
         for attempt in range(self.max_retries + 1):
             connection = yield from self.get_connection()

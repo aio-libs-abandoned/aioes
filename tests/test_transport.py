@@ -176,3 +176,13 @@ class TestTransport(unittest.TestCase):
             self.assertEqual(1, tr._pool._dead_count[conn])
 
         self.loop.run_until_complete(go())
+
+    def test_perform_request_body_bytes(self):
+        tr = self.make_transport()
+
+        @asyncio.coroutine
+        def go():
+            status, data = yield from tr.perform_request(
+                'GET', '/_nodes/_all', body=b'')
+
+        self.loop.run_until_complete(go())
