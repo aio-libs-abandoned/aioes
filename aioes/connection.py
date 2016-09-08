@@ -16,10 +16,13 @@ class Connection:
     Also responsible for logging.
     """
 
-    def __init__(self, endpoint, *, loop):
+    def __init__(self, endpoint, *, loop, verify_ssl=True):
         self._endpoint = endpoint
         self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(use_dns_cache=True, loop=loop),
+            connector=aiohttp.TCPConnector(
+                use_dns_cache=True,
+                loop=loop,
+                verify_ssl=verify_ssl),
             loop=loop)
         self._base_url = '{0.scheme}://{0.host}:{0.port}/'.format(endpoint)
 

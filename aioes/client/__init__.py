@@ -14,8 +14,11 @@ default = object()
 
 
 class Elasticsearch:
-    def __init__(self, endpoints, *, loop=None, **kwargs):
-        self._transport = Transport(endpoints, loop=loop, **kwargs)
+    def __init__(self, endpoints, *, loop=None, verify_ssl=True, **kwargs):
+        self._transport = Transport(endpoints,
+                                    loop=loop,
+                                    verify_ssl=verify_ssl,
+                                    **kwargs)
         self._cat = CatClient(self)
         self._cluster = ClusterClient(self)
         self._indices = IndicesClient(self)

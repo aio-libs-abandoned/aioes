@@ -46,10 +46,11 @@ class Transport:
 
     def __init__(self, endpoints, *,
                  sniffer_interval=None, sniffer_timeout=0.1, max_retries=3,
-                 loop):
+                 loop, verify_ssl=True):
         self._loop = loop
         self._endpoints = self._convert_endpoints(endpoints)
         self._pool = ConnectionPool([], loop=loop)
+        self._verify_ssl = verify_ssl
         self._reinitialize_endpoints()
         self._seed_connections = list(self._pool.connections)
         self._sniffer_interval = sniffer_interval
@@ -141,7 +142,10 @@ class Transport:
                 connections.append(connection)
                 self._pool.detach(connection)
             else:
-                connections.append(Connection(endpoint, loop=self._loop))
+                connections.append(Connection(
+                    endpoint,
+                    loop=self._loop,
+                    verify_ssl=self._verify_ssl))
         self._pool.close()
         random.shuffle(connections)
         self._pool = ConnectionPool(connections, loop=self._loop)
