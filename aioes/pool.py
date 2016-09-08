@@ -41,10 +41,14 @@ class ConnectionPool:
         self._dead = asyncio.PriorityQueue(len(connections), loop=loop)
         self._dead_count = collections.Counter()
         self._connections = connections
+        self._loop = loop
 
     def close(self):
         for connection in self._connections:
             connection.close()
+        ret = asyncio.Future(loop=self._loop)
+        ret.set_result(None)
+        return ret
 
     def detach(self, connection):
         self._connections.remove(connection)

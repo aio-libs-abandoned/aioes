@@ -84,7 +84,7 @@ class Transport:
         self._reinitialize_endpoints()
 
     def close(self):
-        self._pool.close()
+        return self._pool.close()
 
     def _convert_endpoints(self, endpoints):
         ret = []

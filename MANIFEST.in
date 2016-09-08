@@ -2,4 +2,7 @@ include LICENSE.txt
 include CHANGES.txt
 include README.rst
 graft aioes
+graft docs
+graft tests
 global-exclude *.pyc *.swp
+prune docs/_build

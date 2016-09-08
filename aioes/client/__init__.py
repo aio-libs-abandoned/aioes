@@ -56,7 +56,7 @@ class Elasticsearch:
         return '\n'.join(map(json.dumps, body)) + '\n'
 
     def close(self):
-        self.transport.close()
+        return self.transport.close()
 
     @asyncio.coroutine
     def ping(self):

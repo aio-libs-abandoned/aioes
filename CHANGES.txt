@@ -1,6 +1,13 @@
 CHANGES
 -------
 
+0.6.1 (2016-09-08)
+^^^^^^^^^^^^^^^^^^
+
+* Accept bytes as payload #42
+
+* Convert `Elasticsearch.close()` into a coroutine.
+
 0.6.0 (2016-09-08)
 ^^^^^^^^^^^^^^^^^^
 
