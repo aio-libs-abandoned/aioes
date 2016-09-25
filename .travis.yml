@@ -15,7 +15,7 @@ install:
   - pip install pep8
   - pip install docutils
   - pip install nose
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch coverage coveralls; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch coverage codecov; fi
 
 script:
   - pep8 aioes tests
@@ -25,7 +25,7 @@ script:
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
 
 after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then make cover; coveralls; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then make cover; codecov; fi
 
 cache: apt
 
