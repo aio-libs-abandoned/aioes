@@ -275,6 +275,14 @@ class Transport:
             if not isinstance(body, bytes):
                 body = body.encode('utf-8')
 
+        if params is not None:
+            to_replace = {}
+            for k, v in params.items():
+                if type(v) is bool:
+                    to_replace[k] = int(v)
+            for k, v in to_replace.items():
+                params[k] = v
+
         for attempt in range(self.max_retries + 1):
             connection = yield from self.get_connection()
 

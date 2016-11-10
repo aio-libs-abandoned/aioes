@@ -7,4 +7,5 @@ yarl
 pytest
 pytest-cov
 pytest-aiohttp
+pytest-sugar
 sphinx
