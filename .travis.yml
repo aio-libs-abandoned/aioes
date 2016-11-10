@@ -15,9 +15,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch codecov; fi
 
 script:
-  - pep8 aioes tests
-  - pyflakes .
-  - pytest tests
+  - make test
   - python setup.py check -rms
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
 
