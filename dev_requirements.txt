@@ -5,3 +5,4 @@ coverage==4.2
 # for compare script
 elasticsearch==5.0.1
 aiohttp
+yarl
