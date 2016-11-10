@@ -1,8 +1,10 @@
 pep8==1.7.0
 pyflakes==1.3.0
-nose==1.3.7
-coverage==4.2
 # for compare script
 elasticsearch==5.0.1
 aiohttp
 yarl
+pytest
+pytest-cov
+pytest-aiohttp
+sphinx

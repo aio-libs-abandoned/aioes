@@ -8,17 +8,15 @@ flake:
 	pyflakes .
 
 test: flake pep8
-	nosetests -s tests
+	pytest tests
 
 vtest: flake pep8
-	nosetests -s -v tests
+	pytest -v tests
 
-testloop:
-	while sleep 1; do nosetests -s tests ; done
 
 cov cover coverage: flake pep8
-	nosetests -s --with-coverage --cover-html --cover-package aioes --cover-branches --cover-erase
-	@echo "open file://`pwd`/cover/index.html"
+	pytest --cov=aioes tests
+	@echo "open file://`pwd`/coverage/index.html"
 
 clean:
 	rm -rf `find . -name __pycache__`

@@ -11,16 +11,13 @@ services:
 
 install:
   - python setup.py install
-  - pip install pyflakes
-  - pip install pep8
-  - pip install docutils
-  - pip install nose
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch coverage codecov; fi
+  - pip install -r dev_requirements.txtx
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch codecov; fi
 
 script:
   - pep8 aioes tests
   - pyflakes .
-  - nosetests -v
+  - pytest tests
   - python setup.py check -rms
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
 
