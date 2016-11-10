@@ -11,7 +11,7 @@ services:
 
 install:
   - python setup.py install
-  - pip install -r dev_requirements.txtx
+  - pip install -r requirements-dev.txt
   - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch codecov; fi
 
 script:
