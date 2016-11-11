@@ -3,175 +3,157 @@ import shutil
 import random
 import asyncio
 import tempfile
-import unittest
+
+import pytest
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
 
-class TestSnapshot(unittest.TestCase):
+@pytest.fixture
+def index():
+    return 'test_elasticsearch'
 
-    def _create_temp_dir(self):
-        '''
-        Sice elasticsearch may be launched under the other user,
-        tempfile.TemporaryDirectory can't be used, because python
-        can't cleanup it after elasticsearch user.
-        So we are just leaving it there.
-        '''
-        characters = "abcdefghijklmnopqrstuvwxyz0123456789_"
-        temp_dir = tempfile.gettempdir()
-        temp_prefix = '/' + tempfile.gettempprefix()
-        temp_name = temp_prefix + ''.join(
-            [random.choice(characters) for _ in range(8)]
-        )
 
-        dir_path = os.path.join(temp_dir + temp_name)
-        os.makedirs(dir_path)
-        return dir_path
+@pytest.fixture
+def client(es_params, index, loop, repo_name, snapshot_name):
+    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
+    try:
+        loop.run_until_complete(client.delete(index, '', ''))
+    except NotFoundError:
+        pass
+    yield client
 
-    def _cleanup_dirs(self, dir_path):
-        try:
-            shutil.rmtree(dir_path)
-        except PermissionError:
-            # if subdirs were created by other user
-            pass
+    # cleaning up just in case
+    try:
+        loop.run_until_complete(
+            client.snapshot.delete(repo_name, snapshot_name))
+    except NotFoundError:
+        pass
+    try:
+        loop.run_until_complete(
+            client.snapshot.delete_repository(repo_name))
+    except NotFoundError:
+        pass
 
-    def setUp(self):
-        self._index = 'elastic_search'
-        self.repo_name = 'test_repo'
-        self.repo_path = self._create_temp_dir()
-        # otherwise elasticsearch can't access it
-        os.chmod(self.repo_path, 0o777)
+    client.close()
 
-        self.snapshot_name = 'test_snapshot'
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(None)
-        self.cl = Elasticsearch([{'host': 'localhost'}], loop=self.loop)
-        self.addCleanup(self.cl.close)
-        try:
-            self.loop.run_until_complete(
-                self.cl.delete(self._index, refresh=True))
-        except NotFoundError:
-            pass
 
-    def tearDown(self):
-        self._cleanup_dirs(self.repo_path)
-        # cleaning up just in case
-        try:
-            self.loop.run_until_complete(
-                self.cl.snapshot.delete(self.repo_name, self.snapshot_name))
-        except NotFoundError:
-            pass
-        try:
-            self.loop.run_until_complete(
-                self.cl.snapshot.delete_repository(self.repo_name))
-        except NotFoundError:
-            pass
+@pytest.fixture
+def repo_path():
+    '''
+    Sice elasticsearch may be launched under the other user,
+    tempfile.TemporaryDirectory can't be used, because python
+    can't cleanup it after elasticsearch user.
+    So we are just leaving it there.
+    '''
+    characters = "abcdefghijklmnopqrstuvwxyz0123456789_"
+    temp_dir = tempfile.gettempdir()
+    temp_prefix = '/' + tempfile.gettempprefix()
+    temp_name = temp_prefix + ''.join(
+        [random.choice(characters) for _ in range(8)]
+    )
 
-        # close loop
-        self.loop.close()
+    dir_path = os.path.join(temp_dir + temp_name)
+    os.makedirs(dir_path)
+    yield dir_path
 
-    def test_repository(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.snapshot.get_repository()
-            self.assertFalse(ret)
+    try:
+        shutil.rmtree(dir_path)
+    except PermissionError:
+        # if subdirs were created by other user
+        pass
 
-            b = {
-                "type": "fs",
-                "settings": {
-                    "location": self.repo_path,
-                }
-            }
-            ret = yield from self.cl.snapshot.create_repository(
-                self.repo_name, b
-            )
-            self.assertTrue(ret['acknowledged'])
 
-            ret = yield from self.cl.snapshot.get_repository(
-                self.repo_name
-            )
-            self.assertEqual(ret[self.repo_name], b)
+@pytest.fixture
+def repo_name():
+    return 'test_repo'
 
-            ret = yield from self.cl.snapshot.delete_repository(
-                self.repo_name
-            )
-            self.assertTrue(ret['acknowledged'])
 
-        self.loop.run_until_complete(go())
+@pytest.fixture
+def snapshot_name():
+    return 'test_snapshot'
 
-    def test_snapshot(self):
-        @asyncio.coroutine
-        def go():
-            # creating index
-            yield from self.cl.create(
-                self._index, 'tweet',
-                {
-                    'user': 'Bob',
-                },
-                '1'
-            )
 
-            # creating repo
-            repo_body = {
-                "type": "fs",
-                "settings": {
-                    "location": self.repo_path,
-                }
-            }
+@asyncio.coroutine
+def test_repository(client, repo_path, repo_name):
+    ret = yield from client.snapshot.get_repository()
+    assert not ret
 
-            ret = yield from self.cl.snapshot.create_repository(
-                self.repo_name, repo_body
-            )
-            self.assertTrue(ret['acknowledged'])
+    b = {
+        "type": "fs",
+        "settings": {
+            "location": repo_path,
+        }
+    }
+    ret = yield from client.snapshot.create_repository(repo_name, b)
+    assert ret['acknowledged']
 
-            # creating snapshot
-            yield from self.cl.snapshot.create(
-                self.repo_name, self.snapshot_name,
-                wait_for_completion=True
-            )
+    ret = yield from client.snapshot.get_repository(repo_name)
+    assert ret[repo_name] == b
 
-            # checking that snapshot was created
-            ret = yield from self.cl.snapshot.get(
-                self.repo_name, self.snapshot_name,
-            )
-            self.assertEqual(
-                ret['snapshots'][0]['snapshot'],
-                self.snapshot_name
-            )
-            self.assertEqual(
-                ret['snapshots'][0]['state'],
-                'SUCCESS'
-            )
+    ret = yield from client.snapshot.delete_repository(repo_name)
+    assert ret['acknowledged']
 
-            # restoring snapshot
-            restore_body = {
-                "indices": self._index,
-            }
-            yield from self.cl.indices.close(self._index)
-            ret = yield from self.cl.snapshot.restore(
-                self.repo_name, self.snapshot_name,
-                body=restore_body
-            )
-            self.assertTrue(ret['accepted'])
 
-            # deleting snapshot
-            ret = yield from self.cl.snapshot.delete(
-                self.repo_name, self.snapshot_name,
-            )
-            self.assertTrue(ret['acknowledged'])
+@asyncio.coroutine
+def test_snapshot(client, repo_name, repo_path, snapshot_name):
+    # creating index
+    yield from client.create(
+        index, 'tweet',
+        {
+            'user': 'Bob',
+        },
+        '1'
+    )
 
-            # deleting repo
-            ret = yield from self.cl.snapshot.delete_repository(
-                self.repo_name
-            )
-            self.assertTrue(ret['acknowledged'])
+    # creating repo
+    repo_body = {
+        "type": "fs",
+        "settings": {
+            "location": repo_path,
+        }
+    }
 
-        self.loop.run_until_complete(go())
+    ret = yield from client.snapshot.create_repository(
+        repo_name, repo_body)
+    assert ret['acknowledged']
 
-    def test_status(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.snapshot.status()
-            self.assertEqual({'snapshots': []}, ret)
+    # creating snapshot
+    yield from client.snapshot.create(
+        repo_name, snapshot_name,
+        wait_for_completion=True
+    )
 
-        self.loop.run_until_complete(go())
+    # checking that snapshot was created
+    ret = yield from client.snapshot.get(repo_name, snapshot_name)
+    assert ret['snapshots'][0]['snapshot'] == snapshot_name
+    assert ret['snapshots'][0]['state'] == 'SUCCESS'
+
+    # restoring snapshot
+    restore_body = {
+        "indices": index,
+    }
+    yield from client.indices.close(index)
+    ret = yield from client.snapshot.restore(
+        repo_name, snapshot_name,
+        body=restore_body
+    )
+    assert ret['accepted']
+
+    # deleting snapshot
+    ret = yield from client.snapshot.delete(
+        repo_name, snapshot_name,
+    )
+    assert ret['acknowledged']
+
+    # deleting repo
+    ret = yield from client.snapshot.delete_repository(
+        repo_name
+    )
+    assert ret['acknowledged']
+
+
+@asyncio.coroutine
+def test_status(client):
+    ret = yield from client.snapshot.status()
+    assert {'snapshots': []} == ret

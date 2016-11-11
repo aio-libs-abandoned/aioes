@@ -1,200 +1,171 @@
 import asyncio
-import unittest
 import textwrap
+
+import pytest
+
+
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
 
-class TestCat(unittest.TestCase):
+@pytest.fixture
+def index():
+    return 'test_elasticsearch'
 
-    def setUp(self):
-        self._index = 'elastic_search'
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(None)
-        self.cl = Elasticsearch([{'host': 'localhost'}], loop=self.loop)
-        self.addCleanup(self.cl.close)
-        try:
-            self.loop.run_until_complete(
-                self.cl.delete(self._index, refresh=True))
-        except NotFoundError:
-            pass
 
-    def tearDown(self):
-        self.loop.close()
+@pytest.fixture
+def client(es_params, index, loop):
+    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
+    try:
+        loop.run_until_complete(client.delete(index, '', ''))
+    except NotFoundError:
+        pass
+    yield client
+    client.close()
 
-    def test_aliases(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.aliases(v=True)
-            self.assertIn('alias', ret)
-            self.assertIn('index', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_aliases(client):
+    ret = yield from client.cat.aliases(v=True)
+    assert 'alias' in ret
+    assert 'index' in ret
 
-    def test_allocation(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.allocation(v=True)
-            self.assertIn('disk.percent', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_allocation(client):
+    ret = yield from client.cat.allocation(v=True)
+    assert 'disk.percent' in ret
 
-    def test_count(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.count(v=True)
-            self.assertIn('timestamp', ret)
-            self.assertIn('count', ret)
 
-            # testing for index
-            yield from self.cl.create(
-                self._index, 'tweet',
-                {
-                    'user': 'Bob',
-                },
-                '1'
-            )
-            ret = yield from self.cl.cat.count(self._index, v=True)
-            self.assertIn('timestamp', ret)
-            self.assertIn('count', ret)
+@asyncio.coroutine
+def test_count(client):
+    ret = yield from client.cat.count(v=True)
+    assert 'timestamp' in ret
+    assert 'count' in ret
 
-        self.loop.run_until_complete(go())
+    # testing for index
+    yield from client.create(
+        index, 'tweet',
+        {
+            'user': 'Bob',
+        },
+        '1'
+    )
+    ret = yield from client.cat.count(index, v=True)
+    assert 'timestamp' in ret
+    assert 'count' in ret
 
-    def test_health(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.health(v=True)
-            self.assertIn('timestamp', ret)
-            self.assertIn('node.total', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_health(client):
+    ret = yield from client.cat.health(v=True)
+    assert 'timestamp' in ret
+    assert 'node.total' in ret
 
-    def test_help(self):
-        pattern = textwrap.dedent("""\
-                                  =^.^=
-                                  /_cat/allocation
-                                  /_cat/shards
-                                  /_cat/shards/{index}
-                                  /_cat/master
-                                  /_cat/nodes
-                                  /_cat/indices
-                                  /_cat/indices/{index}
-                                  /_cat/segments
-                                  /_cat/segments/{index}
-                                  /_cat/count
-                                  /_cat/count/{index}
-                                  /_cat/recovery
-                                  /_cat/recovery/{index}
-                                  /_cat/health
-                                  /_cat/pending_tasks
-                                  /_cat/aliases
-                                  /_cat/aliases/{alias}
-                                  /_cat/thread_pool
-                                  /_cat/plugins
-                                  /_cat/fielddata
-                                  /_cat/fielddata/{fields}
-                                  """)
 
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.help(help=True)
-            self.assertEqual(pattern, ret)
+@asyncio.coroutine
+def test_help(client):
+    pattern = textwrap.dedent("""\
+                              =^.^=
+                              /_cat/allocation
+                              /_cat/shards
+                              /_cat/shards/{index}
+                              /_cat/master
+                              /_cat/nodes
+                              /_cat/indices
+                              /_cat/indices/{index}
+                              /_cat/segments
+                              /_cat/segments/{index}
+                              /_cat/count
+                              /_cat/count/{index}
+                              /_cat/recovery
+                              /_cat/recovery/{index}
+                              /_cat/health
+                              /_cat/pending_tasks
+                              /_cat/aliases
+                              /_cat/aliases/{alias}
+                              /_cat/thread_pool
+                              /_cat/plugins
+                              /_cat/fielddata
+                              /_cat/fielddata/{fields}
+                              """)
 
-        self.loop.run_until_complete(go())
+    ret = yield from client.cat.help(help=True)
+    assert pattern == ret
 
-    def test_indices(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.indices(v=True)
-            self.assertIn('health', ret)
-            self.assertIn('index', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_indices(client):
+    ret = yield from client.cat.indices(v=True)
+    assert 'health' in ret
+    assert 'index' in ret
 
-    def test_master(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.master(v=True)
-            self.assertIn('host', ret)
-            self.assertIn('ip', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_master(client):
+    ret = yield from client.cat.master(v=True)
+    assert 'host' in ret
+    assert 'ip' in ret
 
-    def test_nodes(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.nodes(v=True)
-            self.assertIn('load', ret)
-            self.assertIn('name', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_nodes(client):
+    ret = yield from client.cat.nodes(v=True)
+    assert 'load' in ret
+    assert 'name' in ret
 
-    def test_recovery(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.recovery(v=True)
-            self.assertIn('index', ret)
-            self.assertIn('files', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_recovery(client):
+    ret = yield from client.cat.recovery(v=True)
+    assert 'index' in ret
+    assert 'files' in ret
 
-    def test_shards(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.shards(v=True)
-            self.assertIn('index', ret)
-            self.assertIn('node', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_shards(client):
+    ret = yield from client.cat.shards(v=True)
+    assert 'index' in ret
+    assert 'node' in ret
 
-    def test_segments(self):
-        @asyncio.coroutine
-        def go():
-            yield from self.cl.create(
-                self._index, 'tweet',
-                {
-                    'user': 'Bob',
-                },
-                '1'
-            )
-            ret = yield from self.cl.cat.segments(index=self._index, v=True)
-            self.assertIn('index', ret)
-            self.assertIn('segment', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_segments(client):
+    yield from client.create(
+        index, 'tweet',
+        {
+            'user': 'Bob',
+        },
+        '1'
+    )
+    ret = yield from client.cat.segments(index=index, v=True)
+    assert 'index' in ret
+    assert 'segment' in ret
 
-    def test_pending_tasks(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.pending_tasks(v=True)
-            self.assertIn('insertOrder', ret)
-            self.assertIn('priority', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_pending_tasks(client):
+    ret = yield from client.cat.pending_tasks(v=True)
+    assert 'insertOrder' in ret
+    assert 'priority' in ret
 
-    def test_thread_pool(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.thread_pool(v=True)
-            self.assertIn('host', ret)
-            self.assertIn('ip', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_thread_pool(client):
+    ret = yield from client.cat.thread_pool(v=True)
+    assert 'host' in ret
+    assert 'ip' in ret
 
-    def test_fielddata(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.fielddata(v=True)
-            self.assertIn('id', ret)
-            self.assertIn('total', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_fielddata(client):
+    ret = yield from client.cat.fielddata(v=True)
+    assert 'id' in ret
+    assert 'total' in ret
 
-    def test_plugins(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.cat.plugins(v=True)
-            self.assertIn('name', ret)
-            self.assertIn('component', ret)
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_plugins(client):
+    ret = yield from client.cat.plugins(v=True)
+    assert 'name' in ret
+    assert 'component' in ret

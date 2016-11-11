@@ -1,8 +1,8 @@
 import asyncio
 import pytest
 from aioes import Elasticsearch
-from aioes.exception import (NotFoundError, ConflictError,
-                             RequestError, TransportError)
+from aioes.exception import (NotFoundError, RequestError,
+                             TransportError)
 
 import pprint
 pp = pprint.pprint
