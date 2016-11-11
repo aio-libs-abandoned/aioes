@@ -5,7 +5,7 @@ elasticsearch==5.0.1
 aiohttp
 yarl
 pytest
-pytest-cov
+pytest-cov==2.4.0
 pytest-aiohttp
 pytest-sugar==0.7.1
 sphinx
