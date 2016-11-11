@@ -8,4 +8,4 @@ pytest
 pytest-cov==2.4.0
 pytest-aiohttp
 pytest-sugar==0.7.1
-sphinx
+sphinx==1.4.8
