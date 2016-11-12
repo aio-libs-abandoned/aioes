@@ -1,47 +1,38 @@
 import asyncio
-import unittest
+import pytest
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
+@pytest.fixture
+def index():
+    return 'test_elasticsearch'
 
-class TestNodes(unittest.TestCase):
 
-    def setUp(self):
-        self._index = 'elastic_search'
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(None)
-        self.cl = Elasticsearch([{'host': 'localhost'}], loop=self.loop)
-        self.addCleanup(self.cl.close)
-        try:
-            self.loop.run_until_complete(
-                self.cl.delete(self._index, refresh=True))
-        except NotFoundError:
-            pass
+@pytest.fixture
+def client(es_params, index, loop):
+    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
+    try:
+        loop.run_until_complete(client.delete(index, '', ''))
+    except NotFoundError:
+        pass
+    yield client
+    client.close()
 
-    def tearDown(self):
-        self.loop.close()
 
-    def test_info(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.nodes.info()
-            self.assertIn('cluster_name', ret)
+@asyncio.coroutine
+def test_info(client):
+    ret = yield from client.nodes.info()
+    assert 'cluster_name' in ret
 
-        self.loop.run_until_complete(go())
 
-    def test_stats(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.nodes.stats()
-            self.assertIn('nodes', ret)
-            self.assertTrue(len(ret['nodes']) > 0)
+@asyncio.coroutine
+def test_stats(client):
+    ret = yield from client.nodes.stats()
+    assert 'nodes' in ret
+    assert len(ret['nodes']) > 0
 
-        self.loop.run_until_complete(go())
 
-    def test_hot_threads(self):
-        @asyncio.coroutine
-        def go():
-            ret = yield from self.cl.nodes.hot_threads()
-            self.assertIn('cpu usage by thread', ret)
-
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_hot_threads(client):
+    ret = yield from client.nodes.hot_threads()
+    assert 'cpu usage by thread' in ret
