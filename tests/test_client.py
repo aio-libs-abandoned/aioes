@@ -157,6 +157,7 @@ def test_index(client, index):
         yield from client.index(index, 'tweet', {},
                                 version_type='1')
 
+
 @asyncio.coroutine
 def test_exist(client, index):
     """ exists """
@@ -965,7 +966,6 @@ def test_scripts_execution(client, index):
     data = yield from client.search(index, 'testdoc', query)
     res = data['hits']['hits'][0]['fields']['test1'][0]
     assert res == 4  # 2*2
-
 
 
 @asyncio.coroutine

@@ -1,4 +1,3 @@
-import asyncio
 import uuid
 import socket
 import time
@@ -6,7 +5,6 @@ import time
 import pytest
 from docker import Client as DockerClient
 
-from aioes import Elasticsearch
 from aioes.connection import Connection
 from aioes.transport import Endpoint
 
@@ -97,7 +95,6 @@ def make_connection(loop, es_params):
                                    es_params['host'],
                                    es_params['port']),
                           loop=loop)
-
         conns.append(conn)
         return conn
 
@@ -105,25 +102,3 @@ def make_connection(loop, es_params):
 
     for conn in conns:
         conn.close()
-
-
-@pytest.fixture()
-def make_client(loop, es_params):
-
-    conns = []
-
-    @asyncio.coroutine
-    def go(*, no_loop=False, **kwargs):
-        nonlocal conn
-
-        
-
-        conns.append(conn)
-        return conn
-
-    yield go
-
-    for conn in conns:
-        loop.run_until_complete(conn.close())
-
-
