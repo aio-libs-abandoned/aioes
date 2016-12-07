@@ -3,6 +3,7 @@ import pytest
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
+
 @pytest.fixture
 def index():
     return 'test_elasticsearch'
