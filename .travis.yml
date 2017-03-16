@@ -9,12 +9,11 @@ sudo: false
 
 services:
 - docker
-- elasticsearch
 
 install:
 - pip install -r requirements-dev.txt
 - pip install codecov
-- if [[ $TASKS == 'cmp' ]]; then pip install elasticsearch; fi
+- pip install elasticsearch
 
 script:
 - make $TASKS
