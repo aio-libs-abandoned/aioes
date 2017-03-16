@@ -3,6 +3,7 @@ import json
 import logging
 
 import aiohttp
+import yarl
 from .exception import HTTP_EXCEPTIONS, TransportError
 
 logger = logging.getLogger(__name__)
@@ -19,12 +20,14 @@ class Connection:
     def __init__(self, endpoint, *, loop, verify_ssl=True):
         self._endpoint = endpoint
         self._session = aiohttp.ClientSession(
+            # limit number of connections?
             connector=aiohttp.TCPConnector(
                 use_dns_cache=True,
                 loop=loop,
                 verify_ssl=verify_ssl),
             loop=loop)
-        self._base_url = '{0.scheme}://{0.host}:{0.port}/'.format(endpoint)
+        self._base_url = yarl.URL('{0.scheme}://{0.host}:{0.port}/'
+                                  .format(endpoint))
 
     @property
     def endpoint(self):
@@ -35,7 +38,7 @@ class Connection:
 
     @asyncio.coroutine
     def perform_request(self, method, url, params, body):
-        url = self._base_url + url
+        url = self._base_url.with_path(url)
         resp = yield from self._session.request(
             method, url, params=params, data=body)
         resp_body = yield from resp.text()

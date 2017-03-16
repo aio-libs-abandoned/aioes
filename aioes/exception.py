@@ -72,6 +72,8 @@ class RequestError(TransportError):
     """Exception representing a 400 status code."""
 
 # more generic mappings from status_code to python exceptions
+
+
 HTTP_EXCEPTIONS = {
     400: RequestError,
     404: NotFoundError,

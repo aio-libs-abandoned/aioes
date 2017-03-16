@@ -1,22 +1,20 @@
 # Some simple testing tasks (sorry, UNIX only).
 
-
-pep8:
-	pep8 .
+TEST_ARGS ?= -v
 
 flake:
-	pyflakes .
+	flake8 .
 
-test: flake pep8
-	pytest tests
+test: flake
+	py.test tests $(TEST_ARGS)
 
-vtest: flake pep8
-	pytest -v tests
+vtest: flake
+	py.test -v tests
 
 
-cov cover coverage: flake pep8
-	pytest --cov=aioes tests
-	@echo "open file://`pwd`/coverage/index.html"
+cov cover coverage: flake
+	py.test --cov tests $(TEST_ARGS)
+	@echo "open file://`pwd`/htmlcov/index.html"
 
 clean:
 	rm -rf `find . -name __pycache__`
@@ -34,5 +32,11 @@ clean:
 doc:
 	@make html -C docs
 	@echo "open file://`pwd`/docs/_build/html/index.html"
+
+setup-check:
+	python setup.py check -rms
+
+cmp:
+	python cmp.py
 
 .PHONY: all build venv flake test vtest testloop cov clean doc

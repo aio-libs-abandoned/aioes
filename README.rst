@@ -3,10 +3,17 @@ asyncio client library for elasticsearch
 
 **aioes** is a asyncio_ compatible library for working with ElasticSearch_
 
+.. image:: https://travis-ci.org/aio-libs/aioes.svg?branch=master
+   :target: https://travis-ci.org/aio-libs/aioes
+
+
+.. image:: https://codecov.io/gh/aio-libs/aioes/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/aio-libs/aioes
+
 Documentation
 -------------
 
-Read **aioes** documentation on Read The Docs: http://aioes.readthedocs.org/
+Read **aioes** documentation on Read The Docs: http://aioes.readthedocs.io/
 
 Example
 -------

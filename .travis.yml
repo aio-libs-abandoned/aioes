@@ -1,32 +1,48 @@
 language: python
 
 python:
-  - "3.4"
-  - "3.5"
+- "3.4"
+- "3.5"
+- "3.6"
 
 sudo: false
 
 services:
-  - elasticsearch
+- docker
+- elasticsearch
 
 install:
-  - pip install -r requirements-dev.txt
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then pip install elasticsearch codecov; fi
+- pip install -r requirements-dev.txt
+- pip install codecov
+- if [[ $TASKS == 'cmp' ]]; then pip install elasticsearch; fi
 
 script:
-  - make test
-  - python setup.py check -rms
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then python cmp.py; fi
+- make $TASKS
 
-after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5' && $PYTHONASYNCIODEBUG == '' ]]; then make cover; codecov; fi
+after_script:
+- codecov
 
-cache: apt
+cache:
+- apt
+- pip
+
+before_cache:
+  - rm -f $HOME/.cache/pip/log/debug.log
 
 env:
+  global:
+  - TASKS="cov setup-check" TEST_ARGS="-rsxX -v"
   matrix:
-    - PYTHONASYNCIODEBUG=1
-    - PYTHONASYNCIODEBUG=
+  - PYTHONASYNCIODEBUG=1
+  - PYTHONASYNCIODEBUG=
+matrix:
+  include:
+  - python: "3.6"
+    env: TASKS="cmp"
+  - python: "3.6"
+    env: TASKS="cov" TEST_ARGS="-rsxX -v --es_tag=2.4 --es_tag=5.2"
+  allow_failures:
+  - env: TASKS="cov" TEST_ARGS="-rsxX -v --es_tag=2.4 --es_tag=5.2"
 
 deploy:
   provider: pypi

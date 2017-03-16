@@ -14,16 +14,14 @@ MESSAGE = {
     "test_field": "this, is a test 125 !"}
 
 
-@pytest.fixture
-def index():
-    return 'test_elasticsearch'
+INDEX = 'test_elasticsearch'
 
 
 @pytest.fixture
-def client(es_params, index, loop):
+def client(es_params, loop):
     client = Elasticsearch([{'host': es_params['host']}], loop=loop)
     try:
-        loop.run_until_complete(client.delete(index, '', ''))
+        loop.run_until_complete(client.delete(INDEX, '', ''))
     except NotFoundError:
         pass
     yield client
@@ -60,77 +58,91 @@ def test_analize(client):
 
 
 @asyncio.coroutine
-def test_create(client, index):
+def test_create(client):
     data = yield from client.indices.create(
-        index, timeout=1000, master_timeout=1000)
+        INDEX, timeout='1s', master_timeout='1s')
     assert data['acknowledged']
 
 
+@pytest.mark.parametrize('kwargs', [
+    dict(timeout=1),
+    dict(timeout='1'),
+    dict(timeout='1.1'),
+    dict(master_timeout=1),
+    dict(master_timeout='1'),
+    dict(master_timeout='1.1'),
+    ], ids=str)
 @asyncio.coroutine
-def test_refresh(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    data = yield from client.indices.refresh(index)
+def test_create_errors(client, kwargs):
+    with pytest.raises(RequestError):
+        assert (yield from client.indices.create(INDEX, **kwargs)) is None
+
+
+@asyncio.coroutine
+def test_refresh(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    data = yield from client.indices.refresh(INDEX)
     assert '_shards' in data
     yield from client.indices.refresh(
-        index,
+        INDEX,
         allow_no_indices=False, expand_wildcards='closed',
         ignore_unavailable=True, ignore_indices='', force=True)
     with pytest.raises(TypeError):
         yield from client.indices.refresh(
-            index, expand_wildcards=1)
+            INDEX, expand_wildcards=1)
     with pytest.raises(ValueError):
         yield from client.indices.refresh(
-            index, expand_wildcards='1')
+            INDEX, expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_flush(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    data = yield from client.indices.flush(index)
+def test_flush(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    data = yield from client.indices.flush(INDEX)
     assert '_shards' in data
     yield from client.indices.flush(
-        index, full=True,
+        INDEX, full=True,
         allow_no_indices=False, expand_wildcards='closed',
         ignore_unavailable=True, ignore_indices='', force=True)
     with pytest.raises(TypeError):
         yield from client.indices.flush(
-            index, expand_wildcards=1)
+            INDEX, expand_wildcards=1)
     with pytest.raises(ValueError):
         yield from client.indices.flush(
-            index, expand_wildcards='1')
+            INDEX, expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_open(client, index):
-    yield from client.indices.create(index)
+def test_open(client):
+    yield from client.indices.create(INDEX)
     data = yield from client.indices.open(
-        index, timeout='10m', master_timeout='10m',
+        INDEX, timeout='10m', master_timeout='10m',
         allow_no_indices=False, expand_wildcards='closed',
         ignore_unavailable=True)
     assert data['acknowledged']
-    data = yield from client.indices.open(index)
+    data = yield from client.indices.open(INDEX)
     with pytest.raises(TypeError):
-        yield from client.indices.open(index,
+        yield from client.indices.open(INDEX,
                                        expand_wildcards=1,
                                        ignore_unavailable=True)
     with pytest.raises(ValueError):
-        yield from client.indices.open(index,
+        yield from client.indices.open(INDEX,
                                        expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_close(client, index):
-    yield from client.index(index, 'type',
+def test_close(client):
+    yield from client.index(INDEX, 'type',
                             MESSAGE,
                             '1')
     yield from client.cluster.health(
-        index,
+        INDEX,
         wait_for_status='yellow')
-    data = yield from client.indices.close(index)
+    data = yield from client.indices.close(INDEX)
     assert data['acknowledged']
 
     data = yield from client.indices.close(
-        index,
+        INDEX,
         timeout='1s', master_timeout='1s',
         expand_wildcards='open',
         allow_no_indices=True,
@@ -138,80 +150,80 @@ def test_close(client, index):
     assert data['acknowledged']
     with pytest.raises(TypeError):
         yield from client.indices.close(
-            index,
+            INDEX,
             expand_wildcards=1)
     with pytest.raises(ValueError):
         yield from client.indices.close(
-            index,
+            INDEX,
             expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_delete(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    data = yield from client.indices.delete(index)
+def test_delete(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    data = yield from client.indices.delete(INDEX)
     assert data['acknowledged']
     with pytest.raises(NotFoundError):
         yield from client.indices.delete(
-            index, timeout='1s', master_timeout='1s')
+            INDEX, timeout='1s', master_timeout='1s')
     assert data['acknowledged']
 
 
 @asyncio.coroutine
-def test_exists(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
+def test_exists(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
     data = yield from client.indices.exists(
-        index,
+        INDEX,
         allow_no_indices=False,
         expand_wildcards='closed',
         ignore_unavailable=False,
         local=False)
     assert data
-    data = yield from client.indices.exists(index+'123')
+    data = yield from client.indices.exists(INDEX+'123')
     assert not data
     with pytest.raises(TypeError):
         yield from client.indices.exists(
-            index, expand_wildcards=1)
+            INDEX, expand_wildcards=1)
     with pytest.raises(ValueError):
         yield from client.indices.exists(
-            index, expand_wildcards='1')
+            INDEX, expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_exists_type(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    yield from client.indices.refresh(index)
+def test_exists_type(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    yield from client.indices.refresh(INDEX)
     data = yield from client.indices.exists_type(
-        index, 'type', allow_no_indices=False)
+        INDEX, 'type', allow_no_indices=False)
     assert data
     data = yield from client.indices.exists_type(
-        index, 'ert', expand_wildcards='open')
+        INDEX, 'ert', expand_wildcards='open')
     assert not data
     with pytest.raises(TypeError):
         yield from client.indices.exists_type(
-            index, '', expand_wildcards=1,
+            INDEX, '', expand_wildcards=1,
             allow_no_indices=True,
             ignore_unavailable=True,
             ignore_indices=True,
             local=True)
     with pytest.raises(ValueError):
         yield from client.indices.exists_type(
-            index, '', expand_wildcards='1')
+            INDEX, '', expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_get_settings(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    yield from client.indices.refresh(index)
+def test_get_settings(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    yield from client.indices.refresh(INDEX)
     data = yield from client.indices.get_settings()
-    assert index in data
+    assert INDEX in data
     data = yield from client.indices.get_settings(
         expand_wildcards='open',
         ignore_indices='',
         flat_settings=False,
         ignore_unavailable=False,
         local=True)
-    assert index in data
+    assert INDEX in data
     with pytest.raises(TypeError):
         yield from client.indices.get_settings(expand_wildcards=1)
     with pytest.raises(ValueError):
@@ -219,11 +231,11 @@ def test_get_settings(client, index):
 
 
 @asyncio.coroutine
-def test_put_settings(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    yield from client.indices.refresh(index)
+def test_put_settings(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    yield from client.indices.refresh(INDEX)
     data = yield from client.indices.put_settings(
-        {"index": {"number_of_replicas": 2}}, index)
+        {"index": {"number_of_replicas": 2}}, INDEX)
     assert data['acknowledged']
     with pytest.raises(RequestError):
         yield from client.indices.put_settings(
@@ -242,8 +254,9 @@ def test_put_settings(client, index):
             {}, expand_wildcards='1')
 
 
+@pytest.mark.skip("indices status is deprecated since 1.2.0")
 @asyncio.coroutine
-def test_status(client, index):
+def test_status(client):
     data = yield from client.indices.status()
     assert 'indices' in data
     data = yield from client.indices.status(
@@ -263,7 +276,7 @@ def test_status(client, index):
 
 
 @asyncio.coroutine
-def test_stats(client, index):
+def test_stats(client):
     data = yield from client.indices.stats()
     assert 'indices' in data
     data = yield from client.indices.stats(
@@ -296,7 +309,7 @@ def test_stats(client, index):
 
 
 @asyncio.coroutine
-def test_segments(client, index):
+def test_segments(client):
     data = yield from client.indices.segments()
     assert 'indices' in data
     assert '_shards' in data
@@ -315,7 +328,7 @@ def test_segments(client, index):
 
 
 @asyncio.coroutine
-def test_optimize(client, index):
+def test_optimize(client):
     data = yield from client.indices.optimize()
     assert '_shards' in data
     data = yield from client.indices.optimize(
@@ -337,7 +350,8 @@ def test_optimize(client, index):
 
 
 @asyncio.coroutine
-def test_validate_query(client, index):
+def test_validate_query(client):
+    yield from client.indices.create(INDEX)
     data = yield from client.indices.validate_query()
     assert '_shards' in data
     yield from client.indices.validate_query(
@@ -356,7 +370,8 @@ def test_validate_query(client, index):
 
 
 @asyncio.coroutine
-def test_clear_cache(client, index):
+def test_clear_cache(client):
+    yield from client.indices.create(INDEX)
     data = yield from client.indices.clear_cache()
     assert '_shards' in data
     yield from client.indices.clear_cache(
@@ -381,11 +396,11 @@ def test_clear_cache(client, index):
 
 
 @asyncio.coroutine
-def test_recovery(client, index):
-    yield from client.index(index, 'type', MESSAGE, '1')
-    data = yield from client.indices.refresh(index)
+def test_recovery(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+    data = yield from client.indices.refresh(INDEX)
     data = yield from client.indices.recovery()
-    assert index in data
+    assert INDEX in data
     data = yield from client.indices.recovery(
         active_only=False,
         detailed=True,
@@ -393,10 +408,11 @@ def test_recovery(client, index):
 
 
 @asyncio.coroutine
-def test_mapping(client, index):
-    yield from client.indices.create(index)
+def test_mapping(client, es_tag):
+    yield from client.indices.create(INDEX)
+    DOCTYPE = 'testdoc'
     mapping = {
-        'testdoc': {
+        DOCTYPE: {
             'properties': {
                 'message': {
                     'type': 'string',
@@ -405,48 +421,37 @@ def test_mapping(client, index):
         }
     }
     # PUT
-    data = yield from client.indices.put_mapping(
-        index,
-        'testdoc',
-        mapping,
-    )
+    data = yield from client.indices.put_mapping(INDEX, DOCTYPE, mapping)
     assert data['acknowledged']
 
     # GET
-    data = yield from client.indices.get_mapping(
-        index,
-        'testdoc',
-    )
-    assert data['elastic_search']['mappings'] == mapping
+    data = yield from client.indices.get_mapping(INDEX, DOCTYPE)
+    assert data[INDEX]['mappings'] == mapping
 
     # DELETE
-    yield from client.indices.delete_mapping(
-        index,
-        'testdoc',
-    )
-    data = yield from client.indices.get_mapping(
-        index,
-        'testdoc',
-    )
-    assert not data
+    # NOTE: it is not possible to delete mapping since 2.0
+    if tuple(map(int, es_tag.split('.'))) < (2, 0):
+        yield from client.indices.delete_mapping(INDEX, DOCTYPE)
+        data = yield from client.indices.get_mapping(INDEX, DOCTYPE)
+        assert not data
 
 
 @asyncio.coroutine
-def test_get_field_mapping(client, index):
+def test_get_field_mapping(client):
     # create index
-    yield from client.index(index, 'type', MESSAGE, '1')
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
     rt = yield from client.indices.get_field_mapping(
-        'message', index=index
+        'message', index=INDEX
     )
     # dude, you are so deep
-    assert rt[index]['mappings']['type']['message']['mapping'] == \
+    assert rt[INDEX]['mappings']['type']['message']['mapping'] == \
         {'message': {'type': 'string'}}
 
 
 @asyncio.coroutine
-def test_warmers(client, index):
+def test_warmers(client):
     # create index
-    yield from client.index(index, 'type', MESSAGE, '1')
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
 
     a = yield from client.indices.get_warmer(name='warmer')
     assert not a
@@ -464,63 +469,69 @@ def test_warmers(client, index):
         }
     }
     yield from client.indices.put_warmer(
-        index=index, name='warmer', body=b
+        index=INDEX, name='warmer', body=b
     )
 
     a = yield from client.indices.get_warmer(name='warmer')
-    assert 'warmer' in a[index]['warmers'].keys()
+    assert 'warmer' in a[INDEX]['warmers'].keys()
 
     yield from client.indices.delete_warmer(
-        name='warmer', index=index
+        name='warmer', index=INDEX
     )
     a = yield from client.indices.get_warmer(name='warmer')
     assert not a
 
 
 @asyncio.coroutine
-def test_aliases(client, index):
+def test_aliases(client):
     # create index
-    yield from client.index(index, 'type', MESSAGE, '1')
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
 
     al = yield from client.indices.exists_alias('alias')
     assert not al
-    al = yield from client.indices.get_alias('alias')
-    assert {} == al
-    al = yield from client.indices.get_aliases('alias')
-    assert {} == al
+    al = yield from client.indices.get_alias(INDEX, 'alias')
+    assert al == {}
+    al = yield from client.indices.get_aliases(INDEX, 'alias')
+    assert al == {INDEX: {'aliases': {}}}
 
-    yield from client.indices.put_alias('alias', index)
+    yield from client.indices.put_alias('alias', INDEX)
     al = yield from client.indices.exists_alias('alias')
     assert al
     yield from client.indices.update_aliases(body={
         "actions": [
-            {"remove": {"index": index, "alias": "alias"}},
-            {"add": {"index": index, "alias": "alias2"}}
+            {"remove": {"index": INDEX, "alias": "alias"}},
+            {"add": {"index": INDEX, "alias": "alias2"}}
         ]
     })
     al = yield from client.indices.exists_alias('alias2')
     assert al
-    yield from client.indices.delete_alias(index, 'alias2')
-    al = yield from client.indices.get_aliases('alias')
-    assert not al
+    yield from client.indices.delete_alias(INDEX, 'alias2')
+    al = yield from client.indices.get_aliases(INDEX, 'alias')
+    assert al == {INDEX: {'aliases': {}}}
 
 
 @asyncio.coroutine
-def test_templates(client, index):
+def test_templates(client):
     b = {
-        "template": index,
+        "template": INDEX,
         "settings": {
             "number_of_shards": '1'
         },
     }
-    t = yield from client.indices.exists_template('template')
-    assert not t
-    yield from client.indices.put_template('template', b)
-    t = yield from client.indices.exists_template('template')
-    assert t
-    t = yield from client.indices.get_template('template')
-    assert t['template']['settings']['index.number_of_shards'] == \
-        b['settings']['number_of_shards']
-    yield from client.indices.delete_template('template')
-    t = yield from client.indices.exists_template('template')
-    assert not t
+    try:
+        t = yield from client.indices.exists_template('template')
+        assert not t
+        yield from client.indices.put_template('template', b)
+        t = yield from client.indices.exists_template('template')
+        assert t
+        t = yield from client.indices.get_template('template')
+        assert 'template' in t
+        assert 'settings' in t['template']
+        assert 'index' in t['template']['settings']
+        assert 'number_of_shards' in t['template']['settings']['index']
+        assert t['template']['settings']['index']['number_of_shards'] == \
+            b['settings']['number_of_shards']
+    finally:
+        yield from client.indices.delete_template('template')
+        t = yield from client.indices.exists_template('template')
+        assert not t

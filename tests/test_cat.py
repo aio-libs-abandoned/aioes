@@ -1,5 +1,4 @@
 import asyncio
-import textwrap
 
 import pytest
 
@@ -8,16 +7,14 @@ from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
 
-@pytest.fixture
-def index():
-    return 'test_elasticsearch'
+INDEX = 'test_elasticsearch'
 
 
 @pytest.fixture
-def client(es_params, index, loop):
+def client(es_params, loop):
     client = Elasticsearch([{'host': es_params['host']}], loop=loop)
     try:
-        loop.run_until_complete(client.delete(index, '', ''))
+        loop.run_until_complete(client.delete(INDEX, '', ''))
     except NotFoundError:
         pass
     yield client
@@ -45,13 +42,13 @@ def test_count(client):
 
     # testing for index
     yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
         },
         '1'
     )
-    ret = yield from client.cat.count(index, v=True)
+    ret = yield from client.cat.count(INDEX, v=True)
     assert 'timestamp' in ret
     assert 'count' in ret
 
@@ -63,35 +60,29 @@ def test_health(client):
     assert 'node.total' in ret
 
 
+@pytest.mark.parametrize('expected_url', [
+    '/_cat/aliases',
+    '/_cat/allocation',
+    '/_cat/count',
+    '/_cat/health',
+    '/_cat/indices',
+    '/_cat/master',
+    '/_cat/nodes',
+    '/_cat/recovery',
+    '/_cat/shards',
+    '/_cat/segments',
+    '/_cat/pending_tasks',
+    '/_cat/thread_pool',
+    '/_cat/fielddata',
+    '/_cat/plugins',
+    ])
 @asyncio.coroutine
-def test_help(client):
-    pattern = textwrap.dedent("""\
-                              =^.^=
-                              /_cat/allocation
-                              /_cat/shards
-                              /_cat/shards/{index}
-                              /_cat/master
-                              /_cat/nodes
-                              /_cat/indices
-                              /_cat/indices/{index}
-                              /_cat/segments
-                              /_cat/segments/{index}
-                              /_cat/count
-                              /_cat/count/{index}
-                              /_cat/recovery
-                              /_cat/recovery/{index}
-                              /_cat/health
-                              /_cat/pending_tasks
-                              /_cat/aliases
-                              /_cat/aliases/{alias}
-                              /_cat/thread_pool
-                              /_cat/plugins
-                              /_cat/fielddata
-                              /_cat/fielddata/{fields}
-                              """)
-
-    ret = yield from client.cat.help(help=True)
-    assert pattern == ret
+def test_cat_index(client, expected_url):
+    ret = yield from client.cat.help()
+    ret = ret.splitlines()
+    assert '=^.^=' in ret
+    # check that all implemented urls are present
+    assert expected_url in ret
 
 
 @asyncio.coroutine
@@ -132,13 +123,13 @@ def test_shards(client):
 @asyncio.coroutine
 def test_segments(client):
     yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
         },
         '1'
     )
-    ret = yield from client.cat.segments(index=index, v=True)
+    ret = yield from client.cat.segments(index=INDEX, v=True)
     assert 'index' in ret
     assert 'segment' in ret
 
@@ -153,15 +144,20 @@ def test_pending_tasks(client):
 @asyncio.coroutine
 def test_thread_pool(client):
     ret = yield from client.cat.thread_pool(v=True)
-    assert 'host' in ret
-    assert 'ip' in ret
+    header = next(map(lambda s: s.split(' '), ret.splitlines()), None)
+    assert header is not None
+    # XXX: works for es-2.4
+    assert 'host' in header
+    assert 'ip' in header
 
 
 @asyncio.coroutine
 def test_fielddata(client):
     ret = yield from client.cat.fielddata(v=True)
-    assert 'id' in ret
-    assert 'total' in ret
+    header = next(map(lambda s: s.split(' '), ret.splitlines()), None)
+    assert header is not None
+    assert 'id' in header
+    assert 'host' in header
 
 
 @asyncio.coroutine

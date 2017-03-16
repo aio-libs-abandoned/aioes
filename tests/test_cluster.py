@@ -4,20 +4,18 @@ import pytest
 
 from aioes import Elasticsearch
 from aioes.exception import NotFoundError
-import pprint
-pp = pprint.pprint
+
+
+INDEX = 'test_elasticsearch'
 
 
 @pytest.fixture
-def index():
-    return 'test_elasticsearch'
-
-
-@pytest.fixture
-def client(es_params, index, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
+def client(es_params, loop):
+    client = Elasticsearch([
+        {'host': es_params['host'], 'port': es_params['port']}],
+        loop=loop)
     try:
-        loop.run_until_complete(client.delete(index, '', ''))
+        loop.run_until_complete(client.delete(INDEX, '', ''))
     except NotFoundError:
         pass
     yield client
@@ -33,18 +31,22 @@ def test_health(client):
         local=True,
         master_timeout='1s',
         timeout='1s',
-        wait_for_active_shards=1,
-        wait_for_nodes='>2',
+        # wait_for_active_shards=1, # XXX: verify there are some shards
+        # wait_for_nodes='>2',  # XXX: must verify nodes count
         wait_for_relocating_shards=0)
-    assert 'status', data
-    with pytest.raises(TypeError):
-        yield from client.cluster.health(level=1)
-    with pytest.raises(ValueError):
-        yield from client.cluster.health(level='1')
-    with pytest.raises(TypeError):
-        yield from client.cluster.health(wait_for_status=1)
-    with pytest.raises(ValueError):
-        yield from client.cluster.health(wait_for_status='1')
+    assert 'status' in data
+
+
+@pytest.mark.parametrize('error,kwargs', [
+    (TypeError, dict(level=1)),
+    (ValueError, dict(level='1')),
+    (TypeError, dict(wait_for_status=1)),
+    (ValueError, dict(wait_for_status='1')),
+    ], ids=repr)
+@asyncio.coroutine
+def test_health_errors(client, error, kwargs):
+    with pytest.raises(error):
+        yield from client.cluster.health(**kwargs)
 
 
 @asyncio.coroutine
@@ -54,20 +56,20 @@ def test_pending_tasks(client):
 
 
 @asyncio.coroutine
-def test_state(client, index):
+def test_state(client):
     data = yield from client.cluster.state()
     assert 'routing_nodes' in data
     assert 'master_node' in data
 
     # create index
     yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
         },
         '1'
     )
-    data = yield from client.cluster.state(index=index)
+    data = yield from client.cluster.state(index=INDEX)
     assert 'routing_nodes' in data
     assert 'master_node' in data
 
@@ -80,10 +82,10 @@ def test_stats(client):
 
 
 @asyncio.coroutine
-def test_reroute(client, index):
+def test_reroute(client):
     # create index
     yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
         },
@@ -98,7 +100,7 @@ def test_reroute(client, index):
         "commands": [
             {
                 "cancel": {
-                    "index": index,
+                    "index": INDEX,
                     "shard": 1,
                     "node": node,
                     'allow_primary': True,

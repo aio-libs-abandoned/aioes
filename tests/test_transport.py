@@ -125,7 +125,7 @@ def test_username_password_endpoints_with_port_https(make_transport):
     tr = make_transport(endpoints=['https://john:doe@localhost:9200'])
     assert [Endpoint('https', 'john:doe@localhost', 9200)] == tr.endpoints
     assert ('https', 'john:doe@localhost:9200', '/', '', '', '') == \
-        tuple(urllib.parse.urlparse(tr._pool.connections[0]._base_url))
+        tuple(urllib.parse.urlparse(str(tr._pool.connections[0]._base_url)))
 
 
 def test_bad_schema(make_transport):

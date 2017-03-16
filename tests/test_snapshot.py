@@ -74,6 +74,7 @@ def snapshot_name():
     return 'test_snapshot'
 
 
+@pytest.mark.xfail(reason="Elasticsearch setting repo.path must be configured")
 @asyncio.coroutine
 def test_repository(client, repo_path, repo_name):
     ret = yield from client.snapshot.get_repository()
@@ -95,8 +96,9 @@ def test_repository(client, repo_path, repo_name):
     assert ret['acknowledged']
 
 
+@pytest.mark.xfail(reason="Elasticsearch setting repo.path must be configured")
 @asyncio.coroutine
-def test_snapshot(client, repo_name, repo_path, snapshot_name):
+def test_snapshot(client, repo_name, repo_path, snapshot_name, index):
     # creating index
     yield from client.create(
         index, 'tweet',

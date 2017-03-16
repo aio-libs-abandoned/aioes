@@ -1,11 +1,10 @@
 import asyncio
 import pytest
+from unittest import mock
+
 from aioes import Elasticsearch
 from aioes.exception import (NotFoundError, RequestError,
                              TransportError)
-
-import pprint
-pp = pprint.pprint
 
 
 MESSAGES = [
@@ -39,17 +38,14 @@ MESSAGES = [
     },
 ]
 
-
-@pytest.fixture
-def index():
-    return 'test_elasticsearch'
+INDEX = 'test_elasticsearch'
 
 
 @pytest.fixture
-def client(es_params, index, loop):
+def client(es_params, loop):
     client = Elasticsearch([{'host': es_params['host']}], loop=loop)
     try:
-        loop.run_until_complete(client.delete(index, '', ''))
+        loop.run_until_complete(client.delete(INDEX, '', ''))
     except NotFoundError:
         pass
     yield client
@@ -83,10 +79,10 @@ def test_info(client):
 
 
 @asyncio.coroutine
-def test_create(client, index):
+def test_create(client):
     """ create index """
     data = yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
             'skills': ['C', 'Python', 'Assembler'],
@@ -94,7 +90,7 @@ def test_create(client, index):
         },
         '1',
         routing='Bob')
-    assert data['_index'] == index
+    assert data['_index'] == INDEX
     assert data['_type'] == 'tweet'
     assert data['_version'] == 1
     assert data['created']
@@ -104,20 +100,20 @@ def test_create(client, index):
 
 
 @asyncio.coroutine
-def test_index(client, index):
+def test_index(client):
     """ auto-create index """
-    data = yield from client.index(index, 'tweet', {}, '1')
-    assert data['_index'] == index
+    data = yield from client.index(INDEX, 'tweet', {}, '1')
+    assert data['_index'] == INDEX
     assert data['_type'] == 'tweet'
     assert data['_id'] == '1'
     assert data['_version'] == 1
     assert data['created']
     # test increment version
-    data = yield from client.index(index, 'tweet', {}, '1')
+    data = yield from client.index(INDEX, 'tweet', {}, '1')
     assert data['_version'] == 2
     assert not data['created']
     # test 'external' version_type
-    data = yield from client.index(index, 'tweet', {}, '12',
+    data = yield from client.index(INDEX, 'tweet', {}, '12',
                                    version_type='external',
                                    version=122,
                                    timestamp='2009-11-15T14:12:12',
@@ -129,104 +125,104 @@ def test_index(client, index):
     assert data['_version'] == 122
     assert data['created']
     with pytest.raises(RequestError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 parent='1',
                                 percolate='')
     with pytest.raises(TypeError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 consistency=1)
     with pytest.raises(ValueError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 consistency='1')
     with pytest.raises(TypeError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 replication=1)
     with pytest.raises(ValueError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 replication='1')
     with pytest.raises(TypeError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 op_type=1)
     with pytest.raises(ValueError):
-        yield from client.index(index, 'type', {},
+        yield from client.index(INDEX, 'type', {},
                                 op_type='1')
     with pytest.raises(TypeError):
-        yield from client.index(index, 'tweet', {},
+        yield from client.index(INDEX, 'tweet', {},
                                 version_type=1)
     with pytest.raises(ValueError):
-        yield from client.index(index, 'tweet', {},
+        yield from client.index(INDEX, 'tweet', {},
                                 version_type='1')
 
 
 @asyncio.coroutine
-def test_exist(client, index):
+def test_exist(client):
     """ exists """
     id = '100'
     # test non-exist
-    data = yield from client.exists(index, id,
+    data = yield from client.exists(INDEX, id,
                                     refresh=True,
                                     realtime=True,
                                     preference='_local')
     assert not data
     # test exist
-    yield from client.index(index, 'exist',
+    yield from client.index(INDEX, 'exist',
                             {'user': 'opa', 'tim': 'none'},
                             id,
                             routing='opa')
-    data = yield from client.exists(index, id,
+    data = yield from client.exists(INDEX, id,
                                     routing='opa')
     assert data
-    data = yield from client.exists(index, id, parent='1')
+    data = yield from client.exists(INDEX, id, parent='1')
     assert not data
 
 
 @asyncio.coroutine
-def test_get(client, index):
+def test_get(client):
     """ get """
     id = '200'
-    yield from client.index(index, 'test_get', MESSAGES[1], id)
-    data = yield from client.get(index, id,
+    yield from client.index(INDEX, 'test_get', MESSAGES[1], id)
+    data = yield from client.get(INDEX, id,
                                  realtime=True,
                                  refresh=True)
     assert data['_id'] == id
-    assert data['_index'] == index
+    assert data['_index'] == INDEX
     assert data['_type'] == 'test_get'
     assert data['_version'] == 1
     assert data['found']
     assert data['_source'] == MESSAGES[1]
-    data = yield from client.get(index, id,
+    data = yield from client.get(INDEX, id,
                                  _source=False)
     assert '_source' not in data
-    data = yield from client.get(index, id,
+    data = yield from client.get(INDEX, id,
                                  _source_exclude='counter',
                                  _source_include='*')
     assert 'counter' not in data
     with pytest.raises(NotFoundError):
-        yield from client.get(index, id, parent='1')
+        yield from client.get(INDEX, id, parent='1')
     with pytest.raises(TypeError):
-        yield from client.get(index, id,
+        yield from client.get(INDEX, id,
                               version_type=1)
     with pytest.raises(ValueError):
-        yield from client.get(index, id,
+        yield from client.get(INDEX, id,
                               version_type='1')
 
 
 @asyncio.coroutine
-def test_get_source(client, index):
+def test_get_source(client):
     """ get_source """
-    yield from client.index(index,
+    yield from client.index(INDEX,
                             'test_get_source',
                             MESSAGES[0],
                             '1')
-    data = yield from client.get_source(index, '1')
+    data = yield from client.get_source(INDEX, '1')
     assert data == MESSAGES[0]
 
     id = '200'
     yield from client.index(
-        index, 'test_get_source', MESSAGES[2], id,
+        INDEX, 'test_get_source', MESSAGES[2], id,
         routing='Poligrafovich'
         )
-    data = yield from client.get_source(index, id,
+    data = yield from client.get_source(INDEX, id,
                                         routing='Poligrafovich',
                                         preference='_local',
                                         version=1,
@@ -234,29 +230,29 @@ def test_get_source(client, index):
                                         realtime=True,
                                         refresh=True)
     assert data == MESSAGES[2]
-    data = yield from client.get_source(index, id,
+    data = yield from client.get_source(INDEX, id,
                                         routing='Poligrafovich',
                                         _source_exclude='counter',
                                         _source_include='*')
     assert 'counter' not in data
     with pytest.raises(NotFoundError):
-        yield from client.get_source(index, id, parent='1')
+        yield from client.get_source(INDEX, id, parent='1')
     with pytest.raises(TypeError):
-        yield from client.get_source(index, id,
+        yield from client.get_source(INDEX, id,
                                      version_type=1)
     with pytest.raises(ValueError):
-        yield from client.get_source(index, id,
+        yield from client.get_source(INDEX, id,
                                      version_type='1')
 
 
 @asyncio.coroutine
-def test_delete(client, index):
+def test_delete(client):
     """ delete """
-    yield from client.index(index, 'testdoc', MESSAGES[2], '1')
-    data = yield from client.delete(index, 'testdoc', '1')
+    yield from client.index(INDEX, 'testdoc', MESSAGES[2], '1')
+    data = yield from client.delete(INDEX, 'testdoc', '1')
     assert data['found']
     with pytest.raises(NotFoundError):
-        data = yield from client.delete(index, 'testdoc', '1',
+        data = yield from client.delete(INDEX, 'testdoc', '1',
                                         consistency='one',
                                         replication='async',
                                         refresh=True,
@@ -264,46 +260,46 @@ def test_delete(client, index):
                                         routing='test',
                                         parent='1')
     with pytest.raises(TypeError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  consistency=1)
     with pytest.raises(ValueError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  consistency='1')
     with pytest.raises(TypeError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  replication=1)
     with pytest.raises(ValueError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  replication='1')
     with pytest.raises(TypeError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  version_type=1)
     with pytest.raises(ValueError):
-        yield from client.delete(index, 'type', {},
+        yield from client.delete(INDEX, 'type', {},
                                  version_type='1')
 
 
 @asyncio.coroutine
-def test_update(client, index):
+def test_update(client):
     """ update """
     script = {
         "doc": {
             "counter": 123
         }
     }
-    yield from client.index(index, 'testdoc', MESSAGES[2],
+    yield from client.index(INDEX, 'testdoc', MESSAGES[2],
                             '1',
                             routing='Fedor')
-    yield from client.update(index, 'testdoc', '1',
+    yield from client.update(INDEX, 'testdoc', '1',
                              script,
                              version_type='internal',
                              version=1,
                              routing='Fedor')
-    data = yield from client.get(index, '1', routing='Fedor')
+    data = yield from client.get(INDEX, '1', routing='Fedor')
     assert data['_source']['counter'] == 123
     assert data['_version'] == 2
 
-    data = yield from client.update(index, 'testdoc', '1',
+    data = yield from client.update(INDEX, 'testdoc', '1',
                                     script,
                                     timestamp='2009-11-15T14:12:12',
                                     ttl='1d',
@@ -316,49 +312,49 @@ def test_update(client, index):
                                     lang='en')
     with pytest.raises(NotFoundError):
         yield from client.update(
-            index, 'testdoc', '1',
+            INDEX, 'testdoc', '1',
             script='{}',
             fields='user',
             parent='1')
     with pytest.raises(TypeError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  consistency=1)
     with pytest.raises(ValueError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  consistency='1')
     with pytest.raises(TypeError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  replication=1)
     with pytest.raises(ValueError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  replication='1')
     with pytest.raises(TypeError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  version_type=1)
     with pytest.raises(ValueError):
-        yield from client.update(index, 'type', {},
+        yield from client.update(INDEX, 'type', {},
                                  version_type='1')
 
 
 @asyncio.coroutine
-def test_search(client, index):
+def test_search(client):
     """ search """
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[1], '2',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[2], '3',
                             refresh=True)
-    data = yield from client.search(index,
+    data = yield from client.search(INDEX,
                                     'testdoc',
                                     q='skills:Python')
     assert data['hits']['total'] == 2
     assert 'skills' in data['hits']['hits'][0]['_source']
     assert 'skills' in data['hits']['hits'][1]['_source']
-    data = yield from client.search(index,
+    data = yield from client.search(INDEX,
                                     'testdoc',
                                     q='skills:Python',
                                     _source_exclude='skills',
@@ -399,56 +395,56 @@ def test_search(client, index):
                                  default_operator='1')
 
     with pytest.raises(TypeError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  suggest_mode=1)
     with pytest.raises(ValueError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  suggest_mode='1')
 
     with pytest.raises(TypeError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  search_type=1)
     with pytest.raises(ValueError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  search_type='1')
 
     with pytest.raises(TypeError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  expand_wildcards=1)
     with pytest.raises(ValueError):
-        yield from client.search(index,
+        yield from client.search(INDEX,
                                  'testdoc',
                                  q='skills:Python',
                                  expand_wildcards='1')
 
 
 @asyncio.coroutine
-def test_count(client, index):
+def test_count(client):
     """ count """
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[1], '2',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[2], '3',
                             refresh=True)
     data = yield from client.count(
-        index, 'testdoc', q='skills:Python')
+        INDEX, 'testdoc', q='skills:Python')
     assert data['count'] == 2
     data = yield from client.count(
-        index, 'testdoc', q='skills:Python',
+        INDEX, 'testdoc', q='skills:Python',
         ignore_unavailable=True,
         expand_wildcards='open',
         allow_no_indices=False,
@@ -458,36 +454,36 @@ def test_count(client, index):
 
     with pytest.raises(TypeError):
         yield from client.count(
-            index, 'testdoc',
+            INDEX, 'testdoc',
             expand_wildcards=1)
 
     with pytest.raises(ValueError):
         yield from client.count(
-            index, 'testdoc', q='skills:Python',
+            INDEX, 'testdoc', q='skills:Python',
             expand_wildcards='1',
             routing='Sidor',
             source='Query DSL')
 
 
 @asyncio.coroutine
-def test_explain(client, index):
+def test_explain(client):
     """ explain """
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[1], '2',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[2], '3',
                             refresh=True)
 
     data = yield from client.explain(
-        index, 'testdoc', '3',
+        INDEX, 'testdoc', '3',
         q='skills:Python')
     assert data['matched']
     data = yield from client.explain(
-        index, 'testdoc', '1',
+        INDEX, 'testdoc', '1',
         q='skills:Python',
         analyze_wildcard=True,
         _source=False,
@@ -504,12 +500,12 @@ def test_explain(client, index):
 
     with pytest.raises(TypeError):
         yield from client.explain(
-            index, 'testdoc', '1',
+            INDEX, 'testdoc', '1',
             q='skills:Python',
             default_operator=1)
     with pytest.raises(ValueError):
         yield from client.explain(
-            index, 'testdoc', '1',
+            INDEX, 'testdoc', '1',
             default_operator='1',
             parent='2',
             routing='Sidor',
@@ -518,17 +514,17 @@ def test_explain(client, index):
 
 @pytest.mark.xfail
 @asyncio.coroutine
-def test_delete_by_query(client, index):
+def test_delete_by_query(client):
     """ delete_by_query """
     DQ = {"query": {"term": {"user": "Fedor Poligrafovich"}}}
 
-    yield from client.index(index, 'testdoc', MESSAGES[3], '1')
-    yield from client.index(index, 'testdoc', MESSAGES[2], '2')
+    yield from client.index(INDEX, 'testdoc', MESSAGES[3], '1')
+    yield from client.index(INDEX, 'testdoc', MESSAGES[2], '2')
     # data = yield from client.delete(index, 'testdoc', '1')
     # self.assertTrue(data['found'], data)
 
     data = yield from client.delete_by_query(
-        index,
+        INDEX,
         'testdoc',
         q='user:Fedor Poligrafovich'
     )
@@ -566,22 +562,22 @@ def test_delete_by_query(client, index):
 
 
 @asyncio.coroutine
-def test_msearch(client, index):
+def test_msearch(client):
     """ msearch """
     queries = [
-        {"_index": index},
+        {"_index": INDEX},
         {"query": {"match_all": {}}, "from": 0, "size": 10},
-        {"_index": index},
+        {"_index": INDEX},
         {"query": {"match_all": {}}}
     ]
 
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[1], '2',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[2], '3',
                             refresh=True)
 
@@ -596,13 +592,13 @@ def test_msearch(client, index):
 
 
 @asyncio.coroutine
-def test_bulk(client, index):
+def test_bulk(client):
     bulks = [
-        {"index": {"_index": index, "_type": "type1", "_id": "1"}},
+        {"index": {"_index": INDEX, "_type": "type1", "_id": "1"}},
         {"name": "hiq", "age": 10},
-        {"index": {"_index": index, "_type": "type1", "_id": "2"}},
+        {"index": {"_index": INDEX, "_type": "type1", "_id": "2"}},
         {"name": "hiq", "age": 10},
-        {"index": {"_index": index, "_type": "type1", "_id": "3"}},
+        {"index": {"_index": INDEX, "_type": "type1", "_id": "3"}},
         {"name": "hiq", "age": 10}
     ]
 
@@ -631,15 +627,15 @@ def test_bulk(client, index):
         @asyncio.coroutine
         def go():
             yield from client.index(
-                index, 'testdoc', MESSAGES[0], '1', refresh=True)
+                INDEX, 'testdoc', MESSAGES[0], '1', refresh=True)
             yield from client.index(
-                index, 'testdoc', MESSAGES[1], '2', refresh=True)
+                INDEX, 'testdoc', MESSAGES[1], '2', refresh=True)
             yield from client.index(
-                index, 'testdoc', MESSAGES[2], '3', refresh=True)
+                INDEX, 'testdoc', MESSAGES[2], '3', refresh=True)
             body = {
                 "docs": [
-                    {"_index": index, "_type": "testdoc", "_id": "1"},
-                    {"_index": index, "_type": "testdoc", "_id": "2"}
+                    {"_index": INDEX, "_type": "testdoc", "_id": "1"},
+                    {"_index": INDEX, "_type": "testdoc", "_id": "2"}
                 ]
             }
             data = yield from client.mget(body)
@@ -665,7 +661,7 @@ def test_bulk(client, index):
 
 
 @asyncio.coroutine
-def test_suggest(client, index):
+def test_suggest(client):
     """ search """
     mapping = {
         "testdoc": {
@@ -691,16 +687,16 @@ def test_suggest(client, index):
         }
     }
 
-    yield from client.indices.create(index)
+    yield from client.indices.create(INDEX)
     yield from client.indices.put_mapping(
-        index,
+        INDEX,
         'testdoc',
         mapping,
     )
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[1], '2',
                             refresh=True)
     b = {
@@ -713,7 +709,7 @@ def test_suggest(client, index):
     }
 
     data = yield from client.suggest(
-        index,
+        INDEX,
         body=b,
     )
     results = data['my-suggestion'][0]['options']
@@ -722,7 +718,7 @@ def test_suggest(client, index):
 
 
 @asyncio.coroutine
-def test_percolate(client, index):
+def test_percolate(client):
     mapping = {
         "testdoc": {
             "properties": {
@@ -732,9 +728,9 @@ def test_percolate(client, index):
             }
         }
     }
-    yield from client.indices.create(index)
+    yield from client.indices.create(INDEX)
     yield from client.indices.put_mapping(
-        index,
+        INDEX,
         'testdoc',
         mapping,
     )
@@ -747,7 +743,7 @@ def test_percolate(client, index):
         }
     }
     # register percolator
-    yield from client.index(index, '.percolator',
+    yield from client.index(INDEX, '.percolator',
                             percolator, '1',
                             refresh=True)
 
@@ -758,7 +754,7 @@ def test_percolate(client, index):
     }
     # percolate a doc from b
     data = yield from client.percolate(
-        index,
+        INDEX,
         'testdoc',
         body=b,
     )
@@ -767,7 +763,7 @@ def test_percolate(client, index):
 
     # percolate_count gives only count, no matches
     data = yield from client.count_percolate(
-        index,
+        INDEX,
         'testdoc',
         body=b,
     )
@@ -777,7 +773,7 @@ def test_percolate(client, index):
 
 
 @asyncio.coroutine
-def test_mpercolate(client, index):
+def test_mpercolate(client):
     mapping = {
         "testdoc": {
             "properties": {
@@ -787,9 +783,9 @@ def test_mpercolate(client, index):
             }
         }
     }
-    yield from client.indices.create(index)
+    yield from client.indices.create(INDEX)
     yield from client.indices.put_mapping(
-        index,
+        INDEX,
         'testdoc',
         mapping,
     )
@@ -802,14 +798,14 @@ def test_mpercolate(client, index):
         }
     }
     # register percolator
-    yield from client.index(index, '.percolator',
+    yield from client.index(INDEX, '.percolator',
                             percolator, '1',
                             refresh=True)
 
     body = [
         {
             'percolate': {
-                'index': index,
+                'index': INDEX,
                 'type': 'testdoc',
             }
         },
@@ -822,7 +818,7 @@ def test_mpercolate(client, index):
 
     data = yield from client.mpercolate(
         body,
-        index,
+        INDEX,
         'testdoc',
     )
 
@@ -833,7 +829,7 @@ def test_mpercolate(client, index):
 
 
 @asyncio.coroutine
-def test_termvector(client, index):
+def test_termvector(client):
     mapping = {
         "testdoc": {
             "properties": {
@@ -845,9 +841,9 @@ def test_termvector(client, index):
             }
         }
     }
-    yield from client.indices.create(index)
+    yield from client.indices.create(INDEX)
     yield from client.indices.put_mapping(
-        index,
+        INDEX,
         'testdoc',
         mapping,
     )
@@ -856,11 +852,11 @@ def test_termvector(client, index):
         'message': 'Hello world',
     }
 
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             doc, '1',
                             refresh=True)
 
-    data = yield from client.termvector(index, 'testdoc', '1')
+    data = yield from client.termvector(INDEX, 'testdoc', '1')
 
     vector_data = data['term_vectors']['message']
     assert vector_data['field_statistics'] == {
@@ -873,7 +869,7 @@ def test_termvector(client, index):
 
 
 @asyncio.coroutine
-def test_mtermvectors(client, index):
+def test_mtermvectors(client):
     mapping = {
         "testdoc": {
             "properties": {
@@ -885,9 +881,9 @@ def test_mtermvectors(client, index):
             }
         }
     }
-    yield from client.indices.create(index)
+    yield from client.indices.create(INDEX)
     yield from client.indices.put_mapping(
-        index,
+        INDEX,
         'testdoc',
         mapping,
     )
@@ -896,19 +892,19 @@ def test_mtermvectors(client, index):
         'message': 'Hello world',
     }
 
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             doc, '1',
                             refresh=True)
     doc = {
         'message': 'Second term',
     }
 
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             doc, '2',
                             refresh=True)
 
     data = yield from client.mtermvectors(
-        index, 'testdoc', ids='1,2'
+        INDEX, 'testdoc', ids='1,2'
     )
 
     assert len(data['docs']) == 2
@@ -917,7 +913,7 @@ def test_mtermvectors(client, index):
 
 
 @asyncio.coroutine
-def test_scripts_management(client, index):
+def test_scripts_management(client):
     script = {'script': 'log(_score * 2)'}
 
     # adding
@@ -937,7 +933,7 @@ def test_scripts_management(client, index):
 
 @pytest.mark.xfail
 @asyncio.coroutine
-def test_scripts_execution(client, index):
+def test_scripts_execution(client):
     script = {
         'script': '2*val',
     }
@@ -958,18 +954,18 @@ def test_scripts_execution(client, index):
         }
     }
 
-    yield from client.index(index, 'testdoc',
+    yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
                             refresh=True)
 
     yield from client.put_script('groovy', 'calculate-score', script)
-    data = yield from client.search(index, 'testdoc', query)
+    data = yield from client.search(INDEX, 'testdoc', query)
     res = data['hits']['hits'][0]['fields']['test1'][0]
     assert res == 4  # 2*2
 
 
 @asyncio.coroutine
-def test_templates_management(client, index):
+def test_templates_management(client):
     template = {
         "template": {
             "query": {
@@ -984,7 +980,7 @@ def test_templates_management(client, index):
 
     data = yield from client.get_template('test_template')
     assert data == {'lang': 'mustache',
-                    '_version': 1,
+                    '_version': mock.ANY,
                     '_id': 'test_template',
                     'found': True,
                     'template':
@@ -996,7 +992,7 @@ def test_templates_management(client, index):
 
 
 @asyncio.coroutine
-def test_template_search(client, index):
+def test_template_search(client):
         template = {
             "template": {
                 "query": {
@@ -1015,26 +1011,26 @@ def test_template_search(client, index):
             }
         }
         yield from client.index(
-            index, 'testdoc', MESSAGES[0], '1',
+            INDEX, 'testdoc', MESSAGES[0], '1',
             refresh=True
         )
 
         yield from client.put_template('test_template', template)
 
         data = yield from client.search_template(
-            index, 'testdoc', body=search_body
+            INDEX, 'testdoc', body=search_body
         )
         assert data['hits']['total'] == 1
 
 
 @asyncio.coroutine
-def test_search_shards(client, index):
+def test_search_shards(client):
     yield from client.index(
-        index, 'testdoc', MESSAGES[0], '1',
+        INDEX, 'testdoc', MESSAGES[0], '1',
         refresh=True
     )
     data = yield from client.search_shards(
-        index, 'testdoc'
+        INDEX, 'testdoc'
     )
     assert 'nodes' in data
     assert len(data['nodes']) > 0

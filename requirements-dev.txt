@@ -1,13 +1,12 @@
-pep8==1.7.0
-pyflakes==1.4.0
+flake8==3.3.0
 # for compare script
-elasticsearch==5.0.1
-aiohttp==1.2.0
-yarl==0.7.1
-pytest==3.0.5
+elasticsearch==5.0.1    # latest 5.2.0
+aiohttp==1.2.0          # latest 1.3.4
+yarl==0.10.0
+pytest==3.0.7
 pytest-cov==2.4.0
-pytest-aiohttp==0.1.2
-pytest-sugar==0.8.0
-sphinx==1.5
+pytest-aiohttp==0.1.3
+# pytest-sugar==0.8.0
+sphinx==1.5.3
 docker-py==1.10.6
 -e .

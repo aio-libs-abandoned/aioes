@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 
-install_requires = ['aiohttp>=0.17.0']
+install_requires = ['aiohttp>=0.17.0', 'yarl']   # XXX: update/set versions
 
 PY_VER = sys.version_info
 
@@ -28,6 +28,7 @@ def read_version():
                 return match.group(1)
         else:
             raise RuntimeError('Cannot find version in aioes/__init__.py')
+
 
 classifiers = [
     'License :: OSI Approved :: BSD License',

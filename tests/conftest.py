@@ -16,11 +16,17 @@ def session_id():
 
 
 @pytest.fixture(scope='session')
-def docker():
+def docker(request):
+    if request.config.getoption('--no-docker'):
+        return None
     return DockerClient(version='auto')
 
 
 def pytest_addoption(parser):
+    parser.addoption("--no-docker", action="store_true", default=False,
+                     help="Do not use docker,"
+                          " use local elasticsearch instance"
+                          " with address (localhost:9200)")
     parser.addoption("--es_tag", action="append", default=[],
                      help=("Elasticsearch server versions. "
                            "May be used several times. "
@@ -42,40 +48,43 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("es_tag", tags, scope='session')
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def es_server(docker, session_id, es_tag, request):
-    if not request.config.option.no_pull:
-        docker.pull('elasticsearch:{}'.format(es_tag))
-    container = docker.create_container(
-        image='elasticsearch:{}'.format(es_tag),
-        name='aioes-test-server-{}-{}'.format(es_tag, session_id),
-        ports=[9200],
-        detach=True,
-    )
-    docker.start(container=container['Id'])
-    inspection = docker.inspect_container(container['Id'])
-    host = inspection['NetworkSettings']['IPAddress']
-    es_params = dict(host=host,
-                     port=9200)
-
-    delay = 0.001
-    for i in range(100):
-        try:
-            s = socket.socket()
-            s.connect((host, 9200))
-            break
-        except OSError:
-            time.sleep(delay)
-            delay *= 2
+    if request.config.getoption('--no-docker'):
+        yield dict(es_params=dict(host='localhost', port=9200))
     else:
-        pytest.fail("Cannot start elasticsearch server")
-    container['host'] = host
-    container['port'] = 9200
-    container['es_params'] = es_params
-    yield container
+        if not request.config.option.no_pull:
+            docker.pull('elasticsearch:{}'.format(es_tag))
+        container = docker.create_container(
+            image='elasticsearch:{}'.format(es_tag),
+            name='aioes-test-server-{}-{}'.format(es_tag, session_id),
+            ports=[9200],
+            detach=True,
+        )
+        docker.start(container=container['Id'])
+        inspection = docker.inspect_container(container['Id'])
+        host = inspection['NetworkSettings']['IPAddress']
+        es_params = dict(host=host,
+                         port=9200)
 
-    docker.kill(container=container['Id'])
-    docker.remove_container(container['Id'])
+        delay = 0.001
+        for i in range(100):
+            try:
+                s = socket.socket()
+                s.connect((host, 9200))
+                break
+            except OSError:
+                time.sleep(delay)
+                delay *= 2
+        else:
+            pytest.fail("Cannot start elasticsearch server")
+        container['host'] = host
+        container['port'] = 9200
+        container['es_params'] = es_params
+        yield container
+
+        docker.kill(container=container['Id'])
+        docker.remove_container(container['Id'])
 
 
 @pytest.fixture
