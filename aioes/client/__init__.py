@@ -50,7 +50,7 @@ class Elasticsearch:
         return self._transport
 
     def __repr__(self):
-        return "<Elasticsearch [{}]".format(self.transport)
+        return "<Elasticsearch [{}]>".format(self.transport)
 
     def _bulk_body(self, body):
         return '\n'.join(map(json.dumps, body)) + '\n'
