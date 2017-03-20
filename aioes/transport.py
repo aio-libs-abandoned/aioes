@@ -58,6 +58,9 @@ class Transport:
         self._last_sniff = time.monotonic()
         self._max_retries = max_retries
 
+    def __repr__(self):
+        return '<Transport {}>'.format(self._endpoints)
+
     @property
     def max_retries(self):
         return self._max_retries

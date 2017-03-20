@@ -1036,3 +1036,13 @@ def test_search_shards(client):
     assert len(data['nodes']) > 0
     assert 'shards' in data
     assert len(data['shards']) > 0
+
+
+def test__repr__(loop):
+    cl = Elasticsearch([], loop=loop)
+    assert repr(cl) == '<Elasticsearch [<Transport []>]>'
+    cl = Elasticsearch(['localhost:9200'], loop=loop)
+    assert repr(cl) == (
+        "<Elasticsearch [<Transport ["
+        "TCPEndpoint(scheme='http', host='localhost', port=9200)"
+        "]>]>")
