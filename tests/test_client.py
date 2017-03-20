@@ -622,42 +622,51 @@ def test_bulk(client):
     with pytest.raises(ValueError):
         yield from client.bulk(bulks, replication='1')
 
-    def test_mget(self):
-        """ mget """
-        @asyncio.coroutine
-        def go():
-            yield from client.index(
-                INDEX, 'testdoc', MESSAGES[0], '1', refresh=True)
-            yield from client.index(
-                INDEX, 'testdoc', MESSAGES[1], '2', refresh=True)
-            yield from client.index(
-                INDEX, 'testdoc', MESSAGES[2], '3', refresh=True)
-            body = {
-                "docs": [
-                    {"_index": INDEX, "_type": "testdoc", "_id": "1"},
-                    {"_index": INDEX, "_type": "testdoc", "_id": "2"}
-                ]
-            }
-            data = yield from client.mget(body)
-            self.assertEqual(len(data['docs']), 2)
-            data = yield from client.mget(
-                body,
-                _source_exclude='birthDate',
-                _source_include='user,skills',
-                _source=False,
-                fields='user,skills',
-                realtime=True,
-                refresh=True,
-                preference='random',
-                parent=''
-            )
-            self.assertIn('skills', data['docs'][0]['fields'], data)
-            self.assertIn('user', data['docs'][0]['fields'], data)
-            self.assertIn('skills', data['docs'][0]['_source'], data)
-            self.assertIn('user', data['docs'][0]['_source'], data)
-            yield from client.mget(body, routing='Sidor')
 
-        self.loop.run_until_complete(go())
+@asyncio.coroutine
+def test_mget(client):
+    """ mget """
+    yield from client.index(
+        INDEX, 'testdoc', MESSAGES[0], '1', refresh=True)
+    yield from client.index(
+        INDEX, 'testdoc', MESSAGES[1], '2', refresh=True)
+    yield from client.index(
+        INDEX, 'testdoc', MESSAGES[2], '3', refresh=True)
+    body = {
+        "docs": [
+            {"_index": INDEX, "_type": "testdoc", "_id": "1"},
+            {"_index": INDEX, "_type": "testdoc", "_id": "2"}
+        ]
+    }
+    data = yield from client.mget(body)
+    assert len(data['docs']) == 2
+    data = yield from client.mget(
+        body,
+        _source_exclude='birthDate',
+        _source_include='user,skills',
+        # _source=False,
+        fields='user,skills',
+        realtime=True,
+        refresh=True,
+        preference='random',
+        parent=''
+    )
+    assert 'docs' in data
+    assert len(data) == 1
+    doc = data['docs'][0]
+    assert 'fields' in doc
+    assert '_source' in doc
+    assert 'skills' in doc['fields']
+    assert 'user' in doc['fields']
+    assert 'skills' in doc['_source']
+    assert 'user' in doc['_source']
+    assert 'birthDate' not in doc['fields']
+    assert 'birthDate' not in doc['_source']
+    assert 'message' not in doc['fields']
+    assert 'message' not in doc['_source']
+    assert 'counter' not in doc['fields']
+    assert 'counter' not in doc['_source']
+    # yield from client.mget(body, routing='Sidor')  # XXX?
 
 
 @asyncio.coroutine
