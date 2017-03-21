@@ -22,12 +22,15 @@ def docker(request):
     return DockerClient(version='auto')
 
 
+ELASTIC_TAGS = []
+
+
 def pytest_addoption(parser):
     parser.addoption("--no-docker", action="store_true", default=False,
                      help="Do not use docker,"
                           " use local elasticsearch instance"
                           " with address (localhost:9200)")
-    parser.addoption("--es_tag", action="append", default=[],
+    parser.addoption("--es-tag", action="append", default=[],
                      help=("Elasticsearch server versions. "
                            "May be used several times. "
                            "Available values: 1.6, 1.7, 2.0, "
@@ -36,16 +39,26 @@ def pytest_addoption(parser):
                      help="Don't perform docker images pulling")
 
 
-def pytest_generate_tests(metafunc):
-    if 'es_tag' in metafunc.fixturenames:
-        tags = set(metafunc.config.option.es_tag)
-        if not tags:
-            tags = ['2.4']
-        elif 'all' in tags:
-            tags = ['1.6', '1.7', '2.0', '2.1', '2.2', '2.3', '2.4', '5.0']
-        else:
-            tags = list(tags)
-        metafunc.parametrize("es_tag", tags, scope='session')
+def pytest_configure(config):
+    tags = config.getoption('--es-tag')
+    ELASTIC_TAGS[:] = tags or ['2.4']
+
+
+# def pytest_generate_tests(metafunc):
+#     if 'es_tag' in metafunc.fixturenames:
+#         tags = set(metafunc.config.option.es_tag)
+#         if not tags:
+#             tags = ['2.4']
+#         elif 'all' in tags:
+#             tags = ['1.6', '1.7', '2.0', '2.1', '2.2', '2.3', '2.4', '5.0']
+#         else:
+#             tags = list(tags)
+#         metafunc.parametrize("es_tag", tags, scope='session')
+
+
+@pytest.fixture(scope='session', params=ELASTIC_TAGS, ids='ESv{}'.format)
+def es_tag(request):
+    return request.param
 
 
 @pytest.fixture(scope='session')
