@@ -40,9 +40,9 @@ matrix:
   - python: "3.6"
     env: TASKS="cmp"
   - python: "3.6"
-    env: TASKS="cov" TEST_ARGS="-rsxX -v --es_tag=5.2"
+    env: TASKS="cov" TEST_ARGS="-rsxX -v --es-tag=2.4 --es-tag=5.2"
   allow_failures:
-  - env: TASKS="cov" TEST_ARGS="-rsxX -v --es_tag=5.2"
+  - env: TASKS="cov" TEST_ARGS="-rsxX -v --es-tag=2.4 --es-tag=5.2"
 
 deploy:
   provider: pypi
