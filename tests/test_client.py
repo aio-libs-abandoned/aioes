@@ -112,7 +112,11 @@ def test_index(client):
     data = yield from client.index(INDEX, 'tweet', {}, '1')
     assert data['_version'] == 2
     assert not data['created']
-    # test 'external' version_type
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_index__external_version(client):
     data = yield from client.index(INDEX, 'tweet', {}, '12',
                                    version_type='external',
                                    version=122,
@@ -124,34 +128,50 @@ def test_index(client):
                                    replication='async')
     assert data['_version'] == 122
     assert data['created']
+
+
+@pytest.mark.es_tag(min=(5, 0))
+@asyncio.coroutine
+def test_index__external_version_2(client):
+    data = yield from client.index(INDEX, 'tweet', {}, '12',
+                                   version_type='external',
+                                   version=122,
+                                   timestamp='2009-11-15T14:12:12',
+                                   ttl='1d',
+                                   timeout='5m',
+                                   refresh=True,
+                                   )
+    assert data['_version'] == 122
+    assert data['created']
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (RequestError, dict(parent='1', percolate='')),
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(op_type=1)),
+    (ValueError, dict(op_type='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+    ])
+@asyncio.coroutine
+def test_index__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        assert (yield from client.index(INDEX, 'type', {}, **kwargs)) is None
+
+
+@pytest.mark.es_tag(min=(5, 0))
+@pytest.mark.parametrize('deprecated', [
+    dict(consistency='one'),
+    dict(replication='async'),
+    ], ids=repr)
+@asyncio.coroutine
+def test_index__deprecated_params(client, deprecated):
     with pytest.raises(RequestError):
-        yield from client.index(INDEX, 'type', {},
-                                parent='1',
-                                percolate='')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                replication=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                replication='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                op_type=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                op_type='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'tweet', {},
-                                version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'tweet', {},
-                                version_type='1')
+        assert (yield from client.index(INDEX, 'tweet', {}, '12',
+                                        **deprecated)) is None
 
 
 @asyncio.coroutine
@@ -207,6 +227,9 @@ def test_get(client):
                               version_type='1')
 
 
+@pytest.mark.es_tag(
+    max=(2, 4),
+    reason="version & version_type are not in 5.2")
 @asyncio.coroutine
 def test_get_source(client):
     """ get_source """
@@ -216,11 +239,15 @@ def test_get_source(client):
                             '1')
     data = yield from client.get_source(INDEX, '1')
     assert data == MESSAGES[0]
+    data = yield from client.get_source(INDEX, '1', refresh=1)
+    assert data == MESSAGES[0]
+    data = yield from client.get_source(INDEX, '1', refresh=False)
+    assert data == MESSAGES[0]
 
     id = '200'
     yield from client.index(
         INDEX, 'test_get_source', MESSAGES[2], id,
-        routing='Poligrafovich'
+        routing='Poligrafovich', refresh=True,
         )
     data = yield from client.get_source(INDEX, id,
                                         routing='Poligrafovich',
@@ -246,41 +273,42 @@ def test_get_source(client):
 
 
 @asyncio.coroutine
-def test_delete(client):
+def test_delete(client, es_tag):
     """ delete """
     yield from client.index(INDEX, 'testdoc', MESSAGES[2], '1')
     data = yield from client.delete(INDEX, 'testdoc', '1')
     assert data['found']
+
+    if es_tag < (5, 0):
+        kwargs = dict(consistency='one',
+                      replication='async')
+    else:
+        kwargs = dict()
     with pytest.raises(NotFoundError):
         data = yield from client.delete(INDEX, 'testdoc', '1',
-                                        consistency='one',
-                                        replication='async',
                                         refresh=True,
                                         timeout='5m',
                                         routing='test',
-                                        parent='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 replication=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 replication='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 version_type='1')
+                                        parent='1',
+                                        **kwargs)
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+])
+@asyncio.coroutine
+def test_delete__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        yield from client.delete(INDEX, 'type', {}, **kwargs)
 
 
 @asyncio.coroutine
-def test_update(client):
+def test_update(client, es_tag):
     """ update """
     script = {
         "doc": {
@@ -299,41 +327,48 @@ def test_update(client):
     assert data['_source']['counter'] == 123
     assert data['_version'] == 2
 
+    if es_tag < (5, 0):
+        kwargs = dict(consistency='one',
+                      replication='async',
+                      lang='en',
+                      )
+    else:
+        kwargs = dict()
     data = yield from client.update(INDEX, 'testdoc', '1',
                                     script,
                                     timestamp='2009-11-15T14:12:12',
                                     ttl='1d',
-                                    consistency='one',
                                     timeout='5m',
                                     refresh=True,
-                                    replication='async',
                                     retry_on_conflict=2,
                                     routing='Fedor',
-                                    lang='en')
+                                    **kwargs)
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_update__not_found(client):
     with pytest.raises(NotFoundError):
         yield from client.update(
             INDEX, 'testdoc', '1',
             script='{}',
             fields='user',
             parent='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 replication=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 replication='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 version_type='1')
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+])
+@asyncio.coroutine
+def test_update__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        assert (yield from client.update(
+            INDEX, 'type', {}, **kwargs)) is None
 
 
 @asyncio.coroutine

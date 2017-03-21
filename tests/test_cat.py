@@ -142,13 +142,15 @@ def test_pending_tasks(client):
 
 
 @asyncio.coroutine
-def test_thread_pool(client):
+def test_thread_pool(client, es_tag):
     ret = yield from client.cat.thread_pool(v=True)
     header = next(map(lambda s: s.split(' '), ret.splitlines()), None)
     assert header is not None
-    # XXX: works for es-2.4
-    assert 'host' in header
-    assert 'ip' in header
+    if es_tag < (5, 0):
+        assert 'host' in header
+        assert 'ip' in header
+    else:
+        assert 'node_name' in header
 
 
 @asyncio.coroutine

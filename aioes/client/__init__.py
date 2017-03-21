@@ -130,7 +130,9 @@ class Elasticsearch:
         if percolate is not default:
             params['percolate'] = percolate
         if refresh is not default:
-            params['refresh'] = bool(refresh)
+            if refresh != 'wait_for':
+                refresh = str(bool(refresh)).lower()
+            params['refresh'] = refresh
         if replication is not default:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
@@ -275,7 +277,9 @@ class Elasticsearch:
         if realtime is not default:
             params['realtime'] = bool(realtime)
         if refresh is not default:
-            params['refresh'] = bool(refresh)
+            if refresh != 'wait_for':
+                refresh = str(bool(refresh)).lower()
+            params['refresh'] = refresh
         if routing is not default:
             params['routing'] = routing
         if version is not default:
@@ -326,7 +330,9 @@ class Elasticsearch:
         if parent is not default:
             params['parent'] = parent
         if refresh is not default:
-            params['refresh'] = bool(refresh)
+            if refresh != 'wait_for':
+                refresh = str(bool(refresh)).lower()
+            params['refresh'] = refresh
         if replication is not default:
             if not isinstance(replication, str):
                 raise TypeError("'replication' parameter is not a string")
@@ -747,7 +753,9 @@ class Elasticsearch:
         if parent is not default:
             params['parent'] = parent
         if refresh is not default:
-            params['refresh'] = bool(refresh)
+            if refresh != 'wait_for':
+                refresh = str(bool(refresh)).lower()
+            params['refresh'] = refresh
         if routing is not default:
             params['routing'] = routing
         if version is not default:

@@ -430,7 +430,7 @@ def test_mapping(client, es_tag):
 
     # DELETE
     # NOTE: it is not possible to delete mapping since 2.0
-    if tuple(map(int, es_tag.split('.'))) < (2, 0):
+    if es_tag < (2, 0):
         yield from client.indices.delete_mapping(INDEX, DOCTYPE)
         data = yield from client.indices.get_mapping(INDEX, DOCTYPE)
         assert not data

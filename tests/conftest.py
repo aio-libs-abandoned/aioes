@@ -44,21 +44,30 @@ def pytest_configure(config):
     ELASTIC_TAGS[:] = tags or ['2.4']
 
 
-# def pytest_generate_tests(metafunc):
-#     if 'es_tag' in metafunc.fixturenames:
-#         tags = set(metafunc.config.option.es_tag)
-#         if not tags:
-#             tags = ['2.4']
-#         elif 'all' in tags:
-#             tags = ['1.6', '1.7', '2.0', '2.1', '2.2', '2.3', '2.4', '5.0']
-#         else:
-#             tags = list(tags)
-#         metafunc.parametrize("es_tag", tags, scope='session')
+def pytest_collection_modifyitems(session, config, items):
+    for item in items:
+        if 'es_tag' in item.keywords:
+            marker = item.keywords['es_tag']
+            min_tag = marker.kwargs.get('min')
+            max_tag = marker.kwargs.get('max')
+            cur = item.callspec.getparam('es_tag')
+            if isinstance(cur, str):
+                cur = tuple(map(int, cur.split('.')))
+            reason = marker.kwargs.get('reason', "Skip by version")
+            if min_tag and max_tag:
+                if not (min_tag <= cur < max_tag):
+                    item.add_marker(pytest.mark.skip(reason=reason))
+            if min_tag:
+                if cur < min_tag:
+                    item.add_marker(pytest.mark.skip(reason=reason))
+            if max_tag:
+                if cur > max_tag:
+                    item.add_marker(pytest.mark.skip(reason=reason))
 
 
 @pytest.fixture(scope='session', params=ELASTIC_TAGS, ids='ESv{}'.format)
 def es_tag(request):
-    return request.param
+    return tuple(map(int, request.param.split('.')))
 
 
 @pytest.fixture(scope='session')
@@ -66,11 +75,12 @@ def es_server(docker, session_id, es_tag, request):
     if request.config.getoption('--no-docker'):
         yield dict(es_params=dict(host='localhost', port=9200))
     else:
+        tag = '.'.join(map(str, es_tag))
         if not request.config.option.no_pull:
-            docker.pull('elasticsearch:{}'.format(es_tag))
+            docker.pull('elasticsearch:{}'.format(tag))
         container = docker.create_container(
-            image='elasticsearch:{}'.format(es_tag),
-            name='aioes-test-server-{}-{}'.format(es_tag, session_id),
+            image='elasticsearch:{}'.format(tag),
+            name='aioes-test-server-{}-{}'.format(tag, session_id),
             ports=[9200],
             detach=True,
         )
