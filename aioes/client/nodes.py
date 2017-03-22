@@ -121,7 +121,8 @@ class NodesClient(NamespacedClient):
 
     @asyncio.coroutine
     def hot_threads(self, node_id=None, *, type_=default, interval=default,
-                    snapshots=default, threads=default):
+                    snapshots=default, threads=default,
+                    ignore_idle_threads=default):
         """
         An API allowing to get the current hot threads on each node
         in the cluster.
@@ -148,6 +149,8 @@ class NodesClient(NamespacedClient):
             params['snapshots'] = snapshots
         if threads is not default:
             params['threads'] = threads
+        if ignore_idle_threads is not default:
+            params['ignore_idle_threads'] = str(ignore_idle_threads).lower()
 
         _, data = yield from self.transport.perform_request(
             'GET', _make_path('_nodes', node_id, 'hot_threads'),

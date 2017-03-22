@@ -23,9 +23,13 @@ def client(es_params, loop):
 
 
 @asyncio.coroutine
-def test_health(client):
+def test_health(client, es_tag):
     data = yield from client.cluster.health()
     assert 'status' in data
+    if es_tag >= (5, 0):
+        kwargs = dict(wait_for_no_relocating_shards=0)
+    else:
+        kwargs = dict(wait_for_relocating_shards=0)
     data = yield from client.cluster.health(
         level='indices',
         local=True,
@@ -33,7 +37,7 @@ def test_health(client):
         timeout='1s',
         # wait_for_active_shards=1, # XXX: verify there are some shards
         # wait_for_nodes='>2',  # XXX: must verify nodes count
-        wait_for_relocating_shards=0)
+        **kwargs)
     assert 'status' in data
 
 
