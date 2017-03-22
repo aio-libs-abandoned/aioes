@@ -839,7 +839,7 @@ class Elasticsearch:
                 raise ValueError("'consistency' parameter should be one of "
                                  "'one', 'quorum', 'all'")
         if refresh is not default:
-            params['refresh'] = bool(refresh)
+            params['refresh'] = str(bool(refresh)).lower()
         if routing is not default:
             params['routing'] = routing
         if replication is not default:

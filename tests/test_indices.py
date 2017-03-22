@@ -1,9 +1,6 @@
 import asyncio
 import pytest
-from aioes import Elasticsearch
 from aioes.exception import NotFoundError, RequestError
-import pprint
-pp = pprint.pprint
 
 MESSAGE = {
     "user": "Johny Mnemonic",
@@ -17,23 +14,17 @@ MESSAGE = {
 INDEX = 'test_elasticsearch'
 
 
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
-
-
 @asyncio.coroutine
-def test_analize(client):
+def test_analyze(client, es_tag):
+    if es_tag > (5, 0):
+        kwargs = dict(filter='lowercase')
+    else:
+        kwargs = dict(filters='lowercase')
+
     data = yield from client.indices.analyze(
         text='this, is a test 125 !',
         analyzer='standard',
-        filters='lowercase')
+        **kwargs)
     assert len(data['tokens']) == 5
     assert data['tokens'][0]['token'] == 'this'
     assert data['tokens'][1]['token'] == 'is'
@@ -42,12 +33,16 @@ def test_analize(client):
     assert data['tokens'][4]['token'] == '125'
     assert data['tokens'][4]['type'] == '<NUM>'
 
+
+@pytest.mark.es_tag(max=(2, 4), reason="params mess")
+@asyncio.coroutine
+def test_analyze_more(client, es_tag):
+
     data = yield from client.indices.analyze(
-        text='this is a <b>test</b>',
+        text='THIS IS A <b>test</b>',
         tokenizer='keyword',
         token_filters='lowercase',
-        char_filters='html_strip',
-        prefer_local=True)
+        char_filters='html_strip')
     assert data['tokens'][0]['token'] == 'this is a test'
 
     with pytest.raises(RequestError):
@@ -411,11 +406,15 @@ def test_recovery(client):
 def test_mapping(client, es_tag):
     yield from client.indices.create(INDEX)
     DOCTYPE = 'testdoc'
+    if es_tag < (5, 0):
+        type_ = 'string'
+    else:
+        type_ = 'text'
     mapping = {
         DOCTYPE: {
             'properties': {
                 'message': {
-                    'type': 'string',
+                    'type': type_,
                 }
             }
         }
@@ -437,17 +436,25 @@ def test_mapping(client, es_tag):
 
 
 @asyncio.coroutine
-def test_get_field_mapping(client):
+def test_get_field_mapping(client, es_tag):
     # create index
     yield from client.index(INDEX, 'type', MESSAGE, '1')
     rt = yield from client.indices.get_field_mapping(
         'message', index=INDEX
     )
     # dude, you are so deep
-    assert rt[INDEX]['mappings']['type']['message']['mapping'] == \
-        {'message': {'type': 'string'}}
+    if es_tag < (5, 0):
+        data = {'message': {'type': 'string'}}
+    else:
+        data = {'message': {
+            "type": "text", "fields": {
+                "keyword": {"type": "keyword", "ignore_above": 256}
+                }
+            }}
+    assert rt[INDEX]['mappings']['type']['message']['mapping'] == data
 
 
+@pytest.mark.es_tag(max=(5, 0), reason='deprecated since es 2.3')
 @asyncio.coroutine
 def test_warmers(client):
     # create index
@@ -483,7 +490,7 @@ def test_warmers(client):
 
 
 @asyncio.coroutine
-def test_aliases(client):
+def test_alias(client):
     # create index
     yield from client.index(INDEX, 'type', MESSAGE, '1')
 
@@ -491,6 +498,24 @@ def test_aliases(client):
     assert not al
     al = yield from client.indices.get_alias(INDEX, 'alias')
     assert al == {}
+    yield from client.indices.put_alias('alias', INDEX)
+    al = yield from client.indices.exists_alias('alias')
+    assert al
+    yield from client.indices.update_aliases(body={
+        "actions": [
+            {"remove": {"index": INDEX, "alias": "alias"}},
+            {"add": {"index": INDEX, "alias": "alias2"}}
+        ]
+    })
+    al = yield from client.indices.exists_alias('alias2')
+    assert al
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_aliases(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+
     al = yield from client.indices.get_aliases(INDEX, 'alias')
     assert al == {INDEX: {'aliases': {}}}
 

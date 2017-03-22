@@ -3,10 +3,13 @@ import socket
 import time
 
 import pytest
+from contextlib import closing
 from docker import Client as DockerClient
 
+from aioes import Elasticsearch
 from aioes.connection import Connection
 from aioes.transport import Endpoint
+from aioes.exception import NotFoundError
 
 
 @pytest.fixture(scope='session')
@@ -134,3 +137,14 @@ def make_connection(loop, es_params):
 
     for conn in conns:
         conn.close()
+
+
+@pytest.fixture
+def client(es_params, loop):
+    with closing(Elasticsearch([{'host': es_params['host']}], loop=loop)) as c:
+        INDEX = 'test_elasticsearch'
+        try:
+            loop.run_until_complete(c.delete(INDEX, '', ''))
+        except NotFoundError:
+            pass
+        yield c

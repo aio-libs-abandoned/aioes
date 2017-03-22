@@ -2,24 +2,8 @@ import asyncio
 
 import pytest
 
-from aioes import Elasticsearch
-from aioes.exception import NotFoundError
-
 
 INDEX = 'test_elasticsearch'
-
-
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([
-        {'host': es_params['host'], 'port': es_params['port']}],
-        loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
 
 
 @asyncio.coroutine

@@ -13,7 +13,9 @@ class IndicesClient(NamespacedClient):
     def analyze(self, index=None, body=None, *,
                 analyzer=default, char_filters=default, field=default,
                 filters=default, prefer_local=default, text=default,
-                tokenizer=default, token_filters=default):
+                tokenizer=default, token_filters=default,
+                # Es 5.x params
+                filter=default, token_filter=default, char_filter=default):
         """Run analyze tool.
 
         Perform the analysis process on a text and return the tokens
@@ -21,6 +23,13 @@ class IndicesClient(NamespacedClient):
 
         """
         params = {}
+        duplicate_err = "Either {0}s or {0} must be set, not both".format
+        if filters is not default and filter is not default:
+            raise ValueError(duplicate_err('filter'))
+        if char_filters is not default and char_filter is not default:
+            raise ValueError(duplicate_err('char_filter'))
+        if token_filters is not default and token_filter is not default:
+            raise ValueError(duplicate_err('token_filter'))
         if analyzer is not default:
             params['analyzer'] = analyzer
         if char_filters is not default:
@@ -37,6 +46,12 @@ class IndicesClient(NamespacedClient):
             params['tokenizer'] = tokenizer
         if token_filters is not default:
             params['token_filters'] = token_filters
+        if filter is not default:
+            params['filter'] = filter
+        if char_filter is not default:
+            params['char_filter'] = char_filter
+        if token_filter is not default:
+            params['token_filter'] = token_filter
 
         _, data = yield from self.transport.perform_request(
             'GET',

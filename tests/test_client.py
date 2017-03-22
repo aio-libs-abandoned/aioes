@@ -3,8 +3,11 @@ import pytest
 from unittest import mock
 
 from aioes import Elasticsearch
-from aioes.exception import (NotFoundError, RequestError,
-                             TransportError)
+from aioes.exception import (
+    NotFoundError,
+    RequestError,
+    TransportError,
+    )
 
 
 MESSAGES = [
@@ -39,17 +42,6 @@ MESSAGES = [
 ]
 
 INDEX = 'test_elasticsearch'
-
-
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
 
 
 @asyncio.coroutine
@@ -627,7 +619,7 @@ def test_msearch(client):
 
 
 @asyncio.coroutine
-def test_bulk(client):
+def test_bulk(client, es_tag):
     bulks = [
         {"index": {"_index": INDEX, "_type": "type1", "_id": "1"}},
         {"name": "hiq", "age": 10},
@@ -640,13 +632,17 @@ def test_bulk(client):
     data = yield from client.bulk(bulks)
     assert not data['errors']
     assert 3 == len(data['items'])
+    if es_tag >= (5, 0):
+        kwargs = {}
+    else:
+        kwargs = dict(consistency='one',
+                      replication='async')
     data = yield from client.bulk(
         bulks,
-        consistency='one',
         refresh=True,
         routing='hiq',
-        replication='async',
-        timeout='1s'
+        timeout='1s',
+        **kwargs
     )
     with pytest.raises(TypeError):
         yield from client.bulk(bulks, consistency=1)
