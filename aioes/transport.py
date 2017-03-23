@@ -188,7 +188,7 @@ class Transport:
                     _, headers, node_info = yield from asyncio.wait_for(
                         c.perform_request(
                             'GET',
-                            '/_nodes/_all/clear',
+                            '/_nodes/_all/http',
                             None,
                             None),
                         timeout=self._sniffer_timeout,
@@ -208,9 +208,13 @@ class Transport:
             raise
 
         endpoints = []
-        address = 'http_address'
         for n in node_info['nodes'].values():
-            match = self.ADDRESS_RE.search(n.get(address, ''))
+            # try several fields
+            http_addr_1 = n.get('http_address', '')
+            http_addr_2 = n.get('http', {}).get('publish_address', '')
+            match = self.ADDRESS_RE.search(http_addr_1)
+            if not match:
+                match = self.ADDRESS_RE.search(http_addr_2)
             if not match:
                 continue
 

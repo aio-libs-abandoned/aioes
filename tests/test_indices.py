@@ -1,9 +1,6 @@
 import asyncio
 import pytest
-from aioes import Elasticsearch
 from aioes.exception import NotFoundError, RequestError
-import pprint
-pp = pprint.pprint
 
 MESSAGE = {
     "user": "Johny Mnemonic",
@@ -17,23 +14,17 @@ MESSAGE = {
 INDEX = 'test_elasticsearch'
 
 
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
-
-
 @asyncio.coroutine
-def test_analize(client):
+def test_analyze(client, es_tag):
+    if es_tag > (5, 0):
+        kwargs = dict(filter='lowercase')
+    else:
+        kwargs = dict(filters='lowercase')
+
     data = yield from client.indices.analyze(
         text='this, is a test 125 !',
         analyzer='standard',
-        filters='lowercase')
+        **kwargs)
     assert len(data['tokens']) == 5
     assert data['tokens'][0]['token'] == 'this'
     assert data['tokens'][1]['token'] == 'is'
@@ -42,12 +33,16 @@ def test_analize(client):
     assert data['tokens'][4]['token'] == '125'
     assert data['tokens'][4]['type'] == '<NUM>'
 
+
+@pytest.mark.es_tag(max=(2, 4), reason="params mess")
+@asyncio.coroutine
+def test_analyze_more(client, es_tag):
+
     data = yield from client.indices.analyze(
-        text='this is a <b>test</b>',
+        text='THIS IS A <b>test</b>',
         tokenizer='keyword',
         token_filters='lowercase',
-        char_filters='html_strip',
-        prefer_local=True)
+        char_filters='html_strip')
     assert data['tokens'][0]['token'] == 'this is a test'
 
     with pytest.raises(RequestError):
@@ -64,6 +59,7 @@ def test_create(client):
     assert data['acknowledged']
 
 
+@pytest.mark.es_tag(min=(2, 0), reason="works in 1.7")
 @pytest.mark.parametrize('kwargs', [
     dict(timeout=1),
     dict(timeout='1'),
@@ -78,15 +74,32 @@ def test_create_errors(client, kwargs):
         assert (yield from client.indices.create(INDEX, **kwargs)) is None
 
 
+@pytest.mark.parametrize('kwargs', [
+    dict(timeout='1.1'),
+    dict(master_timeout='1.1'),
+    ], ids=str)
 @asyncio.coroutine
-def test_refresh(client):
+def test_create_errors_1_7(client, kwargs):
+    with pytest.raises(RequestError):
+        assert (yield from client.indices.create(INDEX, **kwargs)) is None
+
+
+@asyncio.coroutine
+def test_refresh(client, es_tag):
     yield from client.index(INDEX, 'type', MESSAGE, '1')
     data = yield from client.indices.refresh(INDEX)
     assert '_shards' in data
-    yield from client.indices.refresh(
-        INDEX,
-        allow_no_indices=False, expand_wildcards='closed',
-        ignore_unavailable=True, ignore_indices='', force=True)
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(force=True,
+                      ignore_indices='')
+    yield from client.indices.refresh(INDEX,
+                                      allow_no_indices=False,
+                                      expand_wildcards='closed',
+                                      ignore_unavailable=True,
+                                      **kwargs)
     with pytest.raises(TypeError):
         yield from client.indices.refresh(
             INDEX, expand_wildcards=1)
@@ -96,14 +109,22 @@ def test_refresh(client):
 
 
 @asyncio.coroutine
-def test_flush(client):
+def test_flush(client, es_tag):
     yield from client.index(INDEX, 'type', MESSAGE, '1')
     data = yield from client.indices.flush(INDEX)
     assert '_shards' in data
-    yield from client.indices.flush(
-        INDEX, full=True,
-        allow_no_indices=False, expand_wildcards='closed',
-        ignore_unavailable=True, ignore_indices='', force=True)
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(full=True,
+                      ignore_indices='')
+    yield from client.indices.flush(INDEX,
+                                    allow_no_indices=False,
+                                    expand_wildcards='closed',
+                                    ignore_unavailable=True,
+                                    force=True,
+                                    **kwargs)
     with pytest.raises(TypeError):
         yield from client.indices.flush(
             INDEX, expand_wildcards=1)
@@ -212,17 +233,22 @@ def test_exists_type(client):
 
 
 @asyncio.coroutine
-def test_get_settings(client):
+def test_get_settings(client, es_tag):
     yield from client.index(INDEX, 'type', MESSAGE, '1')
     yield from client.indices.refresh(INDEX)
     data = yield from client.indices.get_settings()
     assert INDEX in data
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(ignore_indices='')
     data = yield from client.indices.get_settings(
         expand_wildcards='open',
-        ignore_indices='',
         flat_settings=False,
         ignore_unavailable=False,
-        local=True)
+        local=True,
+        **kwargs)
     assert INDEX in data
     with pytest.raises(TypeError):
         yield from client.indices.get_settings(expand_wildcards=1)
@@ -276,23 +302,28 @@ def test_status(client):
 
 
 @asyncio.coroutine
-def test_stats(client):
+def test_stats(client, es_tag):
     data = yield from client.indices.stats()
     assert 'indices' in data
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(ignore_indices=False,
+                      docs=1)
     data = yield from client.indices.stats(
         metric='_all',
         completion_fields='*',
-        docs=1,
         fielddata_fields='*',
         fields='*',
         groups='*',
         allow_no_indices=True,
         expand_wildcards='open',
-        ignore_indices=False,
         ignore_unavailable=True,
         level='cluster',
         types='*',
-        human=True)
+        human=True,
+        **kwargs)
     assert '_all' in data
     with pytest.raises(TypeError):
         yield from client.indices.stats(expand_wildcards=1)
@@ -309,16 +340,21 @@ def test_stats(client):
 
 
 @asyncio.coroutine
-def test_segments(client):
+def test_segments(client, es_tag):
     data = yield from client.indices.segments()
     assert 'indices' in data
     assert '_shards' in data
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(ignore_indices=True)
     data = yield from client.indices.segments(
         allow_no_indices=True,
-        ignore_indices=True,
         ignore_unavailable=True,
         expand_wildcards='open',
-        human=True)
+        human=True,
+        **kwargs)
     assert 'indices' in data
     assert '_shards' in data
     with pytest.raises(TypeError):
@@ -327,6 +363,7 @@ def test_segments(client):
         yield from client.indices.segments(expand_wildcards='1')
 
 
+@pytest.mark.es_tag(max=(5, 0))
 @asyncio.coroutine
 def test_optimize(client):
     data = yield from client.indices.optimize()
@@ -349,20 +386,46 @@ def test_optimize(client):
         yield from client.indices.optimize(expand_wildcards='1')
 
 
+@pytest.mark.es_tag(min=(5, 0))
 @asyncio.coroutine
-def test_validate_query(client):
+def test_forcemerge(client):
+    data = yield from client.indices.force_merge()
+    assert '_shards' in data
+    data = yield from client.indices.force_merge(
+        allow_no_indices=True,
+        expand_wildcards='open',
+        ignore_unavailable=True,
+        max_num_segments=0,
+        only_expunge_deletes=True,
+        flush=True)
+    assert '_shards' in data
+    with pytest.raises(TypeError):
+        yield from client.indices.optimize(expand_wildcards=1)
+    with pytest.raises(ValueError):
+        yield from client.indices.optimize(expand_wildcards='1')
+
+
+@asyncio.coroutine
+def test_validate_query(client, es_tag):
     yield from client.indices.create(INDEX)
     data = yield from client.indices.validate_query()
     assert '_shards' in data
+
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(ignore_indices=True,
+                      operation_threading='',
+                      )
+
     yield from client.indices.validate_query(
         explain=True,
         allow_no_indices=True,
         q='',
-        ignore_indices=True,
         source='',
-        operation_threading='',
         expand_wildcards='open',
-        ignore_unavailable=False)
+        ignore_unavailable=False,
+        **kwargs)
     with pytest.raises(TypeError):
         yield from client.indices.validate_query(expand_wildcards=1)
     with pytest.raises(ValueError):
@@ -370,24 +433,29 @@ def test_validate_query(client):
 
 
 @asyncio.coroutine
-def test_clear_cache(client):
+def test_clear_cache(client, es_tag):
     yield from client.indices.create(INDEX)
     data = yield from client.indices.clear_cache()
     assert '_shards' in data
+    if es_tag > (5, 0):
+        kwargs = dict()
+    else:
+        kwargs = dict(id=False,
+                      id_cache=True,
+                      ignore_indices=False,
+                      filter_keys='',
+                      )
     yield from client.indices.clear_cache(
         field_data=True,
         fielddata=True,
         recycler=True,
-        id_cache=True,
-        filter_keys='',
         filter_cache=True,
         filter=False,
         fields='',
-        id=False,
         allow_no_indices=False,
-        ignore_indices=False,
         ignore_unavailable=True,
-        expand_wildcards='open')
+        expand_wildcards='open',
+        **kwargs)
     assert '_shards' in data
     with pytest.raises(TypeError):
         yield from client.indices.clear_cache(expand_wildcards=1)
@@ -411,11 +479,15 @@ def test_recovery(client):
 def test_mapping(client, es_tag):
     yield from client.indices.create(INDEX)
     DOCTYPE = 'testdoc'
+    if es_tag < (5, 0):
+        type_ = 'string'
+    else:
+        type_ = 'text'
     mapping = {
         DOCTYPE: {
             'properties': {
                 'message': {
-                    'type': 'string',
+                    'type': type_,
                 }
             }
         }
@@ -430,24 +502,32 @@ def test_mapping(client, es_tag):
 
     # DELETE
     # NOTE: it is not possible to delete mapping since 2.0
-    if tuple(map(int, es_tag.split('.'))) < (2, 0):
+    if es_tag < (2, 0):
         yield from client.indices.delete_mapping(INDEX, DOCTYPE)
         data = yield from client.indices.get_mapping(INDEX, DOCTYPE)
         assert not data
 
 
 @asyncio.coroutine
-def test_get_field_mapping(client):
+def test_get_field_mapping(client, es_tag):
     # create index
     yield from client.index(INDEX, 'type', MESSAGE, '1')
     rt = yield from client.indices.get_field_mapping(
         'message', index=INDEX
     )
     # dude, you are so deep
-    assert rt[INDEX]['mappings']['type']['message']['mapping'] == \
-        {'message': {'type': 'string'}}
+    if es_tag < (5, 0):
+        data = {'message': {'type': 'string'}}
+    else:
+        data = {'message': {
+            "type": "text", "fields": {
+                "keyword": {"type": "keyword", "ignore_above": 256}
+                }
+            }}
+    assert rt[INDEX]['mappings']['type']['message']['mapping'] == data
 
 
+@pytest.mark.es_tag(max=(5, 0), reason='deprecated since es 2.3')
 @asyncio.coroutine
 def test_warmers(client):
     # create index
@@ -483,7 +563,7 @@ def test_warmers(client):
 
 
 @asyncio.coroutine
-def test_aliases(client):
+def test_alias(client):
     # create index
     yield from client.index(INDEX, 'type', MESSAGE, '1')
 
@@ -491,6 +571,24 @@ def test_aliases(client):
     assert not al
     al = yield from client.indices.get_alias(INDEX, 'alias')
     assert al == {}
+    yield from client.indices.put_alias('alias', INDEX)
+    al = yield from client.indices.exists_alias('alias')
+    assert al
+    yield from client.indices.update_aliases(body={
+        "actions": [
+            {"remove": {"index": INDEX, "alias": "alias"}},
+            {"add": {"index": INDEX, "alias": "alias2"}}
+        ]
+    })
+    al = yield from client.indices.exists_alias('alias2')
+    assert al
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_aliases(client):
+    yield from client.index(INDEX, 'type', MESSAGE, '1')
+
     al = yield from client.indices.get_aliases(INDEX, 'alias')
     assert al == {INDEX: {'aliases': {}}}
 
@@ -511,7 +609,7 @@ def test_aliases(client):
 
 
 @asyncio.coroutine
-def test_templates(client):
+def test_templates(client, es_tag):
     b = {
         "template": INDEX,
         "settings": {
@@ -527,10 +625,15 @@ def test_templates(client):
         t = yield from client.indices.get_template('template')
         assert 'template' in t
         assert 'settings' in t['template']
-        assert 'index' in t['template']['settings']
-        assert 'number_of_shards' in t['template']['settings']['index']
-        assert t['template']['settings']['index']['number_of_shards'] == \
-            b['settings']['number_of_shards']
+        if es_tag > (2, 0):
+            assert 'index' in t['template']['settings']
+            assert 'number_of_shards' in t['template']['settings']['index']
+            assert t['template']['settings']['index']['number_of_shards'] == \
+                b['settings']['number_of_shards']
+        else:
+            assert 'index.number_of_shards' in t['template']['settings']
+            assert t['template']['settings']['index.number_of_shards'] == \
+                b['settings']['number_of_shards']
     finally:
         yield from client.indices.delete_template('template')
         t = yield from client.indices.exists_template('template')

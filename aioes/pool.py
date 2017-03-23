@@ -15,9 +15,14 @@ class AbstractSelector(metaclass=abc.ABCMeta):
 
 
 class RandomSelector(AbstractSelector):
+    random = random
+
+    def __init__(self, seed=None):
+        if seed is not None:
+            self.random = random.Random(seed)
 
     def select(self, connections):
-        return random.choice(connections)
+        return self.random.choice(connections)
 
 
 class RoundRobinSelector(AbstractSelector):

@@ -1,8 +1,8 @@
 import asyncio
-import random
 import time
-
 import pytest
+
+from contextlib import closing
 
 from aioes.pool import RandomSelector, RoundRobinSelector, ConnectionPool
 from aioes.transport import Endpoint
@@ -10,8 +10,7 @@ from aioes.connection import Connection
 
 
 def test_random_select():
-    random.seed(123456)
-    s = RandomSelector()
+    s = RandomSelector(123456)
     r = s.select([1, 2, 3])
     assert 2 == r
 
@@ -28,7 +27,7 @@ def test_round_robin_select():
     assert 2 == r
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def make_pool(loop, make_connection):
     pool = None
 
@@ -166,26 +165,28 @@ def test_mark_live_dead(make_pool, make_connection):
 def test_resurrect(loop, make_pool):
     c1 = Connection(Endpoint('http', 'h1', 1), loop=loop)
     c2 = Connection(Endpoint('http', 'h2', 2), loop=loop)
-    pool = make_pool(connections=[c1, c2])
+    with closing(c1), closing(c2):
+        pool = make_pool(connections=[c1, c2])
 
-    yield from pool.mark_dead(c1)
-    yield from pool.mark_dead(c2)
-    yield from pool.resurrect()
-    assert 2 == pool._dead.qsize()
-    yield from pool.resurrect(True)
-    assert 1 == pool._dead.qsize()
-    assert [c1] == pool.connections
+        yield from pool.mark_dead(c1)
+        yield from pool.mark_dead(c2)
+        yield from pool.resurrect()
+        assert 2 == pool._dead.qsize()
+        yield from pool.resurrect(True)
+        assert 1 == pool._dead.qsize()
+        assert [c1] == pool.connections
 
 
 @asyncio.coroutine
 def test_get_connection(loop, make_pool):
     c1 = Connection(Endpoint('http', 'h1', 1), loop=loop)
     c2 = Connection(Endpoint('http', 'h2', 2), loop=loop)
-    pool = make_pool(connections=[c1, c2])
+    with closing(c1), closing(c2):
+        pool = make_pool(connections=[c1, c2])
 
-    yield from pool.mark_dead(c1)
-    yield from pool.mark_dead(c2)
+        yield from pool.mark_dead(c1)
+        yield from pool.mark_dead(c2)
 
-    conn = yield from pool.get_connection()
-    assert 1 == pool._dead.qsize()
-    assert c1 is conn
+        conn = yield from pool.get_connection()
+        assert 1 == pool._dead.qsize()
+        assert c1 is conn

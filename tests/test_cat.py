@@ -3,22 +3,7 @@ import asyncio
 import pytest
 
 
-from aioes import Elasticsearch
-from aioes.exception import NotFoundError
-
-
 INDEX = 'test_elasticsearch'
-
-
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
 
 
 @asyncio.coroutine
@@ -142,13 +127,15 @@ def test_pending_tasks(client):
 
 
 @asyncio.coroutine
-def test_thread_pool(client):
+def test_thread_pool(client, es_tag):
     ret = yield from client.cat.thread_pool(v=True)
     header = next(map(lambda s: s.split(' '), ret.splitlines()), None)
     assert header is not None
-    # XXX: works for es-2.4
-    assert 'host' in header
-    assert 'ip' in header
+    if es_tag < (5, 0):
+        assert 'host' in header
+        assert 'ip' in header
+    else:
+        assert 'node_name' in header
 
 
 @asyncio.coroutine

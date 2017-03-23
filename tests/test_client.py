@@ -3,8 +3,11 @@ import pytest
 from unittest import mock
 
 from aioes import Elasticsearch
-from aioes.exception import (NotFoundError, RequestError,
-                             TransportError)
+from aioes.exception import (
+    NotFoundError,
+    RequestError,
+    TransportError,
+    )
 
 
 MESSAGES = [
@@ -39,17 +42,6 @@ MESSAGES = [
 ]
 
 INDEX = 'test_elasticsearch'
-
-
-@pytest.fixture
-def client(es_params, loop):
-    client = Elasticsearch([{'host': es_params['host']}], loop=loop)
-    try:
-        loop.run_until_complete(client.delete(INDEX, '', ''))
-    except NotFoundError:
-        pass
-    yield client
-    client.close()
 
 
 @asyncio.coroutine
@@ -112,7 +104,11 @@ def test_index(client):
     data = yield from client.index(INDEX, 'tweet', {}, '1')
     assert data['_version'] == 2
     assert not data['created']
-    # test 'external' version_type
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_index__external_version(client):
     data = yield from client.index(INDEX, 'tweet', {}, '12',
                                    version_type='external',
                                    version=122,
@@ -124,34 +120,50 @@ def test_index(client):
                                    replication='async')
     assert data['_version'] == 122
     assert data['created']
+
+
+@pytest.mark.es_tag(min=(5, 0))
+@asyncio.coroutine
+def test_index__external_version_2(client):
+    data = yield from client.index(INDEX, 'tweet', {}, '12',
+                                   version_type='external',
+                                   version=122,
+                                   timestamp='2009-11-15T14:12:12',
+                                   ttl='1d',
+                                   timeout='5m',
+                                   refresh=True,
+                                   )
+    assert data['_version'] == 122
+    assert data['created']
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (RequestError, dict(parent='1', percolate='')),
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(op_type=1)),
+    (ValueError, dict(op_type='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+    ])
+@asyncio.coroutine
+def test_index__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        assert (yield from client.index(INDEX, 'type', {}, **kwargs)) is None
+
+
+@pytest.mark.es_tag(min=(5, 0))
+@pytest.mark.parametrize('deprecated', [
+    dict(consistency='one'),
+    dict(replication='async'),
+    ], ids=repr)
+@asyncio.coroutine
+def test_index__deprecated_params(client, deprecated):
     with pytest.raises(RequestError):
-        yield from client.index(INDEX, 'type', {},
-                                parent='1',
-                                percolate='')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                replication=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                replication='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'type', {},
-                                op_type=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'type', {},
-                                op_type='1')
-    with pytest.raises(TypeError):
-        yield from client.index(INDEX, 'tweet', {},
-                                version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.index(INDEX, 'tweet', {},
-                                version_type='1')
+        assert (yield from client.index(INDEX, 'tweet', {}, '12',
+                                        **deprecated)) is None
 
 
 @asyncio.coroutine
@@ -207,6 +219,9 @@ def test_get(client):
                               version_type='1')
 
 
+@pytest.mark.es_tag(
+    max=(2, 4),
+    reason="version & version_type are not in 5.2")
 @asyncio.coroutine
 def test_get_source(client):
     """ get_source """
@@ -216,11 +231,15 @@ def test_get_source(client):
                             '1')
     data = yield from client.get_source(INDEX, '1')
     assert data == MESSAGES[0]
+    data = yield from client.get_source(INDEX, '1', refresh=1)
+    assert data == MESSAGES[0]
+    data = yield from client.get_source(INDEX, '1', refresh=False)
+    assert data == MESSAGES[0]
 
     id = '200'
     yield from client.index(
         INDEX, 'test_get_source', MESSAGES[2], id,
-        routing='Poligrafovich'
+        routing='Poligrafovich', refresh=True,
         )
     data = yield from client.get_source(INDEX, id,
                                         routing='Poligrafovich',
@@ -246,41 +265,42 @@ def test_get_source(client):
 
 
 @asyncio.coroutine
-def test_delete(client):
+def test_delete(client, es_tag):
     """ delete """
     yield from client.index(INDEX, 'testdoc', MESSAGES[2], '1')
     data = yield from client.delete(INDEX, 'testdoc', '1')
     assert data['found']
+
+    if es_tag < (5, 0):
+        kwargs = dict(consistency='one',
+                      replication='async')
+    else:
+        kwargs = dict()
     with pytest.raises(NotFoundError):
         data = yield from client.delete(INDEX, 'testdoc', '1',
-                                        consistency='one',
-                                        replication='async',
                                         refresh=True,
                                         timeout='5m',
                                         routing='test',
-                                        parent='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 replication=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 replication='1')
-    with pytest.raises(TypeError):
-        yield from client.delete(INDEX, 'type', {},
-                                 version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.delete(INDEX, 'type', {},
-                                 version_type='1')
+                                        parent='1',
+                                        **kwargs)
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+])
+@asyncio.coroutine
+def test_delete__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        yield from client.delete(INDEX, 'type', {}, **kwargs)
 
 
 @asyncio.coroutine
-def test_update(client):
+def test_update(client, es_tag):
     """ update """
     script = {
         "doc": {
@@ -299,45 +319,52 @@ def test_update(client):
     assert data['_source']['counter'] == 123
     assert data['_version'] == 2
 
+    if es_tag < (5, 0):
+        kwargs = dict(consistency='one',
+                      replication='async',
+                      lang='en',
+                      )
+    else:
+        kwargs = dict()
     data = yield from client.update(INDEX, 'testdoc', '1',
                                     script,
                                     timestamp='2009-11-15T14:12:12',
                                     ttl='1d',
-                                    consistency='one',
                                     timeout='5m',
                                     refresh=True,
-                                    replication='async',
                                     retry_on_conflict=2,
                                     routing='Fedor',
-                                    lang='en')
+                                    **kwargs)
+
+
+@pytest.mark.es_tag(max=(2, 4))
+@asyncio.coroutine
+def test_update__not_found(client):
     with pytest.raises(NotFoundError):
         yield from client.update(
             INDEX, 'testdoc', '1',
             script='{}',
             fields='user',
             parent='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 consistency=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 consistency='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 replication=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 replication='1')
-    with pytest.raises(TypeError):
-        yield from client.update(INDEX, 'type', {},
-                                 version_type=1)
-    with pytest.raises(ValueError):
-        yield from client.update(INDEX, 'type', {},
-                                 version_type='1')
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (TypeError, dict(consistency=1)),
+    (ValueError, dict(consistency='1')),
+    (TypeError, dict(replication=1)),
+    (ValueError, dict(replication='1')),
+    (TypeError, dict(version_type=1)),
+    (ValueError, dict(version_type='1')),
+])
+@asyncio.coroutine
+def test_update__errors(client, exc, kwargs):
+    with pytest.raises(exc):
+        assert (yield from client.update(
+            INDEX, 'type', {}, **kwargs)) is None
 
 
 @asyncio.coroutine
-def test_search(client):
+def test_search(client, es_tag):
     """ search """
     yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
@@ -354,6 +381,13 @@ def test_search(client):
     assert data['hits']['total'] == 2
     assert 'skills' in data['hits']['hits'][0]['_source']
     assert 'skills' in data['hits']['hits'][1]['_source']
+
+    if es_tag > (5, 0):
+        kwargs = dict(stored_fields='skills,user')
+    else:
+        kwargs = dict(fields='skills,user',
+                      lowercase_expanded_terms=True)
+
     data = yield from client.search(INDEX,
                                     'testdoc',
                                     q='skills:Python',
@@ -367,17 +401,16 @@ def test_search(client):
                                     ignore_unavailable=True,
                                     df='_all',
                                     explain=True,
-                                    fields='skills,user',
                                     from_=0,
                                     expand_wildcards='open',
                                     lenient=True,
-                                    lowercase_expanded_terms=True,
                                     preference='random',
                                     scroll='1s',
                                     search_type='query_then_fetch',
                                     size=100,
                                     sort='user:true',
-                                    stats=True)
+                                    stats=True,
+                                    **kwargs)
     assert 'skills' not in data['hits']['hits'][0]['_source']
     assert 'skills' not in data['hits']['hits'][1]['_source']
     with pytest.raises(TypeError):
@@ -428,6 +461,7 @@ def test_search(client):
                                  expand_wildcards='1')
 
 
+@pytest.mark.es_tag(min=(2, 0), reason='fails on 1.7, bad test')
 @asyncio.coroutine
 def test_count(client):
     """ count """
@@ -466,7 +500,7 @@ def test_count(client):
 
 
 @asyncio.coroutine
-def test_explain(client):
+def test_explain(client, es_tag):
     """ explain """
     yield from client.index(INDEX, 'testdoc',
                             MESSAGES[0], '1',
@@ -482,6 +516,14 @@ def test_explain(client):
         INDEX, 'testdoc', '3',
         q='skills:Python')
     assert data['matched']
+
+    if es_tag > (5, 0):
+        kwargs = dict(stored_fields='user,counter')
+    else:
+        kwargs = dict(fields='user,counter',
+                      lowercase_expanded_terms=False,
+                      )
+
     data = yield from client.explain(
         INDEX, 'testdoc', '1',
         q='skills:Python',
@@ -492,10 +534,9 @@ def test_explain(client):
         analyzer='standard',
         default_operator='and',
         df='_all',
-        fields='user,counter',
         lenient=True,
-        lowercase_expanded_terms=False,
-        preference='random')
+        preference='random',
+        **kwargs)
     assert data['matched']
 
     with pytest.raises(TypeError):
@@ -562,7 +603,7 @@ def test_delete_by_query(client):
 
 
 @asyncio.coroutine
-def test_msearch(client):
+def test_msearch(client, es_tag):
     """ msearch """
     queries = [
         {"_index": INDEX},
@@ -583,16 +624,30 @@ def test_msearch(client):
 
     data = yield from client.msearch(queries)
     assert len(data['responses']) > 0
-    data = yield from client.msearch(queries, search_type='count')
-    assert len(data['responses']) > 0
-    with pytest.raises(TypeError):
-        yield from client.msearch(queries, search_type=1)
-    with pytest.raises(ValueError):
-        yield from client.msearch(queries, search_type='1')
+    if es_tag < (5, 0):
+        # 'count' is removed in 5.0
+        data = yield from client.msearch(queries, search_type='count')
+        assert len(data['responses']) > 0
+
+
+@pytest.mark.parametrize('exc,kwargs', [
+    (TypeError, dict(search_type=1)),
+    (ValueError, dict(search_type='1')),
+])
+@asyncio.coroutine
+def test_msearch__errors(client, exc, kwargs):
+    queries = [
+        {"_index": INDEX},
+        {"query": {"match_all": {}}, "from": 0, "size": 10},
+        {"_index": INDEX},
+        {"query": {"match_all": {}}}
+    ]
+    with pytest.raises(exc):
+        assert (yield from client.msearch(queries, **kwargs)) is None
 
 
 @asyncio.coroutine
-def test_bulk(client):
+def test_bulk(client, es_tag):
     bulks = [
         {"index": {"_index": INDEX, "_type": "type1", "_id": "1"}},
         {"name": "hiq", "age": 10},
@@ -605,13 +660,17 @@ def test_bulk(client):
     data = yield from client.bulk(bulks)
     assert not data['errors']
     assert 3 == len(data['items'])
+    if es_tag >= (5, 0):
+        kwargs = {}
+    else:
+        kwargs = dict(consistency='one',
+                      replication='async')
     data = yield from client.bulk(
         bulks,
-        consistency='one',
         refresh=True,
         routing='hiq',
-        replication='async',
-        timeout='1s'
+        timeout='1s',
+        **kwargs
     )
     with pytest.raises(TypeError):
         yield from client.bulk(bulks, consistency=1)
@@ -624,7 +683,7 @@ def test_bulk(client):
 
 
 @asyncio.coroutine
-def test_mget(client):
+def test_mget(client, es_tag):
     """ mget """
     yield from client.index(
         INDEX, 'testdoc', MESSAGES[0], '1', refresh=True)
@@ -640,31 +699,36 @@ def test_mget(client):
     }
     data = yield from client.mget(body)
     assert len(data['docs']) == 2
+    if es_tag > (5, 0):
+        kwargs = dict(stored_fields='user,skills',
+                      _source=True)
+    else:
+        kwargs = dict(fields='user,skills',
+                      parent='')
     data = yield from client.mget(
         body,
         _source_exclude='birthDate',
         _source_include='user,skills',
-        # _source=False,
-        fields='user,skills',
         realtime=True,
         refresh=True,
         preference='random',
-        parent=''
+        **kwargs
     )
     assert 'docs' in data
     assert len(data) == 1
     doc = data['docs'][0]
-    assert 'fields' in doc
+    if es_tag < (5, 0):
+        assert 'fields' in doc
+        assert 'skills' in doc['fields']
+        assert 'user' in doc['fields']
+        assert 'birthDate' not in doc['fields']
+        assert 'message' not in doc['fields']
+        assert 'counter' not in doc['fields']
     assert '_source' in doc
-    assert 'skills' in doc['fields']
-    assert 'user' in doc['fields']
     assert 'skills' in doc['_source']
     assert 'user' in doc['_source']
-    assert 'birthDate' not in doc['fields']
     assert 'birthDate' not in doc['_source']
-    assert 'message' not in doc['fields']
     assert 'message' not in doc['_source']
-    assert 'counter' not in doc['fields']
     assert 'counter' not in doc['_source']
     # yield from client.mget(body, routing='Sidor')  # XXX?
 
@@ -726,6 +790,7 @@ def test_suggest(client):
     assert results[0]['text'] == 'trying out Elasticsearch'
 
 
+@pytest.mark.es_tag(max=(5, 0), reason="Deprecated since 5.0")
 @asyncio.coroutine
 def test_percolate(client):
     mapping = {
@@ -768,7 +833,7 @@ def test_percolate(client):
         body=b,
     )
     assert data['total'] == 1
-    assert data['matches'][0] == {'_index': 'test_elasticsearch', '_id': '1'}
+    assert data['matches'][0] == {'_index': INDEX, '_id': '1'}
 
     # percolate_count gives only count, no matches
     data = yield from client.count_percolate(
@@ -781,23 +846,31 @@ def test_percolate(client):
     assert 'matches' not in data
 
 
+@pytest.mark.es_tag(max=(5, 0), reason="Deprecated in 5.0")
 @asyncio.coroutine
-def test_mpercolate(client):
-    mapping = {
-        "testdoc": {
-            "properties": {
-                "message": {
-                    "type": "string"
+def test_mpercolate(client, es_tag):
+    if es_tag >= (5, 0):
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "text"
+                    }
                 }
             }
         }
-    }
+    else:
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
     yield from client.indices.create(INDEX)
-    yield from client.indices.put_mapping(
-        INDEX,
-        'testdoc',
-        mapping,
-    )
+    yield from client.indices.put_mapping(INDEX, 'testdoc', mapping)
 
     percolator = {
         "query": {
@@ -825,45 +898,45 @@ def test_mpercolate(client):
         }
     ]
 
-    data = yield from client.mpercolate(
-        body,
-        INDEX,
-        'testdoc',
-    )
+    data = yield from client.mpercolate(body, INDEX, 'testdoc')
 
     assert len(data['responses']) == 1
     item = data['responses'][0]
     assert item['total'] == 1
-    assert item['matches'][0] == {'_index': 'test_elasticsearch', '_id': '1'}
+    assert item['matches'][0] == {'_index': INDEX, '_id': '1'}
 
 
 @asyncio.coroutine
-def test_termvector(client):
-    mapping = {
-        "testdoc": {
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "term_vector": "with_positions_offsets_payloads",
-                    "store": True,
+def test_termvector(client, es_tag):
+    if es_tag > (5, 0):
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "text",
+                        "term_vector": "with_positions_offsets_payloads",
+                        "store": True,
+                    }
                 }
             }
         }
-    }
+    else:
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "term_vector": "with_positions_offsets_payloads",
+                        "store": True,
+                    }
+                }
+            }
+        }
     yield from client.indices.create(INDEX)
-    yield from client.indices.put_mapping(
-        INDEX,
-        'testdoc',
-        mapping,
-    )
+    yield from client.indices.put_mapping(INDEX, 'testdoc', mapping)
 
-    doc = {
-        'message': 'Hello world',
-    }
-
-    yield from client.index(INDEX, 'testdoc',
-                            doc, '1',
-                            refresh=True)
+    doc = {'message': 'Hello world'}
+    yield from client.index(INDEX, 'testdoc', doc, '1', refresh=True)
 
     data = yield from client.termvector(INDEX, 'testdoc', '1')
 
@@ -878,39 +951,40 @@ def test_termvector(client):
 
 
 @asyncio.coroutine
-def test_mtermvectors(client):
-    mapping = {
-        "testdoc": {
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "term_vector": "with_positions_offsets_payloads",
-                    "store": True,
+def test_mtermvectors(client, es_tag):
+    if es_tag >= (5, 0):
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "text",
+                        "term_vector": "with_positions_offsets_payloads",
+                        "store": True,
+                    }
                 }
             }
         }
-    }
+    else:
+        mapping = {
+            "testdoc": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "term_vector": "with_positions_offsets_payloads",
+                        "store": True,
+                    }
+                }
+            }
+        }
     yield from client.indices.create(INDEX)
-    yield from client.indices.put_mapping(
-        INDEX,
-        'testdoc',
-        mapping,
-    )
+    yield from client.indices.put_mapping(INDEX, 'testdoc', mapping)
 
-    doc = {
-        'message': 'Hello world',
-    }
+    doc = {'message': 'Hello world'}
 
-    yield from client.index(INDEX, 'testdoc',
-                            doc, '1',
-                            refresh=True)
-    doc = {
-        'message': 'Second term',
-    }
+    yield from client.index(INDEX, 'testdoc', doc, '1', refresh=True)
 
-    yield from client.index(INDEX, 'testdoc',
-                            doc, '2',
-                            refresh=True)
+    doc = {'message': 'Second term'}
+    yield from client.index(INDEX, 'testdoc', doc, '2', refresh=True)
 
     data = yield from client.mtermvectors(
         INDEX, 'testdoc', ids='1,2'
@@ -974,7 +1048,7 @@ def test_scripts_execution(client):
 
 
 @asyncio.coroutine
-def test_templates_management(client):
+def test_templates_management(client, es_tag):
     template = {
         "template": {
             "query": {
@@ -988,12 +1062,20 @@ def test_templates_management(client):
     yield from client.put_template('test_template', template)
 
     data = yield from client.get_template('test_template')
-    assert data == {'lang': 'mustache',
+    if es_tag >= (5, 0):
+        expected = {'lang': 'mustache',
+                    '_id': 'test_template',
+                    'found': True,
+                    'template':
+                        '{"query":{"match":{"user":"{{query_string}}"}}}'}
+    else:
+        expected = {'lang': 'mustache',
                     '_version': mock.ANY,
                     '_id': 'test_template',
                     'found': True,
                     'template':
                         '{"query":{"match":{"user":"{{query_string}}"}}}'}
+    assert data == expected
 
     yield from client.delete_template('test_template')
     with pytest.raises(NotFoundError):
@@ -1001,7 +1083,7 @@ def test_templates_management(client):
 
 
 @asyncio.coroutine
-def test_template_search(client):
+def test_template_search(client, es_tag):
         template = {
             "template": {
                 "query": {
@@ -1011,14 +1093,22 @@ def test_template_search(client):
                 }
             }
         }
-        search_body = {
-            "template": {
-                "id": "test_template"
-            },
-            "params": {
-                "query_string": "Johny Mnemonic"
+        if es_tag >= (2, 0):
+            search_body = {
+                "id": "test_template",
+                "params": {
+                    "query_string": "Johny Mnemonic"
+                }
             }
-        }
+        else:
+            search_body = {
+                "template": {
+                    "id": "test_template"
+                },
+                "params": {
+                    "query_string": "Johny Mnemonic"
+                }
+            }
         yield from client.index(
             INDEX, 'testdoc', MESSAGES[0], '1',
             refresh=True

@@ -13,7 +13,9 @@ class IndicesClient(NamespacedClient):
     def analyze(self, index=None, body=None, *,
                 analyzer=default, char_filters=default, field=default,
                 filters=default, prefer_local=default, text=default,
-                tokenizer=default, token_filters=default):
+                tokenizer=default, token_filters=default,
+                # Es 5.x params
+                filter=default, token_filter=default, char_filter=default):
         """Run analyze tool.
 
         Perform the analysis process on a text and return the tokens
@@ -21,6 +23,13 @@ class IndicesClient(NamespacedClient):
 
         """
         params = {}
+        duplicate_err = "Either {0}s or {0} must be set, not both".format
+        if filters is not default and filter is not default:
+            raise ValueError(duplicate_err('filter'))
+        if char_filters is not default and char_filter is not default:
+            raise ValueError(duplicate_err('char_filter'))
+        if token_filters is not default and token_filter is not default:
+            raise ValueError(duplicate_err('token_filter'))
         if analyzer is not default:
             params['analyzer'] = analyzer
         if char_filters is not default:
@@ -37,6 +46,12 @@ class IndicesClient(NamespacedClient):
             params['tokenizer'] = tokenizer
         if token_filters is not default:
             params['token_filters'] = token_filters
+        if filter is not default:
+            params['filter'] = filter
+        if char_filter is not default:
+            params['char_filter'] = char_filter
+        if token_filter is not default:
+            params['token_filter'] = token_filter
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -970,7 +985,7 @@ class IndicesClient(NamespacedClient):
                                  "'segments', 'store', 'warmer'")
 
         _, data = yield from self.transport.perform_request(
-            'GET', _make_path(index, '_stats', metric),
+            'GET', _make_path(index, '_stats'),
             params=params)
         return data
 
@@ -1044,6 +1059,38 @@ class IndicesClient(NamespacedClient):
 
         _, data = yield from self.transport.perform_request(
             'POST', _make_path(index, '_optimize'), params=params)
+        return data
+
+    @asyncio.coroutine
+    def force_merge(self, index=None, *,
+                    flush=default, allow_no_indices=default,
+                    expand_wildcards=default,
+                    ignore_unavailable=default,
+                    max_num_segments=default,
+                    only_expunge_deletes=default):
+        """Force merging one or more indices through an API."""
+        params = {}
+        if flush is not default:
+            params['flush'] = bool(flush)
+        if max_num_segments is not default:
+            params['max_num_segments'] = int(max_num_segments)
+        if only_expunge_deletes is not default:
+            params['only_expunge_deletes'] = bool(only_expunge_deletes)
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards.lower()
+            else:
+                raise ValueError("'expand_wildcards' parameter should be one"
+                                 " of 'open', 'closed'")
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+
+        _, data = yield from self.transport.perform_request(
+            'POST', _make_path(index, '_forcemerge'), params=params)
         return data
 
     @asyncio.coroutine

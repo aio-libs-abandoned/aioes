@@ -9,16 +9,14 @@ from aioes import Elasticsearch
 from aioes.exception import NotFoundError
 
 
-@pytest.fixture
-def index():
-    return 'test_elasticsearch'
+INDEX = 'test_elasticsearch'
 
 
 @pytest.fixture
-def client(es_params, index, loop, repo_name, snapshot_name):
+def client(es_params, loop, repo_name, snapshot_name):
     client = Elasticsearch([{'host': es_params['host']}], loop=loop)
     try:
-        loop.run_until_complete(client.delete(index, '', ''))
+        loop.run_until_complete(client.delete(INDEX, '', ''))
     except NotFoundError:
         pass
     yield client
@@ -98,10 +96,10 @@ def test_repository(client, repo_path, repo_name):
 
 @pytest.mark.xfail(reason="Elasticsearch setting repo.path must be configured")
 @asyncio.coroutine
-def test_snapshot(client, repo_name, repo_path, snapshot_name, index):
+def test_snapshot(client, repo_name, repo_path, snapshot_name):
     # creating index
     yield from client.create(
-        index, 'tweet',
+        INDEX, 'tweet',
         {
             'user': 'Bob',
         },
@@ -133,9 +131,9 @@ def test_snapshot(client, repo_name, repo_path, snapshot_name, index):
 
     # restoring snapshot
     restore_body = {
-        "indices": index,
+        "indices": INDEX,
     }
-    yield from client.indices.close(index)
+    yield from client.indices.close(INDEX)
     ret = yield from client.snapshot.restore(
         repo_name, snapshot_name,
         body=restore_body

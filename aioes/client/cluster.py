@@ -12,7 +12,9 @@ class ClusterClient(NamespacedClient):
     def health(self, index=None, *,
                level=default, local=default, master_timeout=default,
                timeout=default, wait_for_active_shards=default,
-               wait_for_nodes=default, wait_for_relocating_shards=default,
+               wait_for_nodes=default,
+               wait_for_relocating_shards=default,
+               wait_for_no_relocating_shards=default,
                wait_for_status=default):
         """
         Get a very simple status on the health of the cluster.
@@ -56,8 +58,19 @@ class ClusterClient(NamespacedClient):
         if wait_for_nodes is not default:
             params['wait_for_nodes'] = str(wait_for_nodes)
         if wait_for_relocating_shards is not default:
+            if wait_for_no_relocating_shards is not default:
+                raise ValueError("Either wait_for_relocating_shards or"
+                                 " wait_for_no_relocating_shards must be set,"
+                                 " not both")
             params['wait_for_relocating_shards'] = \
                 int(wait_for_relocating_shards)
+        if wait_for_no_relocating_shards is not default:
+            if wait_for_relocating_shards is not default:
+                raise ValueError("Either wait_for_relocating_shards or"
+                                 " wait_for_no_relocating_shards must be set,"
+                                 " not both")
+            params['wait_for_no_relocating_shards'] = \
+                int(wait_for_no_relocating_shards)
         if wait_for_status is not default:
             if not isinstance(wait_for_status, str):
                 raise TypeError("'wait_for_status' parameter is not a string")
