@@ -59,6 +59,7 @@ def test_create(client):
     assert data['acknowledged']
 
 
+@pytest.mark.es_tag(min=(2, 0), reason="works in 1.7")
 @pytest.mark.parametrize('kwargs', [
     dict(timeout=1),
     dict(timeout='1'),
@@ -69,6 +70,16 @@ def test_create(client):
     ], ids=str)
 @asyncio.coroutine
 def test_create_errors(client, kwargs):
+    with pytest.raises(RequestError):
+        assert (yield from client.indices.create(INDEX, **kwargs)) is None
+
+
+@pytest.mark.parametrize('kwargs', [
+    dict(timeout='1.1'),
+    dict(master_timeout='1.1'),
+    ], ids=str)
+@asyncio.coroutine
+def test_create_errors_1_7(client, kwargs):
     with pytest.raises(RequestError):
         assert (yield from client.indices.create(INDEX, **kwargs)) is None
 
@@ -598,7 +609,7 @@ def test_aliases(client):
 
 
 @asyncio.coroutine
-def test_templates(client):
+def test_templates(client, es_tag):
     b = {
         "template": INDEX,
         "settings": {
@@ -614,10 +625,15 @@ def test_templates(client):
         t = yield from client.indices.get_template('template')
         assert 'template' in t
         assert 'settings' in t['template']
-        assert 'index' in t['template']['settings']
-        assert 'number_of_shards' in t['template']['settings']['index']
-        assert t['template']['settings']['index']['number_of_shards'] == \
-            b['settings']['number_of_shards']
+        if es_tag > (2, 0):
+            assert 'index' in t['template']['settings']
+            assert 'number_of_shards' in t['template']['settings']['index']
+            assert t['template']['settings']['index']['number_of_shards'] == \
+                b['settings']['number_of_shards']
+        else:
+            assert 'index.number_of_shards' in t['template']['settings']
+            assert t['template']['settings']['index.number_of_shards'] == \
+                b['settings']['number_of_shards']
     finally:
         yield from client.indices.delete_template('template')
         t = yield from client.indices.exists_template('template')

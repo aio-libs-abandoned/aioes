@@ -461,6 +461,7 @@ def test_search(client, es_tag):
                                  expand_wildcards='1')
 
 
+@pytest.mark.es_tag(min=(2, 0), reason='fails on 1.7, bad test')
 @asyncio.coroutine
 def test_count(client):
     """ count """
