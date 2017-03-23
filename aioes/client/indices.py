@@ -985,7 +985,7 @@ class IndicesClient(NamespacedClient):
                                  "'segments', 'store', 'warmer'")
 
         _, data = yield from self.transport.perform_request(
-            'GET', _make_path(index, '_stats', metric),
+            'GET', _make_path(index, '_stats'),
             params=params)
         return data
 
@@ -1059,6 +1059,38 @@ class IndicesClient(NamespacedClient):
 
         _, data = yield from self.transport.perform_request(
             'POST', _make_path(index, '_optimize'), params=params)
+        return data
+
+    @asyncio.coroutine
+    def force_merge(self, index=None, *,
+                    flush=default, allow_no_indices=default,
+                    expand_wildcards=default,
+                    ignore_unavailable=default,
+                    max_num_segments=default,
+                    only_expunge_deletes=default):
+        """Force merging one or more indices through an API."""
+        params = {}
+        if flush is not default:
+            params['flush'] = bool(flush)
+        if max_num_segments is not default:
+            params['max_num_segments'] = int(max_num_segments)
+        if only_expunge_deletes is not default:
+            params['only_expunge_deletes'] = bool(only_expunge_deletes)
+        if allow_no_indices is not default:
+            params['allow_no_indices'] = bool(allow_no_indices)
+        if expand_wildcards is not default:
+            if not isinstance(expand_wildcards, str):
+                raise TypeError("'expand_wildcards' parameter is not a string")
+            elif expand_wildcards.lower() in ('open', 'closed'):
+                params['expand_wildcards'] = expand_wildcards.lower()
+            else:
+                raise ValueError("'expand_wildcards' parameter should be one"
+                                 " of 'open', 'closed'")
+        if ignore_unavailable is not default:
+            params['ignore_unavailable'] = bool(ignore_unavailable)
+
+        _, data = yield from self.transport.perform_request(
+            'POST', _make_path(index, '_forcemerge'), params=params)
         return data
 
     @asyncio.coroutine

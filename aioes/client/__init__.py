@@ -380,7 +380,7 @@ class Elasticsearch:
              _source=default, _source_exclude=default,
              _source_include=default, fields=default, parent=default,
              preference=default, realtime=default, refresh=default,
-             routing=default):
+             routing=default, stored_fields=default):
         """
         Get multiple documents based on an index, type (optional) and ids.
         """
@@ -403,6 +403,8 @@ class Elasticsearch:
             params['refresh'] = bool(refresh)
         if routing is not default:
             params['routing'] = routing
+        if stored_fields is not default:
+            params['stored_fields'] = stored_fields
 
         _, data = yield from self.transport.perform_request(
             'GET',
@@ -426,7 +428,8 @@ class Elasticsearch:
                sort=default, source=default, stats=default,
                suggest_field=default, suggest_mode=default,
                suggest_size=default, suggest_text=default,
-               timeout=default, version=default):
+               timeout=default, version=default,
+               stored_fields=default):
         """
         Execute a search query and get back search hits that match the query.
         """
@@ -489,6 +492,8 @@ class Elasticsearch:
             params['version'] = int(version)
         if analyzer is not default:
             params['analyzer'] = analyzer
+        if stored_fields is not default:
+            params['stored_fields'] = stored_fields
 
         if expand_wildcards is not default:
             if not isinstance(expand_wildcards, str):
@@ -642,7 +647,7 @@ class Elasticsearch:
                 df=default, fields=default, lenient=default,
                 lowercase_expanded_terms=default, parent=default,
                 preference=default, q=default, routing=default,
-                source=default):
+                source=default, stored_fields=default):
         """
         The explain api computes a score explanation for a query and a
         specific document. This can give useful feedback whether a document
@@ -677,6 +682,8 @@ class Elasticsearch:
             params['routing'] = routing
         if source is not default:
             params['source'] = source
+        if stored_fields is not default:
+            params['stored_fields'] = stored_fields
         if default_operator is not default:
             if not isinstance(default_operator, str):
                 raise TypeError("'default_operator' parameter is not a string")

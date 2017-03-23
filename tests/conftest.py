@@ -60,11 +60,11 @@ def pytest_collection_modifyitems(session, config, items):
             if min_tag and max_tag:
                 if not (min_tag <= cur < max_tag):
                     item.add_marker(pytest.mark.skip(reason=reason))
-            if min_tag:
+            elif min_tag:
                 if cur < min_tag:
                     item.add_marker(pytest.mark.skip(reason=reason))
-            if max_tag:
-                if cur > max_tag:
+            elif max_tag:
+                if cur >= max_tag:
                     item.add_marker(pytest.mark.skip(reason=reason))
 
 
