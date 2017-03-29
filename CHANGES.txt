@@ -1,6 +1,26 @@
 CHANGES
 -------
 
+0.7.0 (XXXX-XX-XX)
+^^^^^^^^^^^^^^^^^^
+
+* Fix Elasticsearch 5.x compatibility issues: #48, #72, #112, #73, #123.
+
+* Add ``stored_fields`` to ``mget``, ``search`` and ``explain`` methods (#123).
+
+* Add ``wait_for_no_relocating_shards`` parameter in ``health`` (#123).
+
+* Add ``filter``, ``token_filter``, ``char_filter`` params in ``analyze`` (#123).
+
+* Add ``force_merge`` method (renamed ``optimize``) (#123).
+
+* Add ignore_idle_threads param in hot_threads #123.
+
+* Update project dependencies.
+
+* Convert tests to pytest.
+
+
 0.6.1 (2016-09-08)
 ^^^^^^^^^^^^^^^^^^
 
