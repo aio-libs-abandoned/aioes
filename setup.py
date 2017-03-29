@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 
-install_requires = ['aiohttp>=0.17.0', 'yarl']   # XXX: update/set versions
+install_requires = ['aiohttp>=1.3.4', 'yarl>=0.9.8']
 
 PY_VER = sys.version_info
 

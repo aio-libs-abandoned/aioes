@@ -60,7 +60,7 @@ Dependencies
 ------------
 
 - Python 3.3 and :mod:`asyncio` or Python 3.4+
-- :term:`aiohttp` 9.1+
+- :term:`aiohttp` 1.3+
 
 Authors and License
 -------------------

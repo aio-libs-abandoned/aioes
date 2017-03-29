@@ -51,7 +51,7 @@ Requirements
 
 * Python_ 3.3+
 * asyncio_ or Python 3.4+
-* aiohttp_ 0.9.1+
+* aiohttp_ 1.3+
 
 
 Tests
@@ -61,7 +61,7 @@ Make sure you have an instance of elastic-search running on port 9200
 before executing the tests.
 
 In order for all tests to work you need to add the following lines in the
-`config/elasticsearch.yml` configuration file:
+``config/elasticsearch.yml`` configuration file:
 
 Enable groovy scripts::
 
@@ -72,9 +72,9 @@ Set a repository path::
   path.repo: ["/tmp"]
 
 
-The test suite uses `nose`, to execute::
+The test suite uses `py.test`, simply run::
 
-  nosetests tests
+  $ py.test
 
 
 License
