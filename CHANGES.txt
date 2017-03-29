@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-0.7.0 (XXXX-XX-XX)
+0.7.0 (2017-03-29)
 ^^^^^^^^^^^^^^^^^^
 
 * Fix Elasticsearch 5.x compatibility issues: #48, #72, #112, #73, #123.
