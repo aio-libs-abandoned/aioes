@@ -6,14 +6,14 @@ flake:
 	flake8 .
 
 test: flake
-	py.test tests $(TEST_ARGS)
+	py.test $(TEST_ARGS)
 
 vtest: flake
-	py.test -v tests
+	py.test -v
 
 
 cov cover coverage: flake
-	py.test --cov tests $(TEST_ARGS)
+	py.test --cov $(TEST_ARGS)
 	@echo "open file://`pwd`/htmlcov/index.html"
 
 clean:
