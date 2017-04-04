@@ -48,7 +48,9 @@ with codecs.open(_version_path, 'r', 'latin1') as fp:
 # ones.
 extensions = [
     'sphinx.ext.viewcode',
-    'sphinx.ext.intersphinx'
+    'sphinx.ext.intersphinx',
+
+    'sphinxcontrib.spelling',
 ]
 
 intersphinx_mapping = {'python': ('http://docs.python.org/3', None)}
