@@ -17,7 +17,7 @@ Features
 
 - Easy interface to :term:`ElasticSearch` cluster.
 - Modelled after :term:`elasticsearch-py`. Not fully compatible due
-  ``yield from`` nature of :term:`asyncio` but looks very simular.
+  ``yield from`` nature of :term:`asyncio` but looks very similar.
 
 Basic Example
 -------------
