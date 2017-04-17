@@ -1,3 +1,4 @@
+import aiohttp
 import asyncio
 from unittest import mock
 
@@ -13,6 +14,16 @@ from aioes.transport import Endpoint
 def test_ctor(loop):
     c = Connection(Endpoint('http', 'host', 9999), loop=loop)
     assert Endpoint('http', 'host', 9999) == c.endpoint
+
+
+def test_use_connector_param(loop):
+    connector = aiohttp.TCPConnector(loop=loop)
+    c = Connection(
+        Endpoint('http', 'host', 9999),
+        loop=loop,
+        connector=connector
+    )
+    assert c._session.connector is connector
 
 
 @asyncio.coroutine

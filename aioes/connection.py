@@ -17,11 +17,11 @@ class Connection:
     Also responsible for logging.
     """
 
-    def __init__(self, endpoint, *, loop, verify_ssl=True):
+    def __init__(self, endpoint, *, loop, verify_ssl=True, connector=None):
         self._endpoint = endpoint
         self._session = aiohttp.ClientSession(
             # limit number of connections?
-            connector=aiohttp.TCPConnector(
+            connector=connector or aiohttp.TCPConnector(
                 use_dns_cache=True,
                 loop=loop,
                 verify_ssl=verify_ssl),
