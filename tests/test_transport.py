@@ -45,7 +45,7 @@ def test_connector_factory(es_params, loop):
         endpoints=[{'host': es_params['host']}],
         sniffer_interval=None,
         loop=loop,
-        connector_factory=lambda: TCPConnector()
+        connector_factory=lambda: TCPConnector(loop=loop)
     )
     assert 1 == len(tr._pool.connections)
     assert TCPConnector.used
