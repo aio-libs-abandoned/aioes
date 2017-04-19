@@ -1,3 +1,4 @@
+import aiohttp
 import asyncio
 import time
 import urllib.parse
@@ -28,6 +29,27 @@ def test_ctor(make_transport, es_params):
     assert 0.1 == tr.sniffer_timeout
     assert [Endpoint('http', es_params['host'], 9200)] == tr.endpoints
     assert 1 == len(tr._pool.connections)
+
+
+@asyncio.coroutine
+def test_connector_factory(es_params, loop):
+
+    class TCPConnector(aiohttp.TCPConnector):
+        used = False
+
+        def __init__(self, *args, **kwargs):
+            TCPConnector.used = True
+            super(TCPConnector, self).__init__(*args, **kwargs)
+
+    tr = Transport(
+        endpoints=[{'host': es_params['host']}],
+        sniffer_interval=None,
+        loop=loop,
+        connector_factory=lambda: TCPConnector(loop=loop)
+    )
+    assert 1 == len(tr._pool.connections)
+    assert TCPConnector.used
+    tr.close()
 
 
 @asyncio.coroutine
