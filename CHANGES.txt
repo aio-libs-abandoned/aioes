@@ -1,6 +1,14 @@
 CHANGES
 -------
 
+0.7.1 (2017-04-19)
+^^^^^^^^^^^^^^^^^^
+
+* Allow custom ``Connector`` in ``Transport``: #138, #137.
+
+* Several typos in documentation fixed.
+
+
 0.7.0 (2017-03-29)
 ^^^^^^^^^^^^^^^^^^
 
