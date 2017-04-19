@@ -7,6 +7,12 @@ python:
 
 dist: trusty  # beta, but it has docker
 sudo: false
+addons:
+  apt:
+    packages:
+    - enchant
+    - aspell
+    - aspell-en
 
 services:
 - docker
