@@ -995,6 +995,7 @@ def test_mtermvectors(client, es_tag):
     assert 'term_vectors' in data['docs'][1]
 
 
+@pytest.mark.es_tag(max=(5, 2), reason="Broken in 5.3")
 @asyncio.coroutine
 def test_scripts_management(client):
     script = {'script': 'log(_score * 2)'}
