@@ -1,5 +1,5 @@
 aioes reference
-================
+===============
 
 .. module:: aioes
    :synopsis: A library for accessing Elasticsearch server.
@@ -7,7 +7,7 @@ aioes reference
 
 
 Elasticsearch
------------------
+-------------
 
 .. class:: Elasticsearch
 
@@ -15,8 +15,8 @@ Elasticsearch
 
    .. method:: ping()
 
-      A :ref:`coroutine <coroutine>` that returns True if the cluster is up,
-      False otherwise.
+      A :ref:`coroutine <coroutine>` that returns ``True`` if the cluster is up,
+      ``False`` otherwise.
 
       :returns: bool
 
@@ -43,10 +43,10 @@ Elasticsearch
       :arg body: The document
       :arg id: Document ID
       :arg consistency: Explicit write consistency setting for the operation
-      :arg op_type: Explicit operation type (default: index)
+      :arg op_type: Explicit operation type (default: ``index``)
       :arg parent: ID of the parent document
       :arg refresh: Refresh the index after performing the operation
-      :arg replication: Specific replication type (default: sync)
+      :arg replication: Specific replication type (default: ``sync``)
       :arg routing: Specific routing value
       :arg timeout: Explicit operation timeout
       :arg timestamp: Explicit timestamp for the document
@@ -80,7 +80,7 @@ Elasticsearch
       :arg parent: ID of the parent document
       :arg percolate: Percolator queries to execute while indexing the document
       :arg refresh: Refresh the index after performing the operation
-      :arg replication: Specific replication type (default: sync)
+      :arg replication: Specific replication type (default: ``sync``)
       :arg routing: Specific routing value
       :arg timeout: Explicit operation timeout
       :arg timestamp: Explicit timestamp for the document
@@ -104,12 +104,12 @@ Elasticsearch
 
       :arg index: The name of the index
       :arg id: The document ID
-      :arg doc_type: The type of the document (uses `_all` by default to
+      :arg doc_type: The type of the document (uses ``_all`` by default to
              fetch the first document matching the ID across all types)
       :arg parent: The ID of the parent document
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
-      :arg realtime: Specify whether to perform the operation in realtime or
+             performed on (default: ``random``)
+      :arg realtime: Specify whether to perform the operation in real time or
              search mode
       :arg refresh: Refresh the shard containing the document before
              performing the operation
@@ -133,7 +133,7 @@ Elasticsearch
 
       :arg index: The name of the index
       :arg id: The document ID
-      :arg doc_type: The type of the document (uses `_all` by default to
+      :arg doc_type: The type of the document (uses ``_all`` by default to
              fetch the first document matching the ID across all types)
       :arg _source: True or false to return the _source field or not, or a
              list of fields to return
@@ -144,8 +144,8 @@ Elasticsearch
       :arg fields: A comma-separated list of fields to return in the response
       :arg parent: The ID of the parent document
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
-      :arg realtime: Specify whether to perform the operation in realtime or
+             performed on (default: ``random``)
+      :arg realtime: Specify whether to perform the operation in real time or
              search mode
       :arg refresh: Refresh the shard containing the document before
              performing the operation
@@ -168,8 +168,9 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that get multiple documents based on an index,
       type (optional) and ids.
 
-      :arg body: Document identifiers; can be either `docs` (containing full
-             document information) or `ids` (when index and type is provided in the URL.
+      :arg body: Document identifiers; can be either ``docs`` (containing full
+             document information) or ``ids``
+             (when index and type is provided in the URL).
       :arg index: The name of the index
       :arg doc_type: The type of the document
       :arg _source: True or false to return the _source field or not, or a
@@ -181,8 +182,8 @@ Elasticsearch
       :arg fields: A comma-separated list of fields to return in the response
       :arg parent: The ID of the parent document
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
-      :arg realtime: Specify whether to perform the operation in realtime or
+             performed on (default: ``random``)
+      :arg realtime: Specify whether to perform the operation in real time or
              search mode
       :arg refresh: Refresh the shard containing the document before
              performing the operation
@@ -205,7 +206,7 @@ Elasticsearch
       index, type and id.
 
       :arg index: The name of the index
-      :arg doc_type: The type of the document (uses `_all` by default to
+      :arg doc_type: The type of the document (uses ``_all`` by default to
              fetch the first document matching the ID across all types)
       :arg id: The document ID
       :arg _source: True or false to return the _source field or not, or a
@@ -216,8 +217,8 @@ Elasticsearch
              _source field
       :arg parent: The ID of the parent document
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
-      :arg realtime: Specify whether to perform the operation in realtime
+             performed on (default: ``random``)
+      :arg realtime: Specify whether to perform the operation in real time
              or search mode
       :arg refresh: Refresh the shard containing the document before
              performing the operation
@@ -245,13 +246,13 @@ Elasticsearch
       :arg index: The name of the index
       :arg doc_type: The type of the document
       :arg id: Document ID
-      :arg body: The request definition using either `script` or partial `doc`
+      :arg body: The request definition using either ``script`` or partial ``doc``
       :arg consistency: Explicit write consistency setting for the operation
       :arg fields: A comma-separated list of fields to return in the response
-      :arg lang: The script language (default: mvel)
+      :arg lang: The script language (default: ``mvel``)
       :arg parent: ID of the parent document
       :arg refresh: Refresh the index after performing the operation
-      :arg replication: Specific replication type (default: sync)
+      :arg replication: Specific replication type (default: ``sync``)
       :arg retry_on_conflict: Specify how many times should the operation be
              retried when a conflict occurs (default: 0)
       :arg routing: Specific routing value
@@ -287,7 +288,7 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that execute a search query and get back
       search hits that match the query.
 
-      :arg index: A comma-separated list of index names to search; use `_all`
+      :arg index: A comma-separated list of index names to search; use ``_all``
             or empty string to perform the operation on all indices
       :arg doc_type: A comma-separated list of document types to search;
             leave empty to perform the operation on all types
@@ -299,10 +300,10 @@ Elasticsearch
       :arg _source_include: A list of fields to extract and return from the
             _source field
       :arg analyze_wildcard: Specify whether wildcard and prefix queries
-            should be analyzed (default: false)
+            should be analyzed (default: ``false``)
       :arg analyzer: The analyzer to use for the query string
       :arg default_operator: The default operator for query string query (AND
-            or OR) (default: OR)
+            or OR) (default: ``OR``)
       :arg df: The field to use as default where no field prefix is given in
             the query string
       :arg explain: Specify whether to return detailed information about
@@ -315,13 +316,13 @@ Elasticsearch
             expression resolves into no concrete indices. (This includes `_all`
             string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-            indices that are open, closed or both., default 'open'
+            indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
             ignored when unavailable (missing or closed)
       :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
       :arg from\_: Starting offset (default: 0)
       :arg preference: Specify the node or shard the operation should be
-            performed on (default: random)
+            performed on (default: ``random``)
       :arg q: Query in the Lucene query string syntax
       :arg routing: A comma-separated list of specific routing values
       :arg scroll: Specify how long a consistent view of the index should be
@@ -333,7 +334,7 @@ Elasticsearch
             (instead of using request body)
       :arg stats: Specific 'tag' of the request for logging and statistical purposes
       :arg suggest_field: Specify which field to use for suggestions
-      :arg suggest_mode: Specify suggest mode (default: missing)
+      :arg suggest_mode: Specify suggest mode (default: ``missing``)
       :arg suggest_size: How many suggestions to return in response
       :arg suggest_text: The source text for which the suggestions should be returned
       :arg timeout: Explicit operation timeout
@@ -361,16 +362,16 @@ Elasticsearch
       :arg index: The name of the index
       :arg doc_type: The type of the document
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both. (default: '"open"')
+             indices that are open, closed or both. (default: ``open``)
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-             master node (default: false)
+             master node (default: ``false``)
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg routing: Specific routing value
 
       :returns: resulting JSON
@@ -390,20 +391,20 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` that accepts a body with a query template and
       a map of key/value pairs to fill in template parameters.
 
-      :arg index: A comma-separated list of index names to search; use `_all`
+      :arg index: A comma-separated list of index names to search; use ``_all``
              or empty string to perform the operation on all indices
       :arg doc_type: A comma-separated list of document types to search; leave
              empty to perform the operation on all types
       :arg body: The search definition template and its params
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg routing: A comma-separated list of specific routing values
       :arg scroll: Specify how long a consistent view of the index should be
              maintained for scrolled search
@@ -440,18 +441,18 @@ Elasticsearch
       :arg _source_include: A list of fields to extract and return from the
              _source field
       :arg analyze_wildcard: Specify whether wildcards and prefix queries in
-             the query string query should be analyzed (default: false)
+             the query string query should be analyzed (default: ``false``)
       :arg analyzer: The analyzer for the query string query
       :arg default_operator: The default operator for query string query (AND
-             or OR), (default: OR)
-      :arg df: The default field for query string query (default: _all)
+             or OR), (default: ``OR``)
+      :arg df: The default field for query string query (default: ``_all``)
       :arg fields: A comma-separated list of fields to return in the response
       :arg lenient: Specify whether format-based query failures (such as
              providing text to a numeric field) should be ignored
       :arg lowercase_expanded_terms: Specify whether query terms should be lowercased
       :arg parent: The ID of the parent document
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg q: Query in the Lucene query string syntax
       :arg routing: Specific routing value
       :arg source: The URL-encoded query definition (instead of using the
@@ -511,7 +512,7 @@ Elasticsearch
       :arg consistency: Specific write consistency setting for the operation
       :arg parent: ID of parent document
       :arg refresh: Refresh the index after performing the operation
-      :arg replication: Specific replication type (default: sync)
+      :arg replication: Specific replication type (default: ``sync``)
       :arg routing: Specific routing value
       :arg timeout: Explicit operation timeout
       :arg version: Explicit version number for concurrency control
@@ -537,16 +538,16 @@ Elasticsearch
       :arg doc_type: A comma-separated list of types to restrict the results
       :arg body: A query to restrict the results (optional)
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
-      :arg min_score: Include only documents with a specific `_score` value
+      :arg min_score: Include only documents with a specific ``_score`` value
              in the result
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg q: Query in the Lucene query string syntax
       :arg routing: Specific routing value
       :arg source: The URL-encoded query definition (instead of using the request body)
@@ -573,7 +574,7 @@ Elasticsearch
       :arg consistency: Explicit write consistency setting for the operation
       :arg refresh: Refresh the index after performing the operation
       :arg routing: Specific routing value
-      :arg replication: Explicitly set the replication type (default: sync)
+      :arg replication: Explicitly set the replication type (default: ``sync``)
       :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
@@ -620,20 +621,20 @@ Elasticsearch
       :arg body: A query to restrict the operation specified with the Query
              DSL
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg analyzer: The analyzer to use for the query string
       :arg consistency: Specific write consistency setting for the operation
       :arg default_operator: The default operator for query string query (AND
-             or OR), default u'OR'
+             or OR), default ``OR``
       :arg df: The field to use as default where no field prefix is given in
              the query string
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default u'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg q: Query in the Lucene query string syntax
-      :arg replication: Specific replication type, default u'sync'
+      :arg replication: Specific replication type, default ``sync``
       :arg routing: Specific routing value
       :arg source: The URL-encoded query definition (instead of using the
              request body)
@@ -658,14 +659,14 @@ Elasticsearch
              use `_all` or empty string to perform the operation on all indices
       :arg body: The request definition
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg routing: Specific routing value
       :arg source: The URL-encoded request definition (instead of using request body)
 
@@ -695,10 +696,10 @@ Elasticsearch
              cluster.
       :arg body: The percolator request definition using the percolate DSL
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg percolate_format: Return an array of matching query IDs instead of
@@ -708,7 +709,7 @@ Elasticsearch
       :arg percolate_type: The type to percolate document into. Defaults to
              type.
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg routing: A comma-separated list of specific routing values
       :arg version: Explicit version number for concurrency control
       :arg version_type: Specific version type
@@ -735,10 +736,10 @@ Elasticsearch
       :arg body: The percolate request definitions (header & body pair),
              separated by newlines
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
 
@@ -770,10 +771,10 @@ Elasticsearch
              cluster.
       :arg body: The count percolator request definition using the percolate DSL
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all`
+             expression resolves into no concrete indices. (This includes ``_all``
              string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default 'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg percolate_index: The index to count percolate the document into.
@@ -781,7 +782,7 @@ Elasticsearch
       :arg percolate_type: The type to count percolate document into. Defaults
              to type.
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random)
+             performed on (default: ``random``)
       :arg routing: A comma-separated list of specific routing values
       :arg version: Explicit version number for concurrency control
       :arg version_type: Specific version type
@@ -807,7 +808,7 @@ Elasticsearch
       A :ref:`coroutine <coroutine>` which get documents that are "like" a specified document
 
       :arg index: The name of the index
-      :arg doc_type: The type of the document (use `_all` to fetch the first
+      :arg doc_type: The type of the document (use ``_all`` to fetch the first
              document matching the ID across all types)
       :arg id: The document ID
       :arg body: A specific search request definition
@@ -820,7 +821,7 @@ Elasticsearch
       :arg min_doc_freq: The word occurrence frequency as count: words with
              lower occurrence in the corpus will be ignored
       :arg min_term_freq: The term frequency as percent: terms with lower
-             occurence in the source document will be ignored
+             occurrence in the source document will be ignored
       :arg min_word_length: The minimum length of the word: shorter words will be ignored
       :arg mlt_fields: Specific fields to perform the query against
       :arg percent_terms_to_match: How many terms have to match in order to
@@ -834,7 +835,7 @@ Elasticsearch
       :arg search_size: The number of documents to return (default: 10)
       :arg search_source: A specific search request definition (instead of
              using the request body)
-      :arg search_type: Specific search type (eg. `dfs_then_fetch`, `count`, etc)
+      :arg search_type: Specific search type (``dfs_then_fetch``, ``count``, etc)
       :arg search_types: A comma-separated list of types to perform the query
              against (default: the same type as the document)
       :arg stop_words: A list of stop words to be ignored
@@ -861,17 +862,17 @@ Elasticsearch
       :arg body: Define parameters. See documentation.
       :arg field_statistics: Specifies if document count, sum of document
              frequencies and sum of total term frequencies should be returned.
-             (default True)
+             (default: ``true``)
       :arg fields: A comma-separated list of fields to return.
-      :arg offsets: Specifies if term offsets should be returned. (default True)
+      :arg offsets: Specifies if term offsets should be returned. (default: ``true``)
       :arg parent: Parent id of documents.
-      :arg payloads: Specifies if term payloads should be returned. (default True)
-      :arg positions: Specifies if term positions should be returned. (default True)
+      :arg payloads: Specifies if term payloads should be returned. (default: ``true``)
+      :arg positions: Specifies if term positions should be returned. (default: ``true``)
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random).
+             performed on (default: ``random``).
       :arg routing: Specific routing value.
       :arg term_statistics: Specifies if total term frequency and document
-             frequency should be returned., default False
+             frequency should be returned (default: ``false``)
 
       :returns: resulting JSON
 
@@ -887,7 +888,7 @@ Elasticsearch
                             preference=default, routing=default,\
                             term_statistics=default)
 
-      A :ref:`coroutine <coroutine>` allows to get multiple termvectors based on
+      A :ref:`coroutine <coroutine>` allows to get multiple term vectors based on
       an index, type and id.
 
       :arg index: The index in which the document resides.
@@ -898,7 +899,7 @@ Elasticsearch
       :arg field_statistics: Specifies if document count, sum of document
              frequencies and sum of total term frequencies should be returned.
              Applies to all returned documents unless otherwise specified in body
-             "params" or "docs". (default True)
+             "params" or "docs". (default: ``true``)
       :arg fields: A comma-separated list of fields to return. Applies to all
              returned documents unless otherwise specified in body "params" or
              "docs".
@@ -906,24 +907,24 @@ Elasticsearch
              as parameter or set "ids" or "docs" in the request body
       :arg offsets: Specifies if term offsets should be returned. Applies to
              all returned documents unless otherwise specified in body "params"
-             or "docs". (default True)
+             or "docs". (default: ``true``)
       :arg parent: Parent id of documents. Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
       :arg payloads: Specifies if term payloads should be returned. Applies to
              all returned documents unless otherwise specified in body "params"
-             or "docs". (default True)
+             or "docs". (default: ``true``)
       :arg positions: Specifies if term positions should be returned. Applies
              to all returned documents unless otherwise specified in body
-             "params" or "docs". (default True)
+             "params" or "docs". (default: ``true``)
       :arg preference: Specify the node or shard the operation should be
-             performed on (default: random) .Applies to all returned documents
+             performed on (default: ``random``). Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
       :arg routing: Specific routing value. Applies to all returned documents
              unless otherwise specified in body "params" or "docs".
       :arg term_statistics: Specifies if total term frequency and document
              frequency should be returned. Applies to all returned documents
-             unless otherwise specified in body "params" or "docs". (default
-             False)
+             unless otherwise specified in body "params" or "docs". (default:
+             ``false``)
 
       :returns: resulting JSON
 
@@ -943,7 +944,7 @@ Elasticsearch
       :arg doc_type: The name of the document type
       :arg body: The search definition using the Query DSL
       :arg verbose: Specify whether to return verbose statistics about each
-             iteration (default: false)
+             iteration (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1036,7 +1037,7 @@ Elasticsearch
 
 
 IndicesClient
------------------
+-------------
 
 
 .. class:: aioes.client.IndicesClient
@@ -1058,8 +1059,8 @@ IndicesClient
       :arg field: Use the analyzer configured for this field (instead of
              passing the analyzer name)
       :arg filters: A comma-separated list of filters to use for the analysis
-      :arg prefer_local: With `true`, specify that a local shard should be
-             used if available, with `false`, use a random shard (default: true)
+      :arg prefer_local: With ``true``, specify that a local shard should be
+             used if available, with ``false``, use a random shard (default: ``true``)
       :arg text: The text on which the analysis should be performed (when
              request body is not used)
       :arg tokenizer: The name of the tokenizer to use for the analysis
@@ -1077,7 +1078,7 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that creates an index in Elasticsearch
 
       :arg index: The name of the index
-      :arg body: The configuration for the index (`settings` and `mappings`)
+      :arg body: The configuration for the index (``settings`` and ``mappings``)
       :arg master_timeout: Specify timeout for connection to master
       :arg timeout: Explicit operation timeout
 
@@ -1099,7 +1100,7 @@ IndicesClient
       :arg master_timeout: Specify timeout for connection to master
       :arg timeout: Explicit operation timeout
       :arg allow_no_indices: Whether to ignore if a wildcard indices
-             expression resolves into no concrete indices. (This includes `_all` string or
+             expression resolves into no concrete indices. (This includes ``_all`` string or
              when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete indices
              that are open, closed or both.
@@ -1127,7 +1128,7 @@ IndicesClient
              expression resolves into no concrete indices. (This includes `_all` string or
              when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-             indices that are open, closed or both., default u'open'
+             indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be ignored
              when unavailable (missing or closed)
 
@@ -1141,7 +1142,7 @@ IndicesClient
 
       A :ref:`coroutine <coroutine>` that deletes an index.
 
-      :arg index: A comma-separated list of indices to delete; use ``'_all'``
+      :arg index: A comma-separated list of indices to delete; use ``_all``
                     or ``'*'`` to delete all indices
       :arg master_timeout: Specify timeout for connection to master
       :arg timeout: Explicit operation timeout
@@ -1169,7 +1170,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
                concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-               ignore `missing` ones, default u'none'
+               ignore ``missing`` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices should
                be ignored when unavailable (missing or closed)
       :arg force: Force a refresh even if not required
@@ -1201,7 +1202,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones (default: none)
+             ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
 
@@ -1223,11 +1224,11 @@ IndicesClient
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to
-             concrete indices that are open, closed or both., default u'open'
+             concrete indices that are open, closed or both; default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-             master node (default: false)
+             master node (default: ``false``)
 
       :returns: resulting bool
 
@@ -1243,7 +1244,7 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that check if a type/types exists
       in an index/indices.
 
-      :arg index: A comma-separated list of index names; use `_all` to
+      :arg index: A comma-separated list of index names; use ``_all`` to
                check the types across all indices
       :arg doc_type: A comma-separated list of document types to check
       :arg allow_no_indices: Whether to ignore if a wildcard indices
@@ -1252,11 +1253,11 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones (default: none)
+             ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should
                be ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-               master node (default: false)
+               master node (default: ``false``)
 
       :returns: resulting bool
 
@@ -1278,12 +1279,12 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones, default u'none'
+             ignore `missing` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg local: Return local information, do not retrieve the state from
-             master node (default: false)
+             master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1306,11 +1307,11 @@ IndicesClient
              empty string to perform the operation on all indices
       :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
-             `_all` string or when no indices have been specified)
+             ``_all`` string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to
-             concrete indices that are open, closed or both., default
-             u'open'
-      :arg flat_settings: Return settings in flat format (default: false)
+             concrete indices that are open, closed or both; default
+             ``open``
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
       :arg master_timeout: Specify timeout for connection to master
@@ -1338,7 +1339,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows
-             to ignore `missing` ones, default u'none'
+             to ignore `missing` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices
              should be ignored when unavailable (missing or closed)
       :arg operation_threading: TODO: ?
@@ -1386,7 +1387,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows
-             to ignore `missing` ones (default: none)
+             to ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
       :arg human: Whether to return time and byte values in human-readable
@@ -1418,11 +1419,11 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones, default u'none'
+             ignore `missing` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
       :arg human: Whether to return time and byte values in human-readable
-             format (default: false)
+             format (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1443,23 +1444,23 @@ IndicesClient
       :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
       :arg flush: Specify whether the index should be flushed after
-              performing the operation (default: true)
+              performing the operation (default: ``true``)
       :arg allow_no_indices: Whether to ignore if a wildcard indices
              expression resolves into no concrete indices. (This includes
              `_all` string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones, default u'none'
+             ignore `missing` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
       :arg max_num_segments: The number of segments the index should be
-             merged into (default: dynamic)
+             merged into (default: ``dynamic``)
       :arg only_expunge_deletes: Specify whether the operation should only
              expunge deleted documents
       :arg operation_threading: TODO: ?
       :arg wait_for_merge: Specify whether the request should block until
-             the merge process is finished (default: true)
+             the merge process is finished (default: ``true``)
 
       :returns: resulting JSON
 
@@ -1477,11 +1478,11 @@ IndicesClient
       :arg index: A comma-separated list of index names; use `_all` or
              empty string to perform the operation on all indices
       :arg active_only: Display only those recoveries that are currently
-             on-going (default: 'false')
+             on-going (default: ``false``)
       :arg detailed: Whether to display detailed information about shard
-             recovery (default: 'false')
+             recovery (default: ``false``)
       :arg human: Whether to return time and byte values in human-readable
-             format. (default: 'false')
+             format. (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1506,11 +1507,11 @@ IndicesClient
       :arg field_data: Clear field data
       :arg fielddata: Clear field data
       :arg fields: A comma-separated list of fields to clear when using the
-             `field_data` parameter (default: all)
+             `field_data` parameter (default: ``all``)
       :arg filter: Clear filter caches
       :arg filter_cache: Clear filter caches
       :arg filter_keys: A comma-separated list of keys to clear when using
-             the `filter_cache` parameter (default: all)
+             the `filter_cache` parameter (default: ``all``)
       :arg id: Clear ID caches for parent/child
       :arg id_cache: Clear ID caches for parent/child
       :arg allow_no_indices: Whether to ignore if a wildcard indices
@@ -1519,7 +1520,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones (default: none)
+             ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should be
              ignored when unavailable (missing or closed)
       :arg index: A comma-separated list of index name to limit the
@@ -1555,7 +1556,7 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression to
              concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-             ignore `missing` ones (default: none)
+             ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should
              be ignored when unavailable (missing or closed)
       :arg operation_threading: TODO: ?
@@ -1587,9 +1588,9 @@ IndicesClient
           expression resolves into no concrete indices. (This includes `_all`
           string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression to concrete
-          indices that are open, closed or both., default u'open'
+          indices that are open, closed or both., default ``open``
       :arg ignore_conflicts: Specify whether to ignore conflicts while
-          updating the mapping (default: false)
+          updating the mapping (default: ``false``)
       :arg ignore_unavailable: Whether specified concrete indices should be
           ignored when unavailable (missing or closed)
       :arg master_timeout: Specify timeout for connection to master
@@ -1621,7 +1622,7 @@ IndicesClient
       :arg ignore_unavailable: Whether specified concrete indices
             should be ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-            master node (default: false)
+            master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1670,7 +1671,7 @@ IndicesClient
       :arg ignore_unavailable: Whether specified concrete indices should
           be ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1711,11 +1712,11 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression
           to concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-          ignore `missing` ones (default: none)
+          ignore `missing` ones (default: ``none``)
       :arg ignore_unavailable: Whether specified concrete indices should
           be ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting boolean
 
@@ -1737,11 +1738,11 @@ IndicesClient
       :arg expand_wildcards: Whether to expand wildcard expression
           to concrete indices that are open, closed or both.
       :arg ignore_indices: When performed on multiple indices, allows to
-          ignore `missing` ones, default u'none'
+          ignore `missing` ones, default ``none``
       :arg ignore_unavailable: Whether specified concrete indices should
           be ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1757,7 +1758,7 @@ IndicesClient
       :arg index: A comma-separated list of index names to filter aliases
       :arg name: A comma-separated list of alias names to filter
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg timeout: Explicit operation timeout
 
       :returns: resulting JSON
@@ -1816,7 +1817,7 @@ IndicesClient
           lower numbers)
       :arg master_timeout: Specify timeout for connection to master
       :arg timeout: Explicit operation timeout
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1831,7 +1832,7 @@ IndicesClient
 
       :arg name: The name of the template
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1845,9 +1846,9 @@ IndicesClient
       A :ref:`coroutine <coroutine>` that retrieves an index template by its name.
 
       :arg name: The name of the template
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1891,7 +1892,7 @@ IndicesClient
           specified)
       :arg expand_wildcards: Whether to expand wildcard expression
           to concrete indices that are open, closed or both, in the
-          search request to warm., default u'open'
+          search request to warm., default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
           ignored when unavailable (missing or closed) in the search request
           to warm
@@ -1907,7 +1908,7 @@ IndicesClient
                           allow_no_indices=default, expand_wildcards=default, \
                           ignore_unavailable=default, local=default)
 
-      A :ref:`coroutine <coroutine>` that retreieves an index warmer.
+      A :ref:`coroutine <coroutine>` that retrieves an index warmer.
 
       :arg index: A comma-separated list of index names to restrict the
           operation; use `_all` to perform the operation on all indices
@@ -1919,11 +1920,11 @@ IndicesClient
           expression resolves into no concrete indices. (This includes `_all`
           string or when no indices have been specified)
       :arg expand_wildcards: Whether to expand wildcard expression
-          to concrete indices that are open, closed or both. default u'open'
+          to concrete indices that are open, closed or both. default ``open``
       :arg ignore_unavailable: Whether specified concrete indices should be
           ignored when unavailable (missing or closed)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting JSON
 
@@ -1950,7 +1951,7 @@ IndicesClient
          `<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html>`_
 
 CatClient
------------------
+---------
 
 
 .. class:: aioes.client.CatClient
@@ -1964,12 +1965,12 @@ CatClient
 
       :arg name: A comma-separated list of alias names to return
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to master
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -1989,12 +1990,12 @@ CatClient
             returned information
       :arg bytes: The unit in which to display byte values
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default ``False``
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-            master node (default: ``False``)
+            master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection
             to master node
-      :arg v: Verbose mode. Display column headers, default ``False``
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2010,12 +2011,12 @@ CatClient
       :arg index: A comma-separated list of index names to limit the returned
           information
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to
           master node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2031,13 +2032,13 @@ CatClient
       :meth:`~elasticsearch.client.cluster.ClusterClient.health` API
 
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to master
           node
-      :arg ts: Set to false to disable timestamping, default True
-      :arg v: Verbose mode. Display column headers, default False
+      :arg ts: Set to false to disable timestamping, default ``true``
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2066,14 +2067,14 @@ CatClient
           information
       :arg bytes: The unit in which to display byte values
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to
           master node
       :arg pri: Set to true to return stats only for primary shards, default
-          False
-      :arg v: Verbose mode. Display column headers, default False
+          ``false``
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2088,12 +2089,12 @@ CatClient
       bound IP address, and node name
 
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to
           master node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2107,12 +2108,12 @@ CatClient
       A :ref:`coroutine <coroutine>` that shows the cluster topology.
 
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2129,12 +2130,12 @@ CatClient
             information
       :arg bytes: The unit in which to display byte values
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2151,12 +2152,12 @@ CatClient
       :arg index: A comma-separated list of index names to limit the returned
             information
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2173,12 +2174,12 @@ CatClient
       :arg index: A comma-separated list of index names to limit the returned
             information
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2194,12 +2195,12 @@ CatClient
       in a convenient tabular format.
 
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2212,14 +2213,14 @@ CatClient
 
       A :ref:`coroutine <coroutine>` that provides information about thread pools.
 
-      :arg full_id: Enables displaying the complete node ids (default:false)
+      :arg full_id: Enables displaying the complete node ids (default: ``false``)
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2238,12 +2239,12 @@ CatClient
           size
       :arg bytes: The unit in which to display byte values
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information (default: 'false')
+      :arg help: Return help information (default: ``false``)
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers (default: 'false')
+      :arg v: Verbose mode. Display column headers (default: ``false``)
 
       :returns: resulting text
 
@@ -2257,12 +2258,12 @@ CatClient
       A :ref:`coroutine <coroutine>` that provides information about plugins.
 
       :arg h: Comma-separated list of column names to display
-      :arg help: Return help information, default False
+      :arg help: Return help information, default ``false``
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for master connection
           node
-      :arg v: Verbose mode. Display column headers, default False
+      :arg v: Verbose mode. Display column headers, default ``false``
 
       :returns: resulting text
 
@@ -2272,7 +2273,7 @@ CatClient
 
 
 ClusterClient
------------------
+-------------
 
 
 .. class:: aioes.client.ClusterClient
@@ -2289,9 +2290,9 @@ ClusterClient
 
       :arg index: Limit the information returned to a specific index
       :arg level: Specify the level of detail for returned information,
-           default u'cluster'
+           default ``cluster``
       :arg local: Return local information, do not retrieve the state from
-           master node (default: false)
+           master node (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection to
            master node
       :arg timeout: Explicit operation timeout
@@ -2302,7 +2303,7 @@ ClusterClient
       :arg wait_for_relocating_shards: Wait until the specified number of
            relocating shards is finished
       :arg wait_for_status: Wait until cluster is in a specific state,
-           default None
+           default ``None``
 
       :returns: resulting text
 
@@ -2317,7 +2318,7 @@ ClusterClient
       which have not yet been executed.
 
       :arg local: Return local information, do not retrieve the state
-            from master node (default: false)
+            from master node (default: ``false``)
       :arg master_timeout: Specify timeout for connection to master
 
       :returns: resulting text
@@ -2339,9 +2340,9 @@ ClusterClient
       :arg index_templates: A comma separated list to return specific index
           templates when returning metadata.
       :arg local: Return local information, do not retrieve the state
-          from master node (default: false)
+          from master node (default: ``false``)
       :arg master_timeout: Specify timeout for connection to master
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
 
       :returns: resulting text
 
@@ -2359,7 +2360,7 @@ ClusterClient
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from
           all nodes
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg human: Whether to return time and byte values in
           human-readable format.
 
@@ -2383,7 +2384,7 @@ ClusterClient
       :arg explain: Return an explanation of why the commands can or
           cannot be executed
       :arg filter_metadata: Don't return cluster state metadata
-          (default: false)
+          (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection
           to master node
       :arg timeout: Explicit operation timeout
@@ -2399,7 +2400,7 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that returns cluster settings.
 
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg master_timeout: Explicit operation timeout for connection
           to master node
       :arg timeout: Explicit operation timeout
@@ -2414,9 +2415,9 @@ ClusterClient
 
       A :ref:`coroutine <coroutine>` that updates cluster settings.
 
-      :arg body: The settings to be updated. Can be either `transient` or
-          `persistent` (survives cluster restart).
-      :arg flat_settings: Return settings in flat format (default: false)
+      :arg body: The settings to be updated. Can be either ``transient`` or
+          ``persistent`` (survives cluster restart).
+      :arg flat_settings: Return settings in flat format (default: ``false``)
 
       :returns: resulting text
 
@@ -2447,9 +2448,9 @@ NodesClient
           ``"settings"``, ``"os"``, ``"process"``, ``"jvm"``,
           ``"thread_pool"``, ``"network"``, ``"transport"``,
           ``"http"``, ``"plugin"``
-      :arg flat_settings: Return settings in flat format (default: ``False``)
+      :arg flat_settings: Return settings in flat format (default: ``false``)
       :arg human: Whether to return time and byte values in human-readable
-          format, default ``False``
+          format, default ``false``
 
       :returns: resulting info
 
@@ -2466,8 +2467,8 @@ NodesClient
           the operation on; use `_local` to perform the operation on
           the node you're connected to, leave empty to perform the operation
           on all nodes
-      :arg delay: Set the delay for the operation (default: 1s)
-      :arg exit: Exit the JVM as well (default: true)
+      :arg delay: Set the delay for the operation (default: ``1s``)
+      :arg exit: Exit the JVM as well (default: ``true``)
 
       :returns: resulting info
 
@@ -2505,9 +2506,9 @@ NodesClient
       :arg groups: A comma-separated list of search groups for `search` index
           metric
       :arg human: Whether to return time and byte values in human-readable
-          format., default False
+          format., default ``false``
       :arg level: Return indices stats aggregated at node, index or shard
-          level, default 'node'
+          level, default ``node``
       :arg types: A comma-separated list of document types for the `indexing`
           index metric
 
@@ -2527,7 +2528,7 @@ NodesClient
           returned information; use `_local` to return information from the
           node you're connecting to, leave empty to get information from all
           nodes
-      :arg type_: The type to sample (default: cpu)
+      :arg type_: The type to sample (default: ``cpu``)
       :arg interval: The interval for the second sampling of threads
       :arg snapshots: Number of samples of thread stacktrace (default: 10)
       :arg threads: Specify the number of threads to provide information for
@@ -2560,7 +2561,7 @@ SnapshotClient
       :arg master_timeout: Explicit operation timeout for connection
           to master node
       :arg wait_for_completion: Should this request wait until
-          the operation has completed before returning, default False
+          the operation has completed before returning, default ``false``
 
       :returns: resulting info.
 
@@ -2623,7 +2624,7 @@ SnapshotClient
       :arg master_timeout: Explicit operation timeout for connection
           to master node
       :arg local: Return local information, do not retrieve the state from
-          master node (default: false)
+          master node (default: ``false``)
 
       :returns: resulting info.
 
@@ -2659,7 +2660,7 @@ SnapshotClient
       :arg master_timeout: Explicit operation timeout for connection
           to master node
       :arg wait_for_completion: Should this request wait until the operation
-          has completed before returning, default False
+          has completed before returning, default ``false``
 
       :returns: resulting info.
 

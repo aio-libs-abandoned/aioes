@@ -1,7 +1,7 @@
 asyncio client library for elasticsearch
 =========================================
 
-**aioes** is a asyncio_ compatible library for working with ElasticSearch_
+**aioes** is a asyncio_ compatible library for working with Elasticsearch_
 
 .. image:: https://travis-ci.org/aio-libs/aioes.svg?branch=master
    :target: https://travis-ci.org/aio-libs/aioes
@@ -57,7 +57,7 @@ Requirements
 Tests
 -----
 
-Make sure you have an instance of elastic-search running on port 9200
+Make sure you have an instance of Elasticsearch running on port 9200
 before executing the tests.
 
 In order for all tests to work you need to add the following lines in the
@@ -85,4 +85,4 @@ aioes is offered under the BSD license.
 .. _python: https://www.python.org/downloads/
 .. _asyncio: https://pypi.python.org/pypi/asyncio
 .. _aiohttp: https://pypi.python.org/pypi/aiohttp
-.. _ElasticSearch: http://www.elasticsearch.org/
+.. _Elasticsearch: http://www.elasticsearch.org/

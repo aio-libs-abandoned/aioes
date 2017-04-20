@@ -5,9 +5,8 @@
 Glossary
 ********
 
-.. if you add new entries, keep the alphabetical sorting!
-
 .. glossary::
+   :sorted:
 
    aiohttp
 
@@ -18,7 +17,7 @@ Glossary
       Reference implementation of :pep:`3156` --- Asynchronous IO
       Support Rebooted.
 
-   ElasticSearch
+   Elasticsearch
 
       A search server based on Lucene. It provides a distributed,
       multitenant-capable full-text search engine with a RESTful web
@@ -28,7 +27,7 @@ Glossary
 
    elasticsearch-py
 
-      Official python client for :term:`ElasticSearch`
+      Official python client for :term:`Elasticsearch`
 
    ipdb
 

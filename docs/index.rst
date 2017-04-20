@@ -9,15 +9,15 @@ aioes
 .. _GitHub: https://github.com/aio-libs/aioes
 .. _asyncio: http://docs.python.org/3.4/library/asyncio.html
 
-**aioes** is a libarary for working with an :term:`ElasticSearch` from
+**aioes** is a library for working with an :term:`Elasticsearch` from
 :term:`asyncio` framework.
 
 Features
 --------
 
-- Easy interface to :term:`ElasticSearch` cluster.
-- Modelled after :term:`elasticsearch-py`. Not fully compatible due
-  ``yield from`` nature of :term:`asyncio` but looks very simular.
+- Easy interface to :term:`Elasticsearch` cluster.
+- Modelled after :term:`elasticsearch-py`. Not fully compatible due to
+  ``yield from`` nature of :term:`asyncio` but looks very similar.
 
 Basic Example
 -------------
