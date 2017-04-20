@@ -24,6 +24,7 @@ install:
 - docker pull elasticsearch:1.7
 - docker pull elasticsearch:2.4
 - docker pull elasticsearch:5.2
+- docker pull elasticsearch:5.3
 
 script:
 - make $TASKS
@@ -40,7 +41,7 @@ before_cache:
 
 env:
   global:
-  - TASKS="cov setup-check" TEST_ARGS="--no-pull -rsxX -v --es-tag=1.7 --es-tag=2.4 --es-tag=5.2"
+  - TASKS="cov setup-check" TEST_ARGS="--no-pull -rsxX -v --es-tag=1.7 --es-tag=2.4 --es-tag=5.2 --es-tag=5.3"
   matrix:
   - PYTHONASYNCIODEBUG=1
   - PYTHONASYNCIODEBUG=

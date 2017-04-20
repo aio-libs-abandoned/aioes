@@ -411,18 +411,21 @@ def test_validate_query(client, es_tag):
     data = yield from client.indices.validate_query()
     assert '_shards' in data
 
-    if es_tag > (5, 0):
-        kwargs = dict()
+    kwargs = dict()
+    if es_tag >= (5, 3):
+        pass
+    elif es_tag > (5, 0):
+        # deprecated in 5.3
+        kwargs.update(q='', source='')
     else:
-        kwargs = dict(ignore_indices=True,
+        # deprecated in 5.x
+        kwargs.update(ignore_indices=True,
                       operation_threading='',
                       )
 
     yield from client.indices.validate_query(
         explain=True,
         allow_no_indices=True,
-        q='',
-        source='',
         expand_wildcards='open',
         ignore_unavailable=False,
         **kwargs)
