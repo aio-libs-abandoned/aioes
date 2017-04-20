@@ -1,8 +1,10 @@
+# main deps
+aiohttp==2.0.7
+yarl==0.10.0
+
 flake8==3.3.0
 # for compare script
 elasticsearch==5.3.0
-aiohttp==1.3.4
-yarl==0.9.8
 pytest==3.0.7
 pytest-cov==2.4.0
 pytest-aiohttp==0.1.3
