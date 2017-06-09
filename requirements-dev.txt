@@ -5,7 +5,7 @@ yarl==0.10.0
 flake8==3.3.0
 # for compare script
 elasticsearch==5.4.0
-pytest==3.0.7
+pytest==3.1.2
 pytest-cov==2.4.0
 pytest-aiohttp==0.1.3
 # pytest-sugar==0.8.0
