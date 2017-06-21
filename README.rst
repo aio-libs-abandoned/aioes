@@ -9,6 +9,13 @@ asyncio client library for elasticsearch
 
 .. image:: https://codecov.io/gh/aio-libs/aioes/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/aio-libs/aioes
+   
+The project is abandoned
+========================
+
+aioes is not supported anymore.
+Please use official client: https://github.com/elastic/elasticsearch-py-async
+
 
 Documentation
 -------------
