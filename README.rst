@@ -13,7 +13,8 @@ asyncio client library for elasticsearch
 The project is abandoned
 ========================
 
-aioes is not supported anymore.
+**aioes is not supported anymore.**
+
 Please use official client: https://github.com/elastic/elasticsearch-py-async
 
 
