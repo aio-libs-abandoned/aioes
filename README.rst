@@ -16,6 +16,7 @@ The project is abandoned
 **aioes is not supported anymore.**
 
 Please use official client: https://github.com/elastic/elasticsearch-py-async
+or more featured https://github.com/wikibusiness/aioelasticsearch alternative.
 
 
 Documentation
